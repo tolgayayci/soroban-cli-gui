@@ -48,6 +48,8 @@ const schema = {
 
 const store = new Store({ schema });
 
+store.set("identities", []);
+
 async function handleFileOpen() {
   const { canceled, filePaths } = await dialog.showOpenDialog({
     properties: ["openDirectory"],
