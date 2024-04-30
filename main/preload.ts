@@ -13,7 +13,6 @@ const handler = {
       ipcRenderer.removeListener(channel, subscription);
     };
   },
-
   node: process.versions.node,
   chrome: process.versions.chrome,
   electron: process.versions.electron,
@@ -39,6 +38,13 @@ const handler = {
       action,
       identity,
       newIdentity
+    );
+  },
+  manageContractEvents: async (action, contractSettings) => {
+    return ipcRenderer.invoke(
+      "store:manageContractEvents",
+      action,
+      contractSettings
     );
   },
   isSorobanProject: async (directoryPath) => {

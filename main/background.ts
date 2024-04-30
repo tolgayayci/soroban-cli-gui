@@ -9,6 +9,7 @@ import { executeSorobanCommand } from "./helpers/soroban-helper";
 import { handleProjects } from "./helpers/manage-projects";
 import { handleIdentities } from "./helpers/manage-identities";
 import { findContracts } from "./helpers/find-contracts";
+import { handleContractEvents } from "./helpers/manage-contract-events";
 
 const path = require("node:path");
 const fs = require("fs");
@@ -44,11 +45,49 @@ const schema = {
       },
     },
   },
+  contractEvents: {
+    type: "array",
+    default: [],
+    items: {
+      type: "object",
+      properties: {
+        start_ledger: { type: "string" },
+        cursor: { type: "string" },
+        output: {
+          type: "string",
+          enum: ["pretty", "plain", "json"],
+          default: "pretty",
+        },
+        count: { type: "string" },
+        contract_id: {
+          type: "string",
+        },
+        topic_filters: {
+          type: "string",
+        },
+        event_type: {
+          type: "string",
+          enum: ["all", "contract", "system"],
+          default: "all",
+        },
+        is_global: { type: "boolean", default: false },
+        config_dir: { type: "string", default: "." },
+        rpc_url: { type: "string" },
+        network_passphrase: { type: "string" },
+        network: { type: "string" },
+      },
+      required: [
+        "start_ledger",
+        "cursor",
+        "rpc_url",
+        "network_passphrase",
+        "network",
+      ],
+    },
+  },
 };
 
 const store = new Store({ schema });
-
-store.set("identities", []);
 
 async function handleFileOpen() {
   const { canceled, filePaths } = await dialog.showOpenDialog({
@@ -67,6 +106,8 @@ if (isProd) {
 
 (async () => {
   await app.whenReady();
+
+  console.log(store.get("contracts"));
 
   const mainWindow = createWindow("main", {
     width: 1500,
@@ -144,6 +185,23 @@ if (isProd) {
         return result;
       } catch (error) {
         console.error("Error on identities:", error);
+        throw error;
+      }
+    }
+  );
+
+  ipcMain.handle(
+    "store:manageContractEvents",
+    async (event, action, contractEvents) => {
+      try {
+        const result = await handleContractEvents(
+          store,
+          action,
+          contractEvents
+        );
+        return result;
+      } catch (error) {
+        console.error("Error on contracts:", error);
         throw error;
       }
     }

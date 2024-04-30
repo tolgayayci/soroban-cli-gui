@@ -22,6 +22,7 @@ import {
   NetworkIcon,
   CircuitBoardIcon,
   SettingsIcon,
+  RadioIcon,
 } from "lucide-react";
 
 import { useTheme } from "next-themes";
@@ -126,6 +127,15 @@ export default function Layout({ children }: LayoutProps) {
                         href: "/identities",
                         icon: CircuitBoardIcon,
                         variant: router.pathname.startsWith("/identities")
+                          ? "default"
+                          : "ghost",
+                      },
+                      {
+                        title: "Events",
+                        label: "",
+                        href: "/events",
+                        icon: RadioIcon,
+                        variant: router.pathname.startsWith("/events")
                           ? "default"
                           : "ghost",
                       },
