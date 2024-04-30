@@ -13,7 +13,7 @@ import { Alert, AlertDescription, AlertTitle } from "components/ui/alert";
 import { AlertCircle, ThumbsUpIcon, ThumbsDownIcon } from "lucide-react";
 import { ScrollArea, ScrollBar } from "components/ui/scroll-area";
 
-export default function CommandStatusConfig({
+export default function LabCommandOutput({
   canister,
   projectPath,
   commandOutput,
@@ -86,7 +86,6 @@ export default function CommandStatusConfig({
               {commandOutput && (
                 <Alert>
                   <ThumbsUpIcon className="h-4 w-4 text-green-600" />
-                  <AlertTitle>Command Output</AlertTitle>
                   <AlertDescription>{commandOutput}</AlertDescription>
                 </Alert>
               )}

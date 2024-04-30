@@ -19,7 +19,7 @@ import {
 import {
   HomeIcon,
   DatabaseIcon,
-  NetworkIcon,
+  MonitorXIcon,
   CircuitBoardIcon,
   SettingsIcon,
 } from "lucide-react";
@@ -126,6 +126,15 @@ export default function Layout({ children }: LayoutProps) {
                         href: "/identities",
                         icon: CircuitBoardIcon,
                         variant: router.pathname.startsWith("/identities")
+                          ? "default"
+                          : "ghost",
+                      },
+                      {
+                        title: "Lab",
+                        label: "",
+                        href: "/lab",
+                        icon: MonitorXIcon,
+                        variant: router.pathname.startsWith("/lab")
                           ? "default"
                           : "ghost",
                       },
