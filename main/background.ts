@@ -4,6 +4,10 @@ fixPath();
 import { app, ipcMain, dialog } from "electron";
 import serve from "electron-serve";
 
+// Analytics
+import { initialize } from "@aptabase/electron/main";
+import { trackEvent } from "@aptabase/electron/main";
+
 import { createWindow } from "./helpers";
 import { executeSorobanCommand } from "./helpers/soroban-helper";
 import { handleProjects } from "./helpers/manage-projects";
@@ -47,6 +51,7 @@ const schema = {
 };
 
 const store = new Store({ schema });
+initialize("A-EU-8145589126");
 
 store.set("identities", []);
 
@@ -67,6 +72,7 @@ if (isProd) {
 
 (async () => {
   await app.whenReady();
+  trackEvent("app_started");
 
   const mainWindow = createWindow("main", {
     width: 1500,
@@ -84,6 +90,7 @@ if (isProd) {
 
   ipcMain.handle("open-external-link", async (event, url) => {
     if (url) {
+      trackEvent("external_link_opened", { url });
       await shell.openExternal(url);
     }
   });
@@ -92,6 +99,7 @@ if (isProd) {
     "soroban-command",
     async (event, command, subcommand, args?, flags?, path?) => {
       try {
+        trackEvent("command_executed", { command, subcommand, args, flags });
         const result = await executeSorobanCommand(
           command,
           subcommand,
@@ -113,6 +121,7 @@ if (isProd) {
   // Store: Projects Handler
   ipcMain.handle("store:manageProjects", async (event, action, project) => {
     try {
+      trackEvent("project_action", { action, project });
       const result = await handleProjects(store, action, project);
       return result;
     } catch (error) {
@@ -135,6 +144,7 @@ if (isProd) {
     "store:manageIdentities",
     async (event, action, identity, newIdentity?) => {
       try {
+        trackEvent("identity_action", { action, identity, newIdentity });
         const result = await handleIdentities(
           store,
           action,
@@ -263,6 +273,7 @@ if (isProd) {
 })();
 
 app.on("window-all-closed", () => {
+  trackEvent("app_closed");
   app.quit();
 });
 
