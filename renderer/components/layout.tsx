@@ -22,6 +22,7 @@ import {
   NetworkIcon,
   CircuitBoardIcon,
   SettingsIcon,
+  BookIcon,
 } from "lucide-react";
 
 import { useTheme } from "next-themes";
@@ -135,6 +136,15 @@ export default function Layout({ children }: LayoutProps) {
                         href: "/settings",
                         icon: SettingsIcon,
                         variant: router.pathname.startsWith("/settings")
+                          ? "default"
+                          : "ghost",
+                      },
+                      {
+                        title: "About",
+                        label: "",
+                        href: "/about",
+                        icon: BookIcon,
+                        variant: router.pathname.startsWith("/about")
                           ? "default"
                           : "ghost",
                       },
