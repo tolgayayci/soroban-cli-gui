@@ -18,6 +18,8 @@ const path = require("node:path");
 const fs = require("fs");
 const toml = require("toml");
 const { shell } = require("electron");
+const log = require("electron-log");
+const { autoUpdater } = require("electron-updater");
 
 const isProd = process.env.NODE_ENV === "production";
 
@@ -55,6 +57,11 @@ initialize("A-EU-8145589126");
 
 store.set("identities", []);
 
+// Set up logging for the auto updater
+autoUpdater.logger = log;
+autoUpdater.logger.transports.file.level = "info";
+log.info("App starting...");
+
 async function handleFileOpen() {
   const { canceled, filePaths } = await dialog.showOpenDialog({
     properties: ["openDirectory"],
@@ -73,6 +80,7 @@ if (isProd) {
 (async () => {
   await app.whenReady();
   trackEvent("app_started");
+  autoUpdater.checkForUpdatesAndNotify();
 
   const mainWindow = createWindow("main", {
     width: 1500,

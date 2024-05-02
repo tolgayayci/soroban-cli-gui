@@ -9,7 +9,6 @@ files:
     filter:
       - package.json
       - app
-publish: null
 afterSign: "scripts/notarize.js"
 mac:
   notarize: { teamId: "FPJS89TYWV" }
@@ -17,5 +16,8 @@ mac:
   gatekeeperAssess: false
   entitlements: "scripts/entitlements.mac.plist"
   entitlementsInherit: "scripts/entitlements.mac.plist"
+  publish:
+    - provider: github
+      protocol: https
 dmg:
   sign: false
