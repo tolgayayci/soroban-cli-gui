@@ -19,10 +19,10 @@ import {
 import {
   HomeIcon,
   DatabaseIcon,
-  NetworkIcon,
   CircuitBoardIcon,
   SettingsIcon,
   BookIcon,
+  BookKeyIcon,
 } from "lucide-react";
 
 import { useTheme } from "next-themes";
@@ -136,6 +136,15 @@ export default function Layout({ children }: LayoutProps) {
                         href: "/settings",
                         icon: SettingsIcon,
                         variant: router.pathname.startsWith("/settings")
+                          ? "default"
+                          : "ghost",
+                      },
+                      {
+                        title: "Logs",
+                        label: "",
+                        href: "/logs",
+                        icon: BookKeyIcon,
+                        variant: router.pathname.startsWith("/logs")
                           ? "default"
                           : "ghost",
                       },

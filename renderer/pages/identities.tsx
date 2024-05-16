@@ -9,7 +9,7 @@ function Settings() {
   return (
     <React.Fragment>
       <Head>
-        <title>Identities - Soroban</title>
+        <title>Identities - Sora</title>
       </Head>
       <IdentitiesComponent />
     </React.Fragment>

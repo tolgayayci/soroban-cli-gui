@@ -13,7 +13,7 @@ function ContractDetailPage() {
   return (
     <React.Fragment>
       <Head>
-        <title>Contract Actions - Soroban</title>
+        <title>Contract Actions - Sora</title>
       </Head>
       <ContractDetail projectPath={path as string} />
     </React.Fragment>

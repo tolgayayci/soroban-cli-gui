@@ -1,19 +1,19 @@
 import React from "react";
 import Head from "next/head";
-import AboutComponent from "components/about/About";
+import LogsComponent from "components/logs/Logs";
 import { trackEvent } from "@aptabase/electron/renderer";
 
-function About() {
-  trackEvent("about-page-viewed");
+function Logs() {
+  trackEvent("logs-page-viewed");
 
   return (
     <React.Fragment>
       <Head>
-        <title>About - Sora</title>
+        <title>Logs - Sora</title>
       </Head>
-      <AboutComponent />
+      <LogsComponent />
     </React.Fragment>
   );
 }
 
-export default About;
+export default Logs;

@@ -66,6 +66,9 @@ const handler = {
   refreshIdentities: async () => {
     return ipcRenderer.invoke("identity:refresh");
   },
+  readLogs: async () => {
+    return ipcRenderer.invoke("fetch-logs");
+  },
 };
 
 contextBridge.exposeInMainWorld("sorobanApi", handler);

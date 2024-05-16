@@ -3,6 +3,7 @@ fixPath();
 
 import { app, ipcMain, dialog } from "electron";
 import serve from "electron-serve";
+const { readFile } = require("fs").promises;
 
 // Analytics
 import { initialize } from "@aptabase/electron/main";
@@ -18,7 +19,7 @@ const path = require("node:path");
 const fs = require("fs");
 const toml = require("toml");
 const { shell } = require("electron");
-const log = require("electron-log");
+const log = require("electron-log/main");
 const { autoUpdater } = require("electron-updater");
 
 const isProd = process.env.NODE_ENV === "production";
@@ -53,21 +54,27 @@ const schema = {
 };
 
 const store = new Store({ schema });
-initialize("A-EU-8145589126");
-
 store.set("identities", []);
 
-// Set up logging for the auto updater
+// Aptabase Analytics
+initialize("A-EU-8145589126");
+
 autoUpdater.logger = log;
 autoUpdater.logger.transports.file.level = "info";
-log.info("App starting...");
+const logFilePath = log.transports.file.getFile().path;
 
 async function handleFileOpen() {
-  const { canceled, filePaths } = await dialog.showOpenDialog({
-    properties: ["openDirectory"],
-  });
-  if (!canceled) {
-    return filePaths[0];
+  try {
+    const { canceled, filePaths } = await dialog.showOpenDialog({
+      properties: ["openDirectory"],
+    });
+    if (!canceled) {
+      log.info("File open dialog completed. Selected directory:", filePaths[0]);
+      trackEvent("directory_opened", { path: filePaths[0] });
+      return filePaths[0];
+    }
+  } catch (error) {
+    log.error("Error occurred while opening the file dialog:", error);
   }
 }
 
@@ -108,6 +115,13 @@ if (isProd) {
     async (event, command, subcommand, args?, flags?, path?) => {
       try {
         trackEvent("command_executed", { command, subcommand, args, flags });
+        log.info(
+          "Executing Soroban command: soroban ",
+          command ? command : "",
+          subcommand ? subcommand : "",
+          args ? args.join(" ") : "",
+          flags ? flags.join(" ") : ""
+        );
         const result = await executeSorobanCommand(
           command,
           subcommand,
@@ -118,11 +132,22 @@ if (isProd) {
 
         return result;
       } catch (error) {
-        console.error(`Error while executing Soroban command: ${error}`);
+        log.error("Error while executing Soroban command:", error);
         throw error;
       }
     }
   );
+
+  // Add an IPC handler to fetch the logs
+  ipcMain.handle("fetch-logs", async () => {
+    try {
+      const data = await readFile(logFilePath, "utf-8");
+      return data;
+    } catch (error) {
+      log.error(`Error reading log file: ${error}`);
+      throw error;
+    }
+  });
 
   ipcMain.handle("dialog:openDirectory", handleFileOpen);
 
@@ -130,10 +155,15 @@ if (isProd) {
   ipcMain.handle("store:manageProjects", async (event, action, project) => {
     try {
       trackEvent("project_action", { action, project });
+      log.info(
+        "Project Interaction. Action:",
+        action,
+        project ? "Project: " + project : ""
+      );
       const result = await handleProjects(store, action, project);
       return result;
     } catch (error) {
-      console.error("Error on projects:", error);
+      log.error("Error on managing projects:", error);
       throw error;
     }
   });
@@ -153,6 +183,12 @@ if (isProd) {
     async (event, action, identity, newIdentity?) => {
       try {
         trackEvent("identity_action", { action, identity, newIdentity });
+        log.info(
+          "Identity Interaction.",
+          action ? "Action: " + action : "",
+          identity ? "Identity: " + identity : "",
+          newIdentity ? "New Identity: " + newIdentity : ""
+        );
         const result = await handleIdentities(
           store,
           action,
@@ -161,7 +197,7 @@ if (isProd) {
         );
         return result;
       } catch (error) {
-        console.error("Error on identities:", error);
+        log.error("Error on managing identities:", error);
         throw error;
       }
     }
@@ -283,6 +319,10 @@ if (isProd) {
 app.on("window-all-closed", () => {
   trackEvent("app_closed");
   app.quit();
+});
+
+app.on("before-quit", () => {
+  log.info("App is about to quit.");
 });
 
 ipcMain.on("message", async (event, arg) => {

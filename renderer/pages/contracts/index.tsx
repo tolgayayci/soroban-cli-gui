@@ -9,7 +9,7 @@ function Contracts() {
   return (
     <React.Fragment>
       <Head>
-        <title>Contracts - Soroban</title>
+        <title>Contracts - Sora</title>
       </Head>
       <ContractsComponent />
     </React.Fragment>

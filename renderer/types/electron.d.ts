@@ -20,6 +20,7 @@ interface Versions {
   reloadApplication: () => Promise<void>;
   openExternalLink: (url) => Promise<void>;
   refreshIdentities: () => Promise<void>;
+  readLogs: () => Promise<string>;
 }
 
 interface Window {

@@ -9,7 +9,7 @@ function Projects() {
   return (
     <React.Fragment>
       <Head>
-        <title>Projects - Soroban</title>
+        <title>Projects - Sora</title>
       </Head>
       <ProjectsComponent />
     </React.Fragment>
