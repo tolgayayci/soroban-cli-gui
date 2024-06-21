@@ -19,6 +19,7 @@ import {
 import {
   HomeIcon,
   DatabaseIcon,
+  MonitorXIcon,
   CircuitBoardIcon,
   SettingsIcon,
   BookIcon,
@@ -132,11 +133,19 @@ export default function Layout({ children }: LayoutProps) {
                           : "ghost",
                       },
                       {
+<<<<<<< HEAD
                         title: "Events",
                         label: "",
                         href: "/events",
                         icon: RadioIcon,
                         variant: router.pathname.startsWith("/events")
+=======
+                        title: "Lab",
+                        label: "",
+                        href: "/lab",
+                        icon: MonitorXIcon,
+                        variant: router.pathname.startsWith("/lab")
+>>>>>>> lab-page
                           ? "default"
                           : "ghost",
                       },
