@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useProject } from "hooks/useProject";
 
 import CliCommandSelector from "components/contracts/command-selector";
@@ -19,17 +20,17 @@ import { useToast } from "components/ui/use-toast";
 
 import { FileBoxIcon } from "lucide-react";
 
-export default function ContractDetail({
-  projectPath,
-}: {
-  projectPath: string;
-}) {
+export default function ContractDetail() {
   const [commandOutput, setCommandOutput] = useState();
   const [commandError, setCommandError] = useState();
   const [latestCommand, setLatestCommand] = useState();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const project = useProject(projectPath);
+  const router = useRouter();
+  const { path } = router.query;
+  const { command } = router.query;
+
+  const project = useProject(path as string);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -125,7 +126,8 @@ export default function ContractDetail({
           <div className="flex flex-row w-full">
             <div className="w-full">
               <CliCommandSelector
-                path={projectPath}
+                path={path as string}
+                initialCommand={command as string}
                 latestCommand={latestCommand}
                 setCommandError={setCommandError}
                 setCommandOutput={setCommandOutput}

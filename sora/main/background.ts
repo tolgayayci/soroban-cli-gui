@@ -61,8 +61,20 @@ store.set("identities", []);
 // Aptabase Analytics
 initialize("A-EU-8145589126");
 
+// Set up logging
+const commandLog = log.create("command");
+commandLog.transports.file.format = "[{y}-{m}-{d} {h}:{i}:{s}.{ms}]  {text}";
+commandLog.transports.file.fileName = "soroban-commands.log";
+commandLog.transports.file.file = path.join(
+  app.getPath("userData"),
+  "soroban-commands.log"
+);
+
 autoUpdater.logger = log;
 autoUpdater.logger.transports.file.level = "info";
+log.transports.file.format = "[{y}-{m}-{d} {h}:{i}:{s}.{ms}] [{level}] {text}";
+log.transports.file.fileName = "sora.log";
+log.transports.file.file = path.join(app.getPath("userData"), "app.log");
 const logFilePath = log.transports.file.getFile().path;
 
 async function handleFileOpen() {
@@ -116,22 +128,63 @@ if (isProd) {
     return await checkEditors();
   });
 
-  ipcMain.handle("open-editor", (event, projectPath, editor) => {
-    openProjectInEditor(projectPath, editor);
+  ipcMain.handle("open-editor", async (event, projectPath, editor) => {
+    return await openProjectInEditor(projectPath, editor);
+  });
+
+  ipcMain.handle("get-app-version", async () => {
+    const packagePath = path.join(app.getAppPath(), "package.json");
+    const packageJson = JSON.parse(fs.readFileSync(packagePath, "utf8"));
+    return packageJson.version;
+  });
+
+  ipcMain.handle("get-soroban-version", async () => {
+    const versionOutput = await executeSorobanCommand("--version");
+
+    const versionData = {
+      sorobanVersion: "Loading...",
+      sorobanEnvVersion: "Loading...",
+      sorobanEnvInterfaceVersion: "Loading...",
+      stellarXdrVersion: "Loading...",
+      xdrCurrVersion: "Loading...",
+    };
+
+    const lines = versionOutput.split("\n");
+    lines.forEach((line) => {
+      if (line.includes("soroban ")) {
+        versionData.sorobanVersion = line.split(" ")[1];
+      } else if (line.includes("soroban-env ")) {
+        if (line.includes("interface version")) {
+          versionData.sorobanEnvInterfaceVersion = line.split(" ")[3];
+        } else {
+          versionData.sorobanEnvVersion = line.split(" ")[1];
+        }
+      } else if (line.includes("stellar-xdr ")) {
+        versionData.stellarXdrVersion = line.split(" ")[1];
+      } else if (line.includes("xdr curr ")) {
+        versionData.xdrCurrVersion = line.split(" ")[2];
+      }
+    });
+
+    return versionData;
+  });
+
+  ipcMain.handle("check-file-exists", async (event, filePath) => {
+    return fs.existsSync(filePath);
   });
 
   ipcMain.handle(
     "soroban-command",
     async (event, command, subcommand, args?, flags?, path?) => {
       try {
-        trackEvent("command_executed", { command, subcommand, args, flags });
-        log.info(
-          "Executing Soroban command: soroban ",
-          command ? command : "",
-          subcommand ? subcommand : "",
-          args ? args.join(" ") : "",
-          flags ? flags.join(" ") : ""
-        );
+        trackEvent("command_executed", {
+          command,
+          subcommand,
+          args,
+          flags,
+          path,
+        });
+
         const result = await executeSorobanCommand(
           command,
           subcommand,
@@ -139,6 +192,25 @@ if (isProd) {
           flags,
           path
         );
+
+        if (
+          command &&
+          (command === "contract" || command === "lab" || command === "events")
+        ) {
+          const formattedResult = result
+            ? `Result: ${JSON.stringify(result)}`
+            : "";
+
+          commandLog.info(
+            "soroban",
+            command ? command : "",
+            subcommand ? subcommand : "",
+            args ? args.join(" ") : "",
+            flags ? flags.join(" ") : "",
+            path ? path : "",
+            formattedResult
+          );
+        }
 
         return result;
       } catch (error) {
@@ -155,6 +227,16 @@ if (isProd) {
       return data;
     } catch (error) {
       log.error(`Error reading log file: ${error}`);
+      throw error;
+    }
+  });
+
+  ipcMain.handle("fetch-command-logs", async () => {
+    try {
+      const commandLogFilePath = commandLog.transports.file.getFile().path;
+      const data = await readFile(commandLogFilePath, "utf-8");
+      return data;
+    } catch (error) {
       throw error;
     }
   });

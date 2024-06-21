@@ -16,7 +16,7 @@ import {
 import { Button } from "components/ui/button";
 
 export default function EnvironmentVariables() {
-  const [soraAppVersion, setSoraAppVersion] = useState("0.2.0");
+  const [soraAppVersion, setSoraAppVersion] = useState("Loading...");
   const [sorobanVersion, setSorobanVersion] = useState("Loading...");
   const [sorobanEnvVersion, setSorobanEnvVersion] = useState("Loading...");
   const [sorobanEnvInterfaceVersion, setSorobanEnvInterfaceVersion] =
@@ -26,29 +26,25 @@ export default function EnvironmentVariables() {
 
   useEffect(() => {
     async function fetchVersionData() {
-      const versionOutput = await window.sorobanApi.runSorobanCommand(
-        "--version"
-      );
+      const versionData = await window.sorobanApi.getSorobanVersion();
 
-      const lines = versionOutput.split("\n");
-      lines.forEach((line) => {
-        if (line.includes("soroban ")) {
-          setSorobanVersion(line.split(" ")[1]);
-        } else if (line.includes("soroban-env ")) {
-          if (line.includes("interface version")) {
-            setSorobanEnvInterfaceVersion(line.split(" ")[3]);
-          } else {
-            setSorobanEnvVersion(line.split(" ")[1]);
-          }
-        } else if (line.includes("stellar-xdr ")) {
-          setStellarXdrVersion(line.split(" ")[1]);
-        } else if (line.includes("xdr curr ")) {
-          setXdrCurrVersion(line.split(" ")[2]);
-        }
-      });
+      setSorobanVersion(versionData.sorobanVersion);
+      setSorobanEnvVersion(versionData.sorobanEnvVersion);
+      setSorobanEnvInterfaceVersion(versionData.sorobanEnvInterfaceVersion);
+      setStellarXdrVersion(versionData.stellarXdrVersion);
+      setXdrCurrVersion(versionData.xdrCurrVersion);
     }
 
     fetchVersionData();
+  }, []);
+
+  useEffect(() => {
+    async function fetchAppVersion() {
+      const versionOutput = await window.sorobanApi.getAppVersion();
+      setSoraAppVersion(versionOutput);
+    }
+
+    fetchAppVersion();
   }, []);
 
   async function openExternalLink(url: string) {
@@ -181,7 +177,7 @@ export default function EnvironmentVariables() {
                   variant="secondary"
                   onClick={() =>
                     openExternalLink(
-                      "https://github.com/tolgayayci/sora/releases/tag/v0.2.0"
+                      `https://github.com/tolgayayci/sora/releases/tag/v${soraAppVersion}`
                     ) as any
                   }
                 >

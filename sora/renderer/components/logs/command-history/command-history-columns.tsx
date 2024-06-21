@@ -1,76 +1,205 @@
-"use client";
+// command-history-columns.tsx
+import { useState } from "react";
 
 import { DataTableColumnHeader } from "components/logs/application-logs/application-logs-data-table-column-header";
 import { ColumnDef } from "@tanstack/react-table";
+import { useRouter } from "next/router";
+import { useToast } from "components/ui/use-toast";
+import { Play, Copy, Info } from "lucide-react";
+import { useCopyToClipboard } from "react-use";
+
 import { Button } from "components/ui/button";
+import { Badge } from "components/ui/badge";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+  DialogDescription,
+  DialogTitle,
+  DialogHeader,
+} from "components/ui/dialog";
+
+import CommandStatusConfig from "components/contracts/command-status-config";
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "components/ui/select";
 
 export type Network = {
   [key: string]: any;
 };
 
-function getLevelColor(level: string) {
-  switch (level) {
-    case "error":
-      return "text-red-500";
-    case "warn":
-      return "text-yellow-500";
-    case "info":
-      return "text-green-500";
-    case "verbose":
+const getSubcommandColor = (subcommand: string) => {
+  switch (subcommand) {
+    case "contract":
       return "text-blue-500";
-    case "debug":
-      return "text-indigo-500";
-    case "silly":
+    case "network":
+      return "text-green-500";
+    case "lab":
       return "text-purple-500";
     default:
-      return "text-gray-500";
+      return "";
   }
-}
+};
 
-export const createCommandHistoryColumns = (): ColumnDef<Network>[] => {
+const subcommandFilterFn = (
+  row: any,
+  columnId: string,
+  filterValue: string
+) => {
+  if (filterValue === "all") {
+    return true;
+  }
+  return row.getValue(columnId) === filterValue;
+};
+
+export const createCommandHistoryColumns = (
+  subcommandFilter: string,
+  setSubcommandFilter: (value: string) => void
+): ColumnDef<Network>[] => {
+  const [state, copyToClipboard] = useCopyToClipboard();
+
+  const router = useRouter();
+  const { toast } = useToast();
+
+  const isExists = async (path: string) => {
+    try {
+      const exist = await window.sorobanApi.checkFileExists(path);
+      return exist;
+    } catch (error) {
+      console.error("Error checking file existence:", error);
+      return false;
+    }
+  };
+
   return [
     {
       accessorKey: "date",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Date" />
       ),
-      cell: ({ row }) => (
-        <div className="uppercase">
-          {row.original.timestamp.split(" ")[0].slice(1)}
-        </div>
-      ),
+      cell: ({ row }) => <div className="uppercase">{row.original.date}</div>,
     },
     {
       accessorKey: "time",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Time" />
       ),
-      cell: ({ row }) => (
-        <div className="uppercase">
-          {row.original.timestamp.split(" ")[1].slice(0, -5)}
-        </div>
-      ),
+      cell: ({ row }) => <div className="uppercase">{row.original.time}</div>,
     },
     {
       accessorKey: "subcommand",
-      header: "Subcommand",
+      header: () => (
+        <div className="flex items-center space-x-2">
+          <Select
+            value={subcommandFilter}
+            onValueChange={(value) => setSubcommandFilter(value)}
+          >
+            <SelectTrigger className="h-8">
+              <SelectValue placeholder="All" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All</SelectItem>
+              <SelectItem value="contract">Contract</SelectItem>
+              <SelectItem value="network">Network</SelectItem>
+              <SelectItem value="lab">Lab</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      ),
       cell: ({ row }) => (
-        <div className={`${getLevelColor(row.original.type)} uppercase`}>
+        <div
+          className={`${getSubcommandColor(row.original.subcommand)} uppercase`}
+        >
           {row.original.subcommand}
         </div>
       ),
+      filterFn: subcommandFilterFn,
     },
     {
       accessorKey: "command",
       header: "Command",
       cell: ({ row }) => (
-        <div className="max-w-sm truncate">{row.original.command}</div>
+        <div className="max-w-xs truncate">{row.original.command}</div>
       ),
     },
     {
       accessorKey: "action",
       header: "Action",
-      cell: ({ row }) => <Button variant="default">Re-run</Button>,
+      cell: ({ row }) => {
+        const [open, setOpen] = useState(false);
+
+        return (
+          <div className="flex justify-start space-x-3">
+            <Dialog open={open} onOpenChange={setOpen}>
+              <DialogTrigger asChild>
+                <Button>
+                  <Info className="h-4 w-4" />
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="min-w-[calc(70vw-106px)]">
+                <DialogHeader>
+                  <DialogTitle className="flex items-center">
+                    <span>Command Output</span>
+                    <Badge className="ml-4">
+                      {"Path: " + row.original.path}
+                    </Badge>
+                  </DialogTitle>
+                  <DialogDescription className="pt-2">
+                    <pre className="bg-white text-black shadow-lg border border-black p-2 pl-3 rounded-md">
+                      {row.original.command}
+                    </pre>
+                  </DialogDescription>
+                </DialogHeader>
+                <CommandStatusConfig
+                  commandOutput={row.original.result}
+                  commandError={""}
+                />
+              </DialogContent>
+            </Dialog>
+            <Button
+              onClick={async () => {
+                const { path, command } = row.original;
+                const exist = await isExists(path);
+                if (exist) {
+                  router.push({
+                    pathname: `/contracts/[path]`,
+                    query: { path, command },
+                  });
+                } else {
+                  toast({
+                    title: "Path Not Found",
+                    description: `Project does not exist at "${path}" `,
+                  });
+                }
+              }}
+            >
+              <Play className="h-4 w-4" />
+            </Button>
+            <Button
+              onClick={() => {
+                copyToClipboard(row.original.command);
+                toast({
+                  title: "Copied to Clipboard",
+                  description: (
+                    <pre className="bg-gray-100 text-black p-1 px-2 rounded-md mt-1">
+                      {row.original.command}
+                    </pre>
+                  ),
+                });
+              }}
+              className="transition-colors duration-200 hover:text-blue-500 focus:text-blue-500"
+            >
+              <Copy className="h-4 w-4" />
+            </Button>
+          </div>
+        );
+      },
     },
   ];
 };

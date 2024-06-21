@@ -1,4 +1,5 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent } from "electron";
+import { get } from "http";
 
 const handler = {
   send(channel: string, value: unknown) {
@@ -69,11 +70,23 @@ const handler = {
   readLogs: async () => {
     return ipcRenderer.invoke("fetch-logs");
   },
+  readCommandLogs: async () => {
+    return ipcRenderer.invoke("fetch-command-logs");
+  },
   openEditor: async (projectPath, editor) => {
     return ipcRenderer.invoke("open-editor", projectPath, editor);
   },
   checkEditors: async () => {
     return ipcRenderer.invoke("check-editors");
+  },
+  getAppVersion: async () => {
+    return ipcRenderer.invoke("get-app-version");
+  },
+  getSorobanVersion: async () => {
+    return ipcRenderer.invoke("get-soroban-version");
+  },
+  checkFileExists: async (filePath) => {
+    return ipcRenderer.invoke("check-file-exists", filePath);
   },
 };
 

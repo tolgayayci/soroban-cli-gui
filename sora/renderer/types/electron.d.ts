@@ -21,8 +21,12 @@ interface Versions {
   openExternalLink: (url) => Promise<void>;
   refreshIdentities: () => Promise<void>;
   readLogs: () => Promise<string>;
+  readCommandLogs: () => Promise<string>;
   openEditor: (projectPath, editor) => Promise<void>;
   checkEditors: () => Promise<any>;
+  getAppVersion: () => Promise<any>;
+  getSorobanVersion: () => Promise<any>;
+  checkFileExists: (filePath) => Promise<boolean>;
 }
 
 interface Window {

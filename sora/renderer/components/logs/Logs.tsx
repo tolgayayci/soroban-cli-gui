@@ -14,7 +14,7 @@ export default function LogsComponent() {
 
   return (
     <div className="flex flex-col h-[calc(100vh-90px)]">
-      <Tabs defaultValue="application-logs" className="w-full">
+      <Tabs defaultValue="command-history" className="w-full">
         <TabsList className="flex">
           <TabsTrigger value="command-history" className="flex-1 text-center">
             Command History

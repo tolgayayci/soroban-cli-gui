@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import {
   ColumnDef,
@@ -49,7 +49,8 @@ interface DataTableProps<TData, TValue> {
 export function CommandHistoryDataTable<TData, TValue>({
   columns,
   data,
-}: DataTableProps<TData, TValue>) {
+  subcommandFilter,
+}: DataTableProps<TData, TValue> & { subcommandFilter: string }) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
@@ -70,13 +71,22 @@ export function CommandHistoryDataTable<TData, TValue>({
       sorting,
       columnFilters,
     },
+    filterFns: {
+      subcommand: (row, columnId, value) => {
+        return value === "all" || row.original.subcommand === value;
+      },
+    },
   });
+
+  useEffect(() => {
+    table.getColumn("subcommand")?.setFilterValue(subcommandFilter);
+  }, [subcommandFilter]);
 
   return (
     <div>
       <div className="flex items-center mt-4 mb-6 space-x-2">
         <Input
-          placeholder="Search Between Logs"
+          placeholder="Search Between Commands"
           value={(table.getColumn("command")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("command")?.setFilterValue(event.target.value)
@@ -114,7 +124,7 @@ export function CommandHistoryDataTable<TData, TValue>({
                     data-state={row.getIsSelected() && "selected"}
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id} className="h-16">
+                      <TableCell key={cell.id} className="h-16 p-3">
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()
@@ -129,7 +139,7 @@ export function CommandHistoryDataTable<TData, TValue>({
                     colSpan={columns.length}
                     className="h-[47vh] text-center"
                   >
-                    No logs found with the given query!
+                    Command History Not Found
                   </TableCell>
                 </TableRow>
               )}
