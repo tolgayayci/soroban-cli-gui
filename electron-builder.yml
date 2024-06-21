@@ -1,5 +1,5 @@
-appId: com.example.nextron
-productName: soroban-cli-gui
+appId: com.electron.sora
+productName: sora
 copyright: Copyright © 2024 Tolga Yaycı
 directories:
   output: dist
@@ -9,4 +9,15 @@ files:
     filter:
       - package.json
       - app
-publish: null
+afterSign: "scripts/notarize.js"
+mac:
+  notarize: { teamId: "FPJS89TYWV" }
+  hardenedRuntime: true
+  gatekeeperAssess: false
+  entitlements: "scripts/entitlements.mac.plist"
+  entitlementsInherit: "scripts/entitlements.mac.plist"
+  publish:
+    - provider: github
+      protocol: https
+dmg:
+  sign: false

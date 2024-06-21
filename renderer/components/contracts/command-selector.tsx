@@ -35,20 +35,38 @@ import { SelectSeparator } from "components/ui/select";
 
 const CliCommandSelector = ({
   path,
+  initialCommand,
+  latestCommand,
   setCommandOutput,
   setCommandError,
+  setLatestCommand,
 }: {
   path: string;
+  initialCommand: string;
+  latestCommand: string;
   setCommandOutput: (any) => void;
   setCommandError: (any) => void;
+  setLatestCommand: (any) => void;
 }) => {
   const defaultCommand = commands.length > 0 ? commands[0].value : "";
 
-  const [selectedCommand, setSelectedCommand] = useState(defaultCommand);
+  const [selectedCommand, setSelectedCommand] = useState(
+    initialCommand || defaultCommand
+  );
   const [commandArgs, setCommandArgs] = useState({});
   const [commandOptions, setCommandOptions] = useState({});
   const [isRunningCommand, setIsRunningCommand] = useState(false);
-  const [latestCommand, setLatestCommand] = useState("");
+
+  useEffect(() => {
+    if (initialCommand) {
+      const [command, ...args] = initialCommand.split(" ");
+
+      const commandValue = args[1];
+      console.log("Command Value:", commandValue);
+      setSelectedCommand(commandValue);
+      handleCommandChange(commandValue, args);
+    }
+  }, [initialCommand]);
 
   const updateLatestCommand = () => {
     const selectedCommandDetails = commands.find(
@@ -95,15 +113,20 @@ const CliCommandSelector = ({
     updateLatestCommand();
   }, [selectedCommand, commandArgs, commandOptions]);
 
-  const handleCommandChange = (commandValue) => {
+  const handleCommandChange = (commandValue, initialArgs = []) => {
     setSelectedCommand(commandValue);
     const command = commands.find((c) => c.value === commandValue);
 
     // Initialize arguments
     if (command && command.args) {
       const argsInitialState = {};
-      command.args.forEach((arg) => {
-        argsInitialState[arg.name] = "";
+      command.args.forEach((arg, index) => {
+        const argValue = initialArgs.find((initialArg) =>
+          initialArg.startsWith(arg.name)
+        );
+        argsInitialState[arg.name] = argValue
+          ? argValue.split(arg.name)[1].trim()
+          : "";
       });
       setCommandArgs(argsInitialState);
     } else {
@@ -114,7 +137,16 @@ const CliCommandSelector = ({
     if (command && command.options) {
       const optionsInitialState = {};
       command.options.forEach((option) => {
-        optionsInitialState[option.name] = "";
+        const optionValue = initialArgs.find((initialArg) =>
+          initialArg.startsWith(option.name)
+        );
+        if (option.type === "flag") {
+          optionsInitialState[option.name] = !!optionValue;
+        } else if (option.type === "argument") {
+          optionsInitialState[option.name] = optionValue
+            ? optionValue.split(option.name)[1].trim()
+            : "";
+        }
       });
       setCommandOptions(optionsInitialState);
     } else {
@@ -190,7 +222,7 @@ const CliCommandSelector = ({
   return (
     <div className="flex flex-col">
       <div className="bg-gray-200 dark:bg-white dark:text-black p-4 rounded-md mb-4">
-        <code>{latestCommand}</code>
+        <code>{initialCommand || latestCommand}</code>
       </div>
       <ScrollArea className="max-h-[calc(80vh-200px)] overflow-y-auto">
         <div className="flex flex-col space-y-4">
@@ -211,7 +243,11 @@ const CliCommandSelector = ({
               </SelectGroup>
             </SelectContent>
           </Select>
-          <Accordion type="multiple" className="w-full space-y-4">
+          <Accordion
+            type="single"
+            className="w-full space-y-4"
+            defaultValue="options"
+          >
             {selectedCommand &&
               commands.find((c) => c.value === selectedCommand)?.args?.length >
                 0 && (
