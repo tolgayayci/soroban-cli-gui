@@ -133,19 +133,20 @@ export default function Layout({ children }: LayoutProps) {
                           : "ghost",
                       },
                       {
-<<<<<<< HEAD
                         title: "Events",
                         label: "",
                         href: "/events",
                         icon: RadioIcon,
                         variant: router.pathname.startsWith("/events")
-=======
+                          ? "default"
+                          : "ghost",
+                      },
+                      {
                         title: "Lab",
                         label: "",
                         href: "/lab",
                         icon: MonitorXIcon,
                         variant: router.pathname.startsWith("/lab")
->>>>>>> lab-page
                           ? "default"
                           : "ghost",
                       },
