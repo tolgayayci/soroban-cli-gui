@@ -16,6 +16,7 @@ import { handleIdentities } from "./helpers/manage-identities";
 import { findContracts } from "./helpers/find-contracts";
 import { checkEditors } from "./helpers/check-editors";
 import { openProjectInEditor } from "./helpers/open-project-in-editor";
+import { handleContractEvents } from "./helpers/manage-contract-events";
 
 const path = require("node:path");
 const fs = require("fs");
@@ -51,6 +52,46 @@ const schema = {
         name: { type: "string" },
         address: { type: "string" },
       },
+    },
+  },
+  contractEvents: {
+    type: "array",
+    default: [],
+    items: {
+      type: "object",
+      properties: {
+        start_ledger: { type: "string" },
+        cursor: { type: "string" },
+        output: {
+          type: "string",
+          enum: ["pretty", "plain", "json"],
+          default: "pretty",
+        },
+        count: { type: "string" },
+        contract_id: {
+          type: "string",
+        },
+        topic_filters: {
+          type: "string",
+        },
+        event_type: {
+          type: "string",
+          enum: ["all", "contract", "system"],
+          default: "all",
+        },
+        is_global: { type: "boolean", default: false },
+        config_dir: { type: "string", default: "." },
+        rpc_url: { type: "string" },
+        network_passphrase: { type: "string" },
+        network: { type: "string" },
+      },
+      required: [
+        "start_ledger",
+        "cursor",
+        "rpc_url",
+        "network_passphrase",
+        "network",
+      ],
     },
   },
 };
@@ -102,6 +143,8 @@ if (isProd) {
   await app.whenReady();
   trackEvent("app_started");
   autoUpdater.checkForUpdatesAndNotify();
+
+  console.log(store.get("contracts"));
 
   const mainWindow = createWindow("main", {
     width: 1500,
@@ -290,6 +333,23 @@ if (isProd) {
         return result;
       } catch (error) {
         log.error("Error on managing identities:", error);
+        throw error;
+      }
+    }
+  );
+
+  ipcMain.handle(
+    "store:manageContractEvents",
+    async (event, action, contractEvents) => {
+      try {
+        const result = await handleContractEvents(
+          store,
+          action,
+          contractEvents
+        );
+        return result;
+      } catch (error) {
+        console.error("Error on contracts:", error);
         throw error;
       }
     }

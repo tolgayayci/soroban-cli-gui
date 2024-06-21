@@ -12,6 +12,7 @@ interface Versions {
   openDirectory: () => Promise<string>;
   manageProjects: (action, path?) => Promise<any>;
   manageIdentities: (action, identity?, newIdentity?) => Promise<any>;
+  manageContractEvents: (action, contractSettings?) => Promise<any>;
   isSorobanProject: (projectPath) => Promise<boolean>;
   isSorobanInstalled: () => Promise<boolean>;
   listContracts: (directoryPath) => Promise<any>;
