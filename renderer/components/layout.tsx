@@ -21,12 +21,9 @@ import {
   DatabaseIcon,
   CircuitBoardIcon,
   SettingsIcon,
-<<<<<<< HEAD
   BookIcon,
   BookKeyIcon,
-=======
   RadioIcon,
->>>>>>> events-page
 } from "lucide-react";
 
 import { useTheme } from "next-themes";

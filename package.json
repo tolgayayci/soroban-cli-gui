@@ -1,11 +1,7 @@
 {
   "private": false,
   "name": "sora",
-<<<<<<< HEAD
   "description": "Sora | Soroban Desktop Application",
-=======
-  "description": "Sora Cross Platform Desktop Application",
->>>>>>> events-page
   "version": "0.2.0",
   "author": "Tolga Yaycı <tolgayayci@protonmail.com>",
   "main": "app/background.js",

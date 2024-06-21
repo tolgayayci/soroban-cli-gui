@@ -14,12 +14,9 @@ import { executeSorobanCommand } from "./helpers/soroban-helper";
 import { handleProjects } from "./helpers/manage-projects";
 import { handleIdentities } from "./helpers/manage-identities";
 import { findContracts } from "./helpers/find-contracts";
-<<<<<<< HEAD
 import { checkEditors } from "./helpers/check-editors";
 import { openProjectInEditor } from "./helpers/open-project-in-editor";
-=======
 import { handleContractEvents } from "./helpers/manage-contract-events";
->>>>>>> events-page
 
 const path = require("node:path");
 const fs = require("fs");
@@ -100,7 +97,6 @@ const schema = {
 };
 
 const store = new Store({ schema });
-<<<<<<< HEAD
 store.set("identities", []);
 
 // Aptabase Analytics
@@ -121,8 +117,6 @@ log.transports.file.format = "[{y}-{m}-{d} {h}:{i}:{s}.{ms}] [{level}] {text}";
 log.transports.file.fileName = "sora.log";
 log.transports.file.file = path.join(app.getPath("userData"), "app.log");
 const logFilePath = log.transports.file.getFile().path;
-=======
->>>>>>> events-page
 
 async function handleFileOpen() {
   try {
