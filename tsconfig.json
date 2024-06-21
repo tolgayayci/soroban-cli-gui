@@ -15,5 +15,5 @@
     "isolatedModules": true,
     "jsx": "preserve"
   },
-  "exclude": ["sora/node_modules", "sora/renderer/next.config.js", "sora/app", "dist"]
+  "exclude": ["node_modules", "sora/renderer/next.config.js", "app", "dist"]
 }
