@@ -12,10 +12,60 @@
   "activationEvents": [],
   "main": "./out/extension.js",
   "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "stellar-suite",
+          "title": "Stellar Suite",
+          "icon": "media/stellar-icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "stellar-suite": [
+        {
+          "id": "commandHistory",
+          "name": "Command History"
+        }
+      ]
+    },
     "commands": [
       {
-        "command": "stellar-suite.helloWorld",
-        "title": "Hello World"
+        "command": "stellar-suite.refreshCommandHistory",
+        "title": "Refresh Command History",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "stellar-suite.runHistoryCommand",
+        "title": "Run Command",
+        "icon": "$(play)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "stellar-suite.refreshCommandHistory",
+          "when": "view == commandHistory",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "stellar-suite.runHistoryCommand",
+          "when": "view == commandHistory && viewItem == commandHistoryItem",
+          "group": "inline"
+        }
+      ]
+    },
+    "languages": [
+      {
+        "id": "log",
+        "aliases": [
+          "Log"
+        ],
+        "extensions": [
+          ".log"
+        ]
       }
     ]
   },

@@ -1,26 +1,77 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
-import * as vscode from 'vscode';
+import * as vscode from "vscode";
+import { CommandHistoryProvider } from "./providers/CommandHistoryProvider";
+import { CommandHistoryItem } from "./types";
+import * as path from "path";
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
-export function activate(context: vscode.ExtensionContext) {
+let outputChannel: vscode.OutputChannel;
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "stellar-suite" is now active!');
-
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('stellar-suite.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from Stellar Suite!');
-	});
-
-	context.subscriptions.push(disposable);
+function formatCliOutput(result: string): string {
+  try {
+    // The result is already a string, no need to parse JSON
+    let output = "Command Output:\n\n";
+    output += result
+      .split("\n")
+      .map((line) => `  ${line}`)
+      .join("\n");
+    return output;
+  } catch (error) {
+    console.error("Error formatting output:", error);
+    return result; // Return the original string if formatting fails
+  }
 }
 
-// This method is called when your extension is deactivated
-export function deactivate() {}
+export function activate(context: vscode.ExtensionContext) {
+  console.log('Congratulations, your extension "stellar-suite" is now active!');
+  outputChannel = vscode.window.createOutputChannel("Soroban Command Output");
+
+  const logFilePath = path.join(
+    context.extensionPath,
+    "soroban_command_history.log"
+  );
+  const commandHistoryProvider = new CommandHistoryProvider(logFilePath);
+  vscode.window.registerTreeDataProvider(
+    "commandHistory",
+    commandHistoryProvider
+  );
+
+  let refreshCommand = vscode.commands.registerCommand(
+    "stellar-suite.refreshCommandHistory",
+    () => {
+      commandHistoryProvider.refresh();
+    }
+  );
+
+  let runHistoryCommand = vscode.commands.registerCommand(
+    "stellar-suite.runHistoryCommand",
+    (item: CommandHistoryItem) => {
+      if (item.commandToRun) {
+        const terminal = vscode.window.createTerminal("Soroban");
+        terminal.sendText(item.commandToRun);
+        terminal.show();
+      }
+    }
+  );
+
+  let showCommandResult = vscode.commands.registerCommand(
+    "stellar-suite.showCommandResult",
+    (result: string) => {
+      const formattedResult = formatCliOutput(result);
+      outputChannel.clear();
+      outputChannel.appendLine(formattedResult);
+      outputChannel.show(true);
+    }
+  );
+
+  context.subscriptions.push(
+    refreshCommand,
+    runHistoryCommand,
+    showCommandResult,
+    outputChannel
+  );
+}
+
+export function deactivate() {
+  if (outputChannel) {
+    outputChannel.dispose();
+  }
+}
