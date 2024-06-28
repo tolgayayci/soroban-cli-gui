@@ -1,7 +1,9 @@
 import * as vscode from "vscode";
-import { CommandHistoryProvider } from "./providers/CommandHistoryProvider";
-import { CommandHistoryItem } from "./types";
 import * as path from "path";
+
+import { CommandHistoryProvider } from "./providers/CommandHistoryProvider";
+import { CommandBuilderPanel } from "./panels/CommandBuilderPanel";
+import { CommandHistoryItem } from "./types";
 
 let outputChannel: vscode.OutputChannel;
 
@@ -62,11 +64,19 @@ export function activate(context: vscode.ExtensionContext) {
     }
   );
 
+  let openCommandBuilder = vscode.commands.registerCommand(
+    "stellar-suite.openCommandBuilder",
+    () => {
+      CommandBuilderPanel.createOrShow(context.extensionUri);
+    }
+  );
+
   context.subscriptions.push(
     refreshCommand,
     runHistoryCommand,
     showCommandResult,
-    outputChannel
+    outputChannel,
+    openCommandBuilder
   );
 }
 

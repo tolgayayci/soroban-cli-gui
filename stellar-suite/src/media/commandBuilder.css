@@ -1,0 +1,45 @@
+body {
+    padding: 10px;
+    font-size: 13px;
+}
+
+h2 {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+
+select, input[type="text"] {
+    width: 100%;
+    padding: 5px;
+    margin-bottom: 8px;
+}
+
+.option {
+    margin-bottom: 12px;
+}
+
+label {
+    display: block;
+    margin-bottom: 3px;
+}
+
+.description {
+    font-size: 0.9em;
+    margin-top: 3px;
+    opacity: 0.8;
+}
+
+#commandPreview {
+    margin-top: 15px;
+    padding: 8px;
+    background-color: var(--vscode-editor-background);
+    border: 1px solid var(--vscode-panel-border);
+    font-family: monospace;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+#runButton {
+    margin-top: 15px;
+    padding: 5px 10px;
+}

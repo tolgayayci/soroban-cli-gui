@@ -26,8 +26,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.activate = activate;
 exports.deactivate = deactivate;
 const vscode = __importStar(require("vscode"));
-const CommandHistoryProvider_1 = require("./providers/CommandHistoryProvider");
 const path = __importStar(require("path"));
+const CommandHistoryProvider_1 = require("./providers/CommandHistoryProvider");
+const CommandBuilderPanel_1 = require("./panels/CommandBuilderPanel");
 let outputChannel;
 function formatCliOutput(result) {
     try {
@@ -66,7 +67,10 @@ function activate(context) {
         outputChannel.appendLine(formattedResult);
         outputChannel.show(true);
     });
-    context.subscriptions.push(refreshCommand, runHistoryCommand, showCommandResult, outputChannel);
+    let openCommandBuilder = vscode.commands.registerCommand("stellar-suite.openCommandBuilder", () => {
+        CommandBuilderPanel_1.CommandBuilderPanel.createOrShow(context.extensionUri);
+    });
+    context.subscriptions.push(refreshCommand, runHistoryCommand, showCommandResult, outputChannel, openCommandBuilder);
 }
 function deactivate() {
     if (outputChannel) {

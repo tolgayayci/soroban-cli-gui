@@ -24,6 +24,10 @@
     "views": {
       "stellar-suite": [
         {
+          "id": "commandBuilder",
+          "name": "Command Builder"
+        },
+        {
           "id": "commandHistory",
           "name": "Command History"
         }
@@ -39,6 +43,10 @@
         "command": "stellar-suite.runHistoryCommand",
         "title": "Run Command",
         "icon": "$(play)"
+      },
+      {
+        "command": "stellar-suite.openCommandBuilder",
+        "title": "Open Soroban Command Builder"
       }
     ],
     "menus": {
