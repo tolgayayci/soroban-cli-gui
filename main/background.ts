@@ -144,8 +144,6 @@ if (isProd) {
   trackEvent("app_started");
   autoUpdater.checkForUpdatesAndNotify();
 
-  console.log(store.get("contracts"));
-
   const mainWindow = createWindow("main", {
     width: 1500,
     height: 700,
@@ -238,7 +236,9 @@ if (isProd) {
 
         if (
           command &&
-          (command === "contract" || command === "lab" || command === "events")
+          (command === "contract" ||
+            command === "lab xdr" ||
+            command === "events")
         ) {
           const formattedResult = result
             ? `Result: ${JSON.stringify(result)}`

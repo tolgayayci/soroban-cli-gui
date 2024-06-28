@@ -62,7 +62,6 @@ const CliCommandSelector = ({
       const [command, ...args] = initialCommand.split(" ");
 
       const commandValue = args[1];
-      console.log("Command Value:", commandValue);
       setSelectedCommand(commandValue);
       handleCommandChange(commandValue, args);
     }
@@ -195,10 +194,6 @@ const CliCommandSelector = ({
           isNaN(arg) ? arg : parseInt(arg, 10)
         );
 
-        console.log(
-          command + " " + processedArgs + " " + optionsArray + " " + path
-        );
-
         const result = await window.sorobanApi.runSorobanCommand(
           "contract",
           command,
@@ -206,8 +201,6 @@ const CliCommandSelector = ({
           optionsArray,
           path
         );
-
-        console.log("Result:", result);
 
         setCommandError("");
         setCommandOutput(result);

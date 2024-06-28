@@ -64,7 +64,6 @@ const handler = {
     return ipcRenderer.invoke("json:update", filePath, directoryPath, data);
   },
   reloadApplication: async () => {
-    console.log("Reloading application");
     return ipcRenderer.invoke("app:reload");
   },
   openExternalLink: async (url) => {

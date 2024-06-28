@@ -25,8 +25,6 @@ export async function onRemoveIdentityFormSubmit(
       data.config_dir ? `--config-dir "${data.config_dir}"` : null,
     ].filter(Boolean);
 
-    console.log(command, subcommand, args, flags);
-
     await window.sorobanApi.runSorobanCommand(command, subcommand, args, flags);
 
     await window.sorobanApi.manageIdentities("delete", {

@@ -56,8 +56,6 @@ export async function onAddContractEventFormSubmit(
       data.config_dir ? `--config-dir "${data.config_dir}"` : null,
     ].filter(Boolean);
 
-    console.log("Command to run:", command, subcommand, args, flags);
-
     await window.sorobanApi.manageContractEvents("add", data);
     await window.sorobanApi.reloadApplication();
   } catch (error) {

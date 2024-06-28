@@ -13,10 +13,7 @@ export async function onRemoveContractEventFormSubmit(
       startLedger: data.startLedger,
       contractId: data.contractId ? data.contractId : undefined,
     });
-
-    console.log("Contract event removed:", result);
   } catch (error) {
-    console.error("Error invoking remote method:", error);
     throw error;
   }
 }

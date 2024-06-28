@@ -52,12 +52,6 @@ import {
 } from "components/events/forms/addContractEvent";
 
 import { useToast } from "components/ui/use-toast";
-import {
-  identityCreateSuccess,
-  identityCreateError,
-  identityAddSuccess,
-  identityAddError,
-} from "lib/notifications";
 
 export default function ContractEventModal({
   showCreateContractEventDialog,
@@ -69,19 +63,16 @@ export default function ContractEventModal({
   const { toast } = useToast();
 
   const handleAddContractEvent = async (data) => {
-    console.log("data", data);
     try {
       await onAddContractEventFormSubmit(data).then((res) => {
         //@ts-ignore
         if (res) {
-          console.log("res", res);
           //   toast(identityAddSuccess(data.identity_name));
           setShowCreateContractEventialog(false);
         }
       });
     } catch (error) {
       //   toast(identityAddError(data.identity_name, error));
-      console.log(error);
     } finally {
       setShowCreateContractEventialog(false);
     }

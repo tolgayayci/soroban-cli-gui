@@ -12,8 +12,6 @@ import { Button } from "components/ui/button";
 import { LucidePersonStanding } from "lucide-react";
 
 export default function EventsComponent() {
-  const [showCreateContractEventsDialog, setShowCreateContractEventsDialog] =
-    useState(false);
   const [allContractEvents, setAllContractEvents] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 

@@ -50,7 +50,6 @@ export default function EditorModal({
     if (editor) {
       try {
         await window.sorobanApi.openEditor(projectPath, editor);
-        console.log(`Opened project in ${editor.name}`);
         setShowEditorDialog(false);
         toast({
           title: "Editor opened",

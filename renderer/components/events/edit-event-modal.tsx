@@ -77,15 +77,12 @@ export const EditContractEventModal = ({ contractEvent, isOpen, onClose }) => {
       await onEditContractEventFormSubmit(data).then((res) => {
         //@ts-ignore
         if (res) {
-          console.log("res", res);
           //   toast(identityAddSuccess(data.identity_name));
           editContractEventForm.reset();
         }
       });
     } catch (error) {
-      console.log("error", error);
       //   toast(identityAddError(data.identity_name, error));
-      console.log(error);
     } finally {
       setIsSubmittingEditContractEvent(false);
     }
