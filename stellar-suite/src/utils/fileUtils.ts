@@ -26,3 +26,20 @@ function parseLogEntry(entry: string): LogEntry | null {
   }
   return null;
 }
+
+export function formatCliOutput(result: string): string {
+  try {
+    let output = "Command Output:\n\n";
+
+    const formattedResult = JSON.parse(result);
+
+    output += formattedResult
+      .split("\n")
+      .map((line: string) => `  ${line}`)
+      .join("\n");
+    return output;
+  } catch (error) {
+    console.error("Error formatting output:", error);
+    return result;
+  }
+}

@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 import { readLogFile } from "../utils/fileUtils";
+import { getRelativeTimeString } from "../utils/dateUtils";
 import { LogEntry, CommandHistoryItem, CommandDetailItem } from "../types";
 
 export class CommandHistoryProvider
@@ -23,6 +24,13 @@ export class CommandHistoryProvider
   getTreeItem(
     element: CommandHistoryItem | CommandDetailItem
   ): vscode.TreeItem {
+    if (element instanceof CommandHistoryItem) {
+      element.label = {
+        label: `${element.commandText} `,
+        highlights: [],
+      };
+      element.description = element.relativeTime;
+    }
     return element;
   }
 
@@ -43,15 +51,17 @@ export class CommandHistoryProvider
   }
 
   private getCommandHistoryItems(logEntries: LogEntry[]): CommandHistoryItem[] {
-    return logEntries.map(
-      (entry) =>
-        new CommandHistoryItem(
-          entry.command,
-          entry.timestamp,
-          entry.path,
-          entry.result,
-          entry.command
-        )
-    );
+    return logEntries.map((entry) => {
+      const date = new Date(entry.timestamp);
+      const relativeTime = getRelativeTimeString(date);
+      return new CommandHistoryItem(
+        entry.command,
+        relativeTime,
+        entry.timestamp,
+        entry.path,
+        entry.result,
+        entry.command
+      );
+    });
   }
 }

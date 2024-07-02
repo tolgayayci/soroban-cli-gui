@@ -26,6 +26,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CommandHistoryProvider = void 0;
 const vscode = __importStar(require("vscode"));
 const fileUtils_1 = require("../utils/fileUtils");
+const dateUtils_1 = require("../utils/dateUtils");
 const types_1 = require("../types");
 class CommandHistoryProvider {
     logFilePath;
@@ -38,6 +39,13 @@ class CommandHistoryProvider {
         this._onDidChangeTreeData.fire();
     }
     getTreeItem(element) {
+        if (element instanceof types_1.CommandHistoryItem) {
+            element.label = {
+                label: `${element.commandText} `,
+                highlights: [],
+            };
+            element.description = element.relativeTime;
+        }
         return element;
     }
     getChildren(element) {
@@ -55,7 +63,11 @@ class CommandHistoryProvider {
         return Promise.resolve([]);
     }
     getCommandHistoryItems(logEntries) {
-        return logEntries.map((entry) => new types_1.CommandHistoryItem(entry.command, entry.timestamp, entry.path, entry.result, entry.command));
+        return logEntries.map((entry) => {
+            const date = new Date(entry.timestamp);
+            const relativeTime = (0, dateUtils_1.getRelativeTimeString)(date);
+            return new types_1.CommandHistoryItem(entry.command, relativeTime, entry.timestamp, entry.path, entry.result, entry.command);
+        });
     }
 }
 exports.CommandHistoryProvider = CommandHistoryProvider;

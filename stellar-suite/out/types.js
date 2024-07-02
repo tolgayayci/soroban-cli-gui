@@ -26,23 +26,25 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CommandDetailItem = exports.CommandHistoryItem = void 0;
 const vscode = __importStar(require("vscode"));
 class CommandHistoryItem extends vscode.TreeItem {
-    label;
+    commandText;
+    relativeTime;
     timestamp;
     path;
     result;
     commandToRun;
-    constructor(label, timestamp, path, result, commandToRun) {
-        super(label, vscode.TreeItemCollapsibleState.Collapsed);
-        this.label = label;
+    constructor(commandText, relativeTime, timestamp, path, result, commandToRun) {
+        super(commandText, vscode.TreeItemCollapsibleState.Collapsed);
+        this.commandText = commandText;
+        this.relativeTime = relativeTime;
         this.timestamp = timestamp;
         this.path = path;
         this.result = result;
         this.commandToRun = commandToRun;
-        this.tooltip = `${timestamp}\nPath: ${path}`;
-        this.description = timestamp;
-        this.contextValue = "commandHistoryItem";
-        this.iconPath = new vscode.ThemeIcon("terminal-cmd");
+        this.tooltip = `${commandToRun}\nExecuted: ${timestamp}\nPath: ${path}`;
+        this.description = path;
     }
+    iconPath = new vscode.ThemeIcon("terminal");
+    contextValue = "commandHistoryItem";
 }
 exports.CommandHistoryItem = CommandHistoryItem;
 class CommandDetailItem extends vscode.TreeItem {

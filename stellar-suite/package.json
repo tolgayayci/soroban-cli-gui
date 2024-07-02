@@ -1,14 +1,31 @@
 {
   "name": "stellar-suite",
   "displayName": "Stellar Suite",
+  "publisher": "tolgayayci",
   "description": "Helpful tools for stellar and soroban ecosystem",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.90.0"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tolgayayci/sora/stellar-suite"
+  },
+  "bugs": {
+    "url": "https://github.com/tolgayayci/sora/issues",
+    "email": "tolga@yk-labs.com"
+  },
+  "keywords": [
+    "soroban",
+    "stellar",
+    "horizon",
+    "xlm",
+    "stellar-sdk"
+  ],
   "categories": [
     "Other"
   ],
+  "icon": "src/media/stellar-logo.png",
   "activationEvents": [],
   "main": "./out/extension.js",
   "contributes": {
@@ -17,13 +34,14 @@
         {
           "id": "stellar-suite",
           "title": "Stellar Suite",
-          "icon": "media/stellar-icon.svg"
+          "icon": "./src/media/stellar-logo.png"
         }
       ]
     },
     "views": {
       "stellar-suite": [
         {
+          "type": "webview",
           "id": "commandBuilder",
           "name": "Command Builder"
         },
@@ -65,17 +83,7 @@
         }
       ]
     },
-    "languages": [
-      {
-        "id": "log",
-        "aliases": [
-          "Log"
-        ],
-        "extensions": [
-          ".log"
-        ]
-      }
-    ]
+    "languages": []
   },
   "scripts": {
     "vscode:prepublish": "yarn run compile",
@@ -86,14 +94,17 @@
     "test": "vscode-test"
   },
   "devDependencies": {
-    "@types/vscode": "^1.90.0",
     "@types/mocha": "^10.0.6",
     "@types/node": "18.x",
+    "@types/vscode": "^1.90.0",
     "@typescript-eslint/eslint-plugin": "^6.13.1",
     "@typescript-eslint/parser": "^6.13.1",
-    "eslint": "^8.54.0",
-    "typescript": "^5.3.2",
     "@vscode/test-cli": "^0.0.4",
-    "@vscode/test-electron": "^2.3.8"
+    "@vscode/test-electron": "^2.3.8",
+    "eslint": "^8.54.0",
+    "typescript": "^5.3.2"
+  },
+  "dependencies": {
+    "@vscode/webview-ui-toolkit": "^1.4.0"
   }
 }

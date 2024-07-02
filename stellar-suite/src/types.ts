@@ -9,18 +9,20 @@ export interface LogEntry {
 
 export class CommandHistoryItem extends vscode.TreeItem {
   constructor(
-    public readonly label: string,
+    public readonly commandText: string,
+    public readonly relativeTime: string,
     public readonly timestamp: string,
     public readonly path: string,
     public readonly result: string,
     public readonly commandToRun: string
   ) {
-    super(label, vscode.TreeItemCollapsibleState.Collapsed);
-    this.tooltip = `${timestamp}\nPath: ${path}`;
-    this.description = timestamp;
-    this.contextValue = "commandHistoryItem";
-    this.iconPath = new vscode.ThemeIcon("terminal-cmd");
+    super(commandText, vscode.TreeItemCollapsibleState.Collapsed);
+    this.tooltip = `${commandToRun}\nExecuted: ${timestamp}\nPath: ${path}`;
+    this.description = path;
   }
+
+  iconPath = new vscode.ThemeIcon("terminal");
+  contextValue = "commandHistoryItem";
 }
 
 export class CommandDetailItem extends vscode.TreeItem {

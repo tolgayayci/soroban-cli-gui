@@ -24,6 +24,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.readLogFile = readLogFile;
+exports.formatCliOutput = formatCliOutput;
 const fs = __importStar(require("fs"));
 function readLogFile(filePath) {
     try {
@@ -49,5 +50,20 @@ function parseLogEntry(entry) {
         };
     }
     return null;
+}
+function formatCliOutput(result) {
+    try {
+        let output = "Command Output:\n\n";
+        const formattedResult = JSON.parse(result);
+        output += formattedResult
+            .split("\n")
+            .map((line) => `  ${line}`)
+            .join("\n");
+        return output;
+    }
+    catch (error) {
+        console.error("Error formatting output:", error);
+        return result;
+    }
 }
 //# sourceMappingURL=fileUtils.js.map

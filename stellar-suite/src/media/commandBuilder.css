@@ -1,45 +1,96 @@
-body {
-    padding: 10px;
-    font-size: 13px;
+body, html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
 }
 
-h2 {
-    font-size: 1.2em;
-    margin-bottom: 10px;
+#app {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 16px;
+    box-sizing: border-box;
 }
 
-select, input[type="text"] {
+.command-section {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border: 1px solid var(--vscode-panel-border);
+    border-radius: 4px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+#commandPreview,
+#commandSelect {
     width: 100%;
-    padding: 5px;
-    margin-bottom: 8px;
 }
 
-.option {
+.options-section {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--vscode-panel-border);
+    border-radius: 4px;
+    margin-bottom: 16px;
+    overflow: hidden;
+}
+
+.options-section h3 {
+    flex-shrink: 0;
+    margin: 0;
+    padding: 16px;
+    font-weight: bold;
+    border-bottom: 1px solid var(--vscode-panel-border);
+}
+
+#optionsContainer {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 16px;
+}
+
+.option-input,
+.arg-input {
+    display: flex;
+    flex-direction: column;
     margin-bottom: 12px;
 }
 
-label {
-    display: block;
-    margin-bottom: 3px;
+.top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
 }
 
-.description {
-    font-size: 0.9em;
-    margin-top: 3px;
-    opacity: 0.8;
+.label-container {
+    display: flex;
+    align-items: center;
 }
 
-#commandPreview {
-    margin-top: 15px;
-    padding: 8px;
-    background-color: var(--vscode-editor-background);
-    border: 1px solid var(--vscode-panel-border);
-    font-family: monospace;
-    white-space: pre-wrap;
-    word-break: break-all;
+.label-container vscode-label {
+    margin-right: 8px;
+}
+
+.option-input vscode-text-field,
+.arg-input vscode-text-field {
+    width: 100%;
+}
+
+vscode-button[appearance="icon"] {
+    padding: 2px;
+    min-width: 24px;
+    height: 24px;
+}
+
+.button-section {
+    flex-shrink: 0;
 }
 
 #runButton {
-    margin-top: 15px;
-    padding: 5px 10px;
+    width: 100%;
 }

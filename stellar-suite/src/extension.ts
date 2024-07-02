@@ -2,29 +2,23 @@ import * as vscode from "vscode";
 import * as path from "path";
 
 import { CommandHistoryProvider } from "./providers/CommandHistoryProvider";
-import { CommandBuilderPanel } from "./panels/CommandBuilderPanel";
+import { CommandBuilderProvider } from "./providers/CommandBuilderProvider";
 import { CommandHistoryItem } from "./types";
+import { formatCliOutput } from "./utils/fileUtils";
 
 let outputChannel: vscode.OutputChannel;
 
-function formatCliOutput(result: string): string {
-  try {
-    // The result is already a string, no need to parse JSON
-    let output = "Command Output:\n\n";
-    output += result
-      .split("\n")
-      .map((line) => `  ${line}`)
-      .join("\n");
-    return output;
-  } catch (error) {
-    console.error("Error formatting output:", error);
-    return result; // Return the original string if formatting fails
-  }
-}
-
 export function activate(context: vscode.ExtensionContext) {
-  console.log('Congratulations, your extension "stellar-suite" is now active!');
   outputChannel = vscode.window.createOutputChannel("Soroban Command Output");
+
+  const commandBuilderProvider = new CommandBuilderProvider(
+    context.extensionUri
+  );
+
+  const commandBuilderWebView = vscode.window.registerWebviewViewProvider(
+    CommandBuilderProvider.viewType,
+    commandBuilderProvider
+  );
 
   const logFilePath = path.join(
     context.extensionPath,
@@ -64,19 +58,12 @@ export function activate(context: vscode.ExtensionContext) {
     }
   );
 
-  let openCommandBuilder = vscode.commands.registerCommand(
-    "stellar-suite.openCommandBuilder",
-    () => {
-      CommandBuilderPanel.createOrShow(context.extensionUri);
-    }
-  );
-
   context.subscriptions.push(
     refreshCommand,
     runHistoryCommand,
     showCommandResult,
     outputChannel,
-    openCommandBuilder
+    commandBuilderWebView
   );
 }
 

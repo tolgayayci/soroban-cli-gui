@@ -4,8 +4,6 @@ import { commands } from "../data/commands";
 export class CommandBuilderProvider implements vscode.WebviewViewProvider {
   public static readonly viewType = "commandBuilder";
 
-  private _view?: vscode.WebviewView;
-
   constructor(private readonly _extensionUri: vscode.Uri) {}
 
   public resolveWebviewView(
@@ -13,8 +11,6 @@ export class CommandBuilderProvider implements vscode.WebviewViewProvider {
     context: vscode.WebviewViewResolveContext,
     _token: vscode.CancellationToken
   ) {
-    this._view = webviewView;
-
     webviewView.webview.options = {
       enableScripts: true,
       localResourceRoots: [this._extensionUri],
@@ -32,57 +28,81 @@ export class CommandBuilderProvider implements vscode.WebviewViewProvider {
           terminal.sendText(data.value);
           terminal.show();
           break;
+        case "log":
+          console.log(data.message);
+          break;
+        case "showInfo":
+          vscode.window.showInformationMessage(data.value);
+          break;
       }
     });
   }
 
   private _getHtmlForWebview(webview: vscode.Webview) {
     const scriptUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(this._extensionUri, "media", "commandBuilder.js")
+      vscode.Uri.joinPath(
+        this._extensionUri,
+        "src",
+        "media",
+        "commandBuilder.js"
+      )
     );
-    const styleResetUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(this._extensionUri, "media", "reset.css")
+    const styleUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(
+        this._extensionUri,
+        "src",
+        "media",
+        "commandBuilder.css"
+      )
     );
-    const styleVSCodeUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(this._extensionUri, "media", "vscode.css")
-    );
-    const styleMainUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(this._extensionUri, "media", "commandBuilder.css")
+    const toolkitUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(
+        this._extensionUri,
+        "node_modules",
+        "@vscode/webview-ui-toolkit",
+        "dist",
+        "toolkit.min.js"
+      )
     );
 
     return `<!DOCTYPE html>
-			<html lang="en">
-			<head>
-				<meta charset="UTF-8">
-				<meta name="viewport" content="width=device-width, initial-scale=1.0">
-				<link href="${styleResetUri}" rel="stylesheet">
-				<link href="${styleVSCodeUri}" rel="stylesheet">
-				<link href="${styleMainUri}" rel="stylesheet">
-				<title>Soroban Command Builder</title>
-			</head>
-			<body>
-				<div id="app">
-					<h2>Soroban Command Builder</h2>
-					<div class="command-selector">
-						<select id="commandSelect">
-							${commands
-                .map(
-                  (cmd) => `<option value="${cmd.value}">${cmd.label}</option>`
-                )
-                .join("")}
-						</select>
-					</div>
-					<div id="optionsContainer"></div>
-					<div id="commandPreview"></div>
-					<button id="runButton">Run Command</button>
-				</div>
-				<script src="${scriptUri}"></script>
-				<script>
-					const vscode = acquireVsCodeApi();
-					const commandData = ${JSON.stringify(commands)};
-					initCommandBuilder(commandData);
-				</script>
-			</body>
-			</html>`;
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="${styleUri}" rel="stylesheet">
+        <script type="module" src="${toolkitUri}"></script>
+        <title>Soroban Command Builder</title>
+    </head>
+    <body>
+        <div id="app">
+            <div class="command-section">
+                <vscode-text-field id="commandPreview" readonly></vscode-text-field>
+                <vscode-dropdown id="commandSelect">
+                    <vscode-option value="">Select a command</vscode-option>
+                    ${commands
+                      .map(
+                        (cmd) =>
+                          `<vscode-option value="${cmd.value}">${cmd.label}</vscode-option>`
+                      )
+                      .join("")}
+                </vscode-dropdown>
+            </div>
+            <div class="options-section">
+                <h3>Options & Flags</h3>
+                <div id="optionsContainer"></div>
+            </div>
+            <div class="button-section">
+                <vscode-button id="runButton" appearance="primary">Run Command</vscode-button>
+            </div>
+        </div>
+        <script src="${scriptUri}"></script>
+        <script>
+            const vscode = acquireVsCodeApi();
+            const commandData = ${JSON.stringify(commands)};
+            initCommandBuilder(commandData, vscode);
+        </script>
+    </body>
+    </html>`;
   }
 }

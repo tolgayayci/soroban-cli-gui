@@ -28,26 +28,13 @@ exports.deactivate = deactivate;
 const vscode = __importStar(require("vscode"));
 const path = __importStar(require("path"));
 const CommandHistoryProvider_1 = require("./providers/CommandHistoryProvider");
-const CommandBuilderPanel_1 = require("./panels/CommandBuilderPanel");
+const CommandBuilderProvider_1 = require("./providers/CommandBuilderProvider");
+const fileUtils_1 = require("./utils/fileUtils");
 let outputChannel;
-function formatCliOutput(result) {
-    try {
-        // The result is already a string, no need to parse JSON
-        let output = "Command Output:\n\n";
-        output += result
-            .split("\n")
-            .map((line) => `  ${line}`)
-            .join("\n");
-        return output;
-    }
-    catch (error) {
-        console.error("Error formatting output:", error);
-        return result; // Return the original string if formatting fails
-    }
-}
 function activate(context) {
-    console.log('Congratulations, your extension "stellar-suite" is now active!');
     outputChannel = vscode.window.createOutputChannel("Soroban Command Output");
+    const commandBuilderProvider = new CommandBuilderProvider_1.CommandBuilderProvider(context.extensionUri);
+    const commandBuilderWebView = vscode.window.registerWebviewViewProvider(CommandBuilderProvider_1.CommandBuilderProvider.viewType, commandBuilderProvider);
     const logFilePath = path.join(context.extensionPath, "soroban_command_history.log");
     const commandHistoryProvider = new CommandHistoryProvider_1.CommandHistoryProvider(logFilePath);
     vscode.window.registerTreeDataProvider("commandHistory", commandHistoryProvider);
@@ -62,15 +49,12 @@ function activate(context) {
         }
     });
     let showCommandResult = vscode.commands.registerCommand("stellar-suite.showCommandResult", (result) => {
-        const formattedResult = formatCliOutput(result);
+        const formattedResult = (0, fileUtils_1.formatCliOutput)(result);
         outputChannel.clear();
         outputChannel.appendLine(formattedResult);
         outputChannel.show(true);
     });
-    let openCommandBuilder = vscode.commands.registerCommand("stellar-suite.openCommandBuilder", () => {
-        CommandBuilderPanel_1.CommandBuilderPanel.createOrShow(context.extensionUri);
-    });
-    context.subscriptions.push(refreshCommand, runHistoryCommand, showCommandResult, outputChannel, openCommandBuilder);
+    context.subscriptions.push(refreshCommand, runHistoryCommand, showCommandResult, outputChannel, commandBuilderWebView);
 }
 function deactivate() {
     if (outputChannel) {
