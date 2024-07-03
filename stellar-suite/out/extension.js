@@ -26,26 +26,38 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.activate = activate;
 exports.deactivate = deactivate;
 const vscode = __importStar(require("vscode"));
-const path = __importStar(require("path"));
+const childProcess = __importStar(require("child_process"));
 const CommandHistoryProvider_1 = require("./providers/CommandHistoryProvider");
 const CommandBuilderProvider_1 = require("./providers/CommandBuilderProvider");
+//Utils
 const fileUtils_1 = require("./utils/fileUtils");
+const general_1 = require("./utils/general");
 let outputChannel;
 function activate(context) {
     outputChannel = vscode.window.createOutputChannel("Soroban Command Output");
     const commandBuilderProvider = new CommandBuilderProvider_1.CommandBuilderProvider(context.extensionUri);
     const commandBuilderWebView = vscode.window.registerWebviewViewProvider(CommandBuilderProvider_1.CommandBuilderProvider.viewType, commandBuilderProvider);
-    const logFilePath = path.join(context.extensionPath, "soroban_command_history.log");
-    const commandHistoryProvider = new CommandHistoryProvider_1.CommandHistoryProvider(logFilePath);
-    vscode.window.registerTreeDataProvider("commandHistory", commandHistoryProvider);
-    let refreshCommand = vscode.commands.registerCommand("stellar-suite.refreshCommandHistory", () => {
-        commandHistoryProvider.refresh();
-    });
-    let runHistoryCommand = vscode.commands.registerCommand("stellar-suite.runHistoryCommand", (item) => {
-        if (item.commandToRun) {
-            const terminal = vscode.window.createTerminal("Soroban");
-            terminal.sendText(item.commandToRun);
-            terminal.show();
+    childProcess.exec("soroban --version", (error, stdout) => {
+        if (error) {
+            vscode.commands.executeCommand("setContext", "sorobanCLI.installed", false);
+        }
+        else {
+            vscode.commands.executeCommand("setContext", "sorobanCLI.installed", true);
+            console.log(`Soroban CLI version: ${stdout.trim()}`);
+            const logFilePath = (0, general_1.getLogFilePath)();
+            const commandHistoryProvider = new CommandHistoryProvider_1.CommandHistoryProvider(logFilePath);
+            vscode.window.registerTreeDataProvider("commandHistory", commandHistoryProvider);
+            let refreshCommand = vscode.commands.registerCommand("stellar-suite.refreshCommandHistory", () => {
+                commandHistoryProvider.refresh();
+            });
+            let runHistoryCommand = vscode.commands.registerCommand("stellar-suite.runHistoryCommand", (item) => {
+                if (item.commandToRun) {
+                    const terminal = vscode.window.createTerminal("Soroban");
+                    terminal.sendText(item.commandToRun);
+                    terminal.show();
+                }
+            });
+            context.subscriptions.push(refreshCommand, runHistoryCommand);
         }
     });
     let showCommandResult = vscode.commands.registerCommand("stellar-suite.showCommandResult", (result) => {
@@ -54,7 +66,11 @@ function activate(context) {
         outputChannel.appendLine(formattedResult);
         outputChannel.show(true);
     });
-    context.subscriptions.push(refreshCommand, runHistoryCommand, showCommandResult, outputChannel, commandBuilderWebView);
+    // Register the installSorobanCLI command
+    let installSorobanCLICommand = vscode.commands.registerCommand("stellar-suite.installSorobanCLI", () => {
+        vscode.env.openExternal(vscode.Uri.parse("https://soroban.stellar.org/docs/getting-started/setup"));
+    });
+    context.subscriptions.push(showCommandResult, outputChannel, commandBuilderWebView, installSorobanCLICommand);
 }
 function deactivate() {
     if (outputChannel) {

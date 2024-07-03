@@ -28,17 +28,31 @@ function initCommandBuilder(commandData, vscode) {
   runButton.addEventListener("click", function () {
     const command = buildCommand();
     log("Running command: " + command);
+    vscode.postMessage({ type: "runCommand", value: command });
   });
 
   function displayOptions(command) {
     log("Displaying options");
     optionsContainer.innerHTML = "";
 
+    if (command.args && command.args.length > 0) {
+      log("Command has arguments: " + command.args.length);
+      command.args.forEach((arg) => {
+        optionsContainer.appendChild(createInputElement(arg, "arg"));
+      });
+    }
+
     if (command.options && command.options.length > 0) {
       log("Command has options: " + command.options.length);
       command.options.forEach((option) => {
         optionsContainer.appendChild(createInputElement(option, "option"));
       });
+    }
+
+    if (!command.args && !command.options) {
+      log("No options or arguments available for the selected command");
+      optionsContainer.innerHTML =
+        "<p>No options or arguments available for the selected command.</p>";
     }
   }
 
@@ -104,7 +118,17 @@ function initCommandBuilder(commandData, vscode) {
     let command = `soroban contract ${selectedCommand}`;
 
     optionsContainer
-      .querySelectorAll("vscode-checkbox, vscode-text-field")
+      .querySelectorAll("vscode-text-field[data-type='arg']")
+      .forEach((input) => {
+        if (input.value) {
+          command += ` ${input.value}`;
+        }
+      });
+
+    optionsContainer
+      .querySelectorAll(
+        "vscode-checkbox, vscode-text-field[data-type='option']"
+      )
       .forEach((input) => {
         if (input.tagName === "VSCODE-CHECKBOX" && input.checked) {
           command += ` ${input.dataset.name}`;
@@ -115,6 +139,9 @@ function initCommandBuilder(commandData, vscode) {
 
     return command;
   }
+
+  commandSelect.value = "build";
+  commandSelect.dispatchEvent(new Event("change"));
 
   // Add event listeners to update preview
   optionsContainer.addEventListener("input", updateCommandPreview);

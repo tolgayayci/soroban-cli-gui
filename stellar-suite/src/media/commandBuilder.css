@@ -29,6 +29,14 @@ body, html {
     width: 100%;
 }
 
+#commandPreview {
+  border: 1px solid var(--vscode-panel-border);
+  border-radius: 4px;
+  background-color: var(--vscode-input-background);
+  color: var(--vscode-input-foreground);
+  padding: 4px 0px;
+}
+
 .options-section {
     flex-grow: 1;
     display: flex;
@@ -94,3 +102,20 @@ vscode-button[appearance="icon"] {
 #runButton {
     width: 100%;
 }
+
+vscode-tooltip {
+    display: none;
+    position: absolute;
+    background-color: var(--vscode-widget-background);
+    color: var(--vscode-widget-foreground);
+    border: 1px solid var(--vscode-widget-border);
+    padding: 4px 8px;
+    font-size: 12px;
+    z-index: 1;
+    max-width: 300px;
+    word-wrap: break-word;
+  }
+  
+  vscode-text-field:hover vscode-tooltip {
+    display: block;
+  }

@@ -75,7 +75,7 @@ class CommandBuilderProvider {
                 <vscode-dropdown id="commandSelect">
                     <vscode-option value="">Select a command</vscode-option>
                     ${commands_1.commands
-            .map((cmd) => `<vscode-option value="${cmd.value}">${cmd.label}</vscode-option>`)
+            .map((cmd) => `<vscode-option value="${cmd.value}" ${cmd.value === "build" ? "selected" : ""}>${cmd.label}</vscode-option>`)
             .join("")}
                 </vscode-dropdown>
             </div>

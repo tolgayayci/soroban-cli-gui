@@ -83,7 +83,9 @@ export class CommandBuilderProvider implements vscode.WebviewViewProvider {
                     ${commands
                       .map(
                         (cmd) =>
-                          `<vscode-option value="${cmd.value}">${cmd.label}</vscode-option>`
+                          `<vscode-option value="${cmd.value}" ${
+                            cmd.value === "build" ? "selected" : ""
+                          }>${cmd.label}</vscode-option>`
                       )
                       .join("")}
                 </vscode-dropdown>
