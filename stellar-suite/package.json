@@ -25,7 +25,7 @@
   "categories": [
     "Other"
   ],
-  "icon": "src/media/stellar-logo.png",
+  "icon": "media/stellar-logo.png",
   "activationEvents": [],
   "main": "./out/extension.js",
   "contributes": {
@@ -34,7 +34,7 @@
         {
           "id": "stellar-suite",
           "title": "Stellar Suite",
-          "icon": "./src/media/stellar-logo.png"
+          "icon": "media/stellar-logo.png"
         }
       ]
     },

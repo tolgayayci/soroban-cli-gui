@@ -40,20 +40,10 @@ export class CommandBuilderProvider implements vscode.WebviewViewProvider {
 
   private _getHtmlForWebview(webview: vscode.Webview) {
     const scriptUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(
-        this._extensionUri,
-        "src",
-        "media",
-        "commandBuilder.js"
-      )
+      vscode.Uri.joinPath(this._extensionUri, "media", "commandBuilder.js")
     );
     const styleUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(
-        this._extensionUri,
-        "src",
-        "media",
-        "commandBuilder.css"
-      )
+      vscode.Uri.joinPath(this._extensionUri, "media", "commandBuilder.css")
     );
     const toolkitUri = webview.asWebviewUri(
       vscode.Uri.joinPath(

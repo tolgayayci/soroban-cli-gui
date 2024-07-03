@@ -2,7 +2,7 @@
 
 The Stellar Suite extension provides a set of tools and utilities for developers working with the Stellar blockchain and Soroban smart contract platform within Visual Studio Code.
 
-![Soroban Command Builder](src/media/ss.png)
+![Soroban Command Builder](media/ss.png)
 
 
 ## Features

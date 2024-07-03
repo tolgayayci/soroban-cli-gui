@@ -56,8 +56,8 @@ class CommandBuilderProvider {
         });
     }
     _getHtmlForWebview(webview) {
-        const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, "src", "media", "commandBuilder.js"));
-        const styleUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, "src", "media", "commandBuilder.css"));
+        const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, "media", "commandBuilder.js"));
+        const styleUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, "media", "commandBuilder.css"));
         const toolkitUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, "node_modules", "@vscode/webview-ui-toolkit", "dist", "toolkit.min.js"));
         return `<!DOCTYPE html>
     <html lang="en">
