@@ -164,18 +164,26 @@ export const createCommandHistoryColumns = (
             </Dialog>
             <Button
               onClick={async () => {
-                const { path, command } = row.original;
-                const exist = await isExists(path);
-                if (exist) {
+                const { path, command, subcommand } = row.original;
+                if (subcommand === "lab") {
+                  // Extract the specific command after "lab xdr"
                   router.push({
-                    pathname: `/contracts/[path]`,
-                    query: { path, command },
+                    pathname: `/lab/[command]`,
+                    query: { command: command },
                   });
                 } else {
-                  toast({
-                    title: "Path Not Found",
-                    description: `Project does not exist at "${path}" `,
-                  });
+                  const exist = await isExists(path);
+                  if (exist) {
+                    router.push({
+                      pathname: `/contracts/[path]`,
+                      query: { path, command },
+                    });
+                  } else {
+                    toast({
+                      title: "Path Not Found",
+                      description: `Project does not exist at "${path}" `,
+                    });
+                  }
                 }
               }}
             >

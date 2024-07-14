@@ -10,7 +10,7 @@ import {
 } from "components/ui/select";
 import { Button } from "components/ui/button";
 import { Input } from "components/ui/input";
-import { labCommands } from "lib/labCommands";
+import { labCommands as commands } from "lib/labCommands";
 import { Checkbox } from "components/ui/checkbox";
 import { Label } from "components/ui/label";
 import { QuestionMarkCircledIcon } from "@radix-ui/react-icons";
@@ -34,24 +34,39 @@ import { ScrollArea, ScrollBar } from "components/ui/scroll-area";
 import { SelectSeparator } from "components/ui/select";
 
 const LabCommandSelector = ({
-  path,
+  initialCommand,
+  latestCommand,
   setCommandOutput,
   setCommandError,
+  setLatestCommand,
 }: {
-  path: string;
+  initialCommand: string;
+  latestCommand: string;
   setCommandOutput: (any) => void;
   setCommandError: (any) => void;
+  setLatestCommand: (any) => void;
 }) => {
-  const defaultCommand = labCommands.length > 0 ? labCommands[0].value : "";
+  const defaultCommand = commands.length > 0 ? commands[0].value : "";
 
-  const [selectedCommand, setSelectedCommand] = useState(defaultCommand);
+  const [selectedCommand, setSelectedCommand] = useState(
+    initialCommand || defaultCommand
+  );
   const [commandArgs, setCommandArgs] = useState({});
   const [commandOptions, setCommandOptions] = useState({});
   const [isRunningCommand, setIsRunningCommand] = useState(false);
-  const [latestCommand, setLatestCommand] = useState("");
+
+  useEffect(() => {
+    if (initialCommand) {
+      const [command, ...args] = initialCommand.split(" ");
+
+      const commandValue = args[2];
+      setSelectedCommand(commandValue);
+      handleCommandChange(commandValue, args);
+    }
+  }, [initialCommand]);
 
   const updateLatestCommand = () => {
-    const selectedCommandDetails = labCommands.find(
+    const selectedCommandDetails = commands.find(
       (c) => c.value === selectedCommand
     );
     if (!selectedCommandDetails) {
@@ -95,15 +110,20 @@ const LabCommandSelector = ({
     updateLatestCommand();
   }, [selectedCommand, commandArgs, commandOptions]);
 
-  const handleCommandChange = (commandValue) => {
+  const handleCommandChange = (commandValue, initialArgs = []) => {
     setSelectedCommand(commandValue);
-    const command = labCommands.find((c) => c.value === commandValue);
+    const command = commands.find((c) => c.value === commandValue);
 
     // Initialize arguments
     if (command && command.args) {
       const argsInitialState = {};
-      command.args.forEach((arg) => {
-        argsInitialState[arg.name] = "";
+      command.args.forEach((arg, index) => {
+        const argValue = initialArgs.find((initialArg) =>
+          initialArg.startsWith(arg.name)
+        );
+        argsInitialState[arg.name] = argValue
+          ? argValue.split(arg.name)[1].trim()
+          : "";
       });
       setCommandArgs(argsInitialState);
     } else {
@@ -114,7 +134,16 @@ const LabCommandSelector = ({
     if (command && command.options) {
       const optionsInitialState = {};
       command.options.forEach((option) => {
-        optionsInitialState[option.name] = "";
+        const optionValue = initialArgs.find((initialArg) =>
+          initialArg.startsWith(option.name)
+        );
+        if (option.type === "flag") {
+          optionsInitialState[option.name] = !!optionValue;
+        } else if (option.type === "argument") {
+          optionsInitialState[option.name] = optionValue
+            ? optionValue.split(option.name)[1].trim()
+            : "";
+        }
       });
       setCommandOptions(optionsInitialState);
     } else {
@@ -138,9 +167,7 @@ const LabCommandSelector = ({
 
   const runCli = async (command, args) => {
     try {
-      const selectedCommandDetails = labCommands.find(
-        (c) => c.value === command
-      );
+      const selectedCommandDetails = commands.find((c) => c.value === command);
 
       // Construct the options array, including -- for options and flags
       const optionsArray = selectedCommandDetails.options.reduce(
@@ -162,8 +189,6 @@ const LabCommandSelector = ({
         isNaN(arg) ? arg : parseInt(arg, 10)
       );
 
-      console.log(command + " " + processedArgs + " " + optionsArray + " ");
-
       const result = await window.sorobanApi.runSorobanCommand(
         "lab xdr",
         command,
@@ -183,9 +208,9 @@ const LabCommandSelector = ({
   return (
     <div className="flex flex-col">
       <div className="bg-gray-200 dark:bg-white dark:text-black p-4 rounded-md mb-4">
-        <code>{latestCommand}</code>
+        <code>{initialCommand || latestCommand}</code>
       </div>
-      <ScrollArea className="max-h-[calc(100vh-200px)] overflow-y-auto">
+      <ScrollArea className="max-h-[calc(80vh-200px)] overflow-y-auto">
         <div className="flex flex-col space-y-4">
           <Select
             value={selectedCommand}
@@ -196,7 +221,7 @@ const LabCommandSelector = ({
             </SelectTrigger>
             <SelectContent>
               <SelectGroup className="h-[150px]">
-                {labCommands.map((command) => (
+                {commands.map((command) => (
                   <SelectItem key={command.value} value={command.value}>
                     {command.label}
                   </SelectItem>
@@ -204,10 +229,14 @@ const LabCommandSelector = ({
               </SelectGroup>
             </SelectContent>
           </Select>
-          <Accordion type="multiple" className="w-full space-y-4">
+          <Accordion
+            type="single"
+            className="w-full space-y-4"
+            defaultValue="options"
+          >
             {selectedCommand &&
-              labCommands.find((c) => c.value === selectedCommand)?.args
-                ?.length > 0 && (
+              commands.find((c) => c.value === selectedCommand)?.args?.length >
+                0 && (
                 <AccordionItem value="args" className="border px-3 rounded-lg">
                   <AccordionTrigger className="text-sm">
                     Arguments
@@ -215,7 +244,7 @@ const LabCommandSelector = ({
                   <AccordionContent>
                     <SelectSeparator />
                     {selectedCommand &&
-                      labCommands
+                      commands
                         .find((c) => c.value === selectedCommand)
                         ?.args?.map((arg) => (
                           <div key={arg.name} className="space-y-2 my-4">
@@ -256,7 +285,7 @@ const LabCommandSelector = ({
                 </AccordionItem>
               )}
             {selectedCommand &&
-              labCommands.find((c) => c.value === selectedCommand)?.options
+              commands.find((c) => c.value === selectedCommand)?.options
                 ?.length > 0 && (
                 <AccordionItem
                   value="options"
@@ -269,7 +298,7 @@ const LabCommandSelector = ({
                     <SelectSeparator />
                     <div className="flex flex-wrap -mx-2 my-3">
                       {selectedCommand &&
-                        labCommands
+                        commands
                           .find((c) => c.value === selectedCommand)
                           ?.options?.filter((option) => option.type === "flag")
                           .map((option, index) => (
@@ -312,7 +341,7 @@ const LabCommandSelector = ({
                     <SelectSeparator className="-mt-4" />
 
                     {selectedCommand &&
-                      labCommands
+                      commands
                         .find((c) => c.value === selectedCommand)
                         ?.options?.filter(
                           (option) => option.type === "argument"
@@ -362,14 +391,14 @@ const LabCommandSelector = ({
         <Button className="mt-4" disabled>
           {" "}
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          Lab Command Executing...
+          Command Running...
         </Button>
       ) : (
         <Button
           className={selectedCommand ? "mt-4" : ""}
           onClick={handleRunCommand}
         >
-          Execute Command
+          Run Command
         </Button>
       )}
     </div>

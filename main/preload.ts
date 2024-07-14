@@ -64,7 +64,6 @@ const handler = {
     return ipcRenderer.invoke("json:update", filePath, directoryPath, data);
   },
   reloadApplication: async () => {
-    console.log("Reloading application");
     return ipcRenderer.invoke("app:reload");
   },
   openExternalLink: async (url) => {
@@ -93,6 +92,54 @@ const handler = {
   },
   checkFileExists: async (filePath) => {
     return ipcRenderer.invoke("check-file-exists", filePath);
+  },
+  saveApiKey: async (apiKey: string) => {
+    return ipcRenderer.invoke("openai:saveApiKey", apiKey);
+  },
+  getApiKey: async () => {
+    return ipcRenderer.invoke("openai:getApiKey");
+  },
+  deleteApiKey: async () => {
+    return ipcRenderer.invoke("openai:deleteApiKey");
+  },
+  createGeneralAssistant: async () => {
+    return ipcRenderer.invoke("openai:createGeneralAssistant");
+  },
+  createCliAssistant: async () => {
+    return ipcRenderer.invoke("openai:createCliAssistant");
+  },
+  createThread: async (initialMessage?: string) => {
+    return ipcRenderer.invoke("openai:createThread", initialMessage);
+  },
+  sendMessage: async (threadId: string, message: string) => {
+    return ipcRenderer.invoke("openai:sendMessage", threadId, message);
+  },
+  runAssistant: async (threadId: string, assistantId: string) => {
+    return ipcRenderer.invoke("openai:runAssistant", threadId, assistantId);
+  },
+  getRunStatus: async (threadId: string, runId: string) => {
+    return ipcRenderer.invoke("openai:getRunStatus", threadId, runId);
+  },
+  getMessages: async (threadId: string) => {
+    return ipcRenderer.invoke("openai:getMessages", threadId);
+  },
+  saveConversation: async (
+    threadId: string,
+    assistantId: string,
+    assistantType: "general" | "cli"
+  ) => {
+    return ipcRenderer.invoke(
+      "openai:saveConversation",
+      threadId,
+      assistantId,
+      assistantType
+    );
+  },
+  clearConversation: async (assistantType: "general" | "cli") => {
+    return ipcRenderer.invoke("openai:clearConversation", assistantType);
+  },
+  getConversation: async (assistantType: "general" | "cli") => {
+    return ipcRenderer.invoke("openai:getConversation", assistantType);
   },
 };
 

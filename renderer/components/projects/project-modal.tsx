@@ -97,7 +97,6 @@ export default function ProjectModal({
       });
     } catch (error) {
       toast(projectCreateError(data.project_name, error));
-      console.log(error);
     } finally {
       setIsSubmittingNewProject(false);
     }

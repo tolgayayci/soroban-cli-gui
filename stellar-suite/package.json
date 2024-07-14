@@ -1,0 +1,122 @@
+{
+  "name": "stellar-suite",
+  "displayName": "Stellar Suite",
+  "publisher": "tolgayayci",
+  "description": "Helpful tools for stellar and soroban ecosystem",
+  "version": "0.1.0",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tolgayayci/sora/stellar-suite"
+  },
+  "bugs": {
+    "url": "https://github.com/tolgayayci/sora/issues",
+    "email": "tolga@yk-labs.com"
+  },
+  "keywords": [
+    "soroban",
+    "stellar",
+    "horizon",
+    "xlm",
+    "stellar-sdk"
+  ],
+  "categories": [
+    "Other"
+  ],
+  "icon": "media/stellar-logo.png",
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "stellar-suite",
+          "title": "Stellar Suite",
+          "icon": "media/stellar-logo.png"
+        }
+      ]
+    },
+    "views": {
+      "stellar-suite": [
+        {
+          "type": "webview",
+          "id": "commandBuilder",
+          "name": "Command Builder"
+        },
+        {
+          "id": "commandHistory",
+          "name": "Command History"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "commandHistory",
+        "contents": "Soroban CLI is not installed. Please install it to show Command History.\n[Install Soroban CLI](command:stellar-suite.installSorobanCLI)",
+        "when": "sorobanCLI.installed == false"
+      }
+    ],
+    "commands": [
+      {
+        "command": "stellar-suite.refreshCommandHistory",
+        "title": "Refresh Command History",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "stellar-suite.runHistoryCommand",
+        "title": "Run Command",
+        "icon": "$(play)"
+      },
+      {
+        "command": "stellar-suite.openCommandBuilder",
+        "title": "Open Soroban Command Builder"
+      },
+      {
+        "command": "stellar-suite.installSorobanCLI",
+        "title": "Install Soroban CLI"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "stellar-suite.refreshCommandHistory",
+          "when": "view == commandHistory",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "stellar-suite.runHistoryCommand",
+          "when": "view == commandHistory && viewItem == commandHistoryItem",
+          "group": "inline"
+        }
+      ]
+    },
+    "languages": []
+  },
+  "scripts": {
+    "vscode:prepublish": "yarn run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "yarn run compile && yarn run lint",
+    "lint": "eslint src --ext ts",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.6",
+    "@types/node": "18.x",
+    "@types/vscode": "^1.90.0",
+    "@typescript-eslint/eslint-plugin": "^6.13.1",
+    "@typescript-eslint/parser": "^6.13.1",
+    "@vscode/test-cli": "^0.0.4",
+    "@vscode/test-electron": "^2.3.8",
+    "eslint": "^8.54.0",
+    "typescript": "^5.3.2"
+  },
+  "dependencies": {
+    "@vscode/webview-ui-toolkit": "^1.4.0",
+    "electron-log": "^5.1.5"
+  }
+}
