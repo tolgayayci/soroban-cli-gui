@@ -135,25 +135,7 @@ export default function ContractEventModal({
                       )}
                     />
                   </div>
-                  <div className="space-y-3">
-                    <FormField
-                      control={addContractEventForm.control}
-                      name="cursor"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-small">Cursor *</FormLabel>
-                          <FormControl>
-                            <Input
-                              {...field}
-                              id="cursor"
-                              placeholder="123123123"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
+
                   <div className="space-y-3">
                     <FormField
                       control={addContractEventForm.control}
@@ -202,6 +184,25 @@ export default function ContractEventModal({
                               {...field}
                               id="rpc_url"
                               placeholder="http://localhost:1234"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className="space-y-3">
+                    <FormField
+                      control={addContractEventForm.control}
+                      name="cursor"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-small">Cursor</FormLabel>
+                          <FormControl>
+                            <Input
+                              {...field}
+                              id="cursor"
+                              placeholder="123123123"
                             />
                           </FormControl>
                           <FormMessage />

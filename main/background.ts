@@ -97,7 +97,6 @@ const schema = {
 };
 
 const store = new Store({ schema });
-store.set("identities", []);
 
 // Aptabase Analytics
 initialize("A-EU-8145589126");

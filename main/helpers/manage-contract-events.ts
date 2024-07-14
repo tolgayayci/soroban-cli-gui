@@ -8,7 +8,6 @@ export function handleContractEvents(store, action, contractSettings) {
         typeof contractSettings === "object" &&
         !Array.isArray(contractSettings) && // Make sure it's not an array
         contractSettings.start_ledger &&
-        contractSettings.cursor &&
         contractSettings.rpc_url &&
         contractSettings.network_passphrase &&
         contractSettings.network

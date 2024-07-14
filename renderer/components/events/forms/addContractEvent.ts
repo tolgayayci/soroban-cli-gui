@@ -2,7 +2,7 @@ import * as z from "zod";
 
 export const addContractEventFormSchema = z.object({
   start_ledger: z.string().min(1, "Start ledger must be at least 1."),
-  cursor: z.string().min(1, "Cursor cannot be empty."),
+  cursor: z.string().optional(),
   output: z
     .enum(["pretty", "plain", "json"])
     .refine((value) => ["pretty", "plain", "json"].includes(value), {
