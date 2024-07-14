@@ -17,6 +17,7 @@ import { findContracts } from "./helpers/find-contracts";
 import { checkEditors } from "./helpers/check-editors";
 import { openProjectInEditor } from "./helpers/open-project-in-editor";
 import { handleContractEvents } from "./helpers/manage-contract-events";
+import * as OpenAIHelper from "./helpers/openai-helper";
 
 const path = require("node:path");
 const fs = require("fs");
@@ -94,10 +95,17 @@ const schema = {
       ],
     },
   },
+  conversation: {
+    type: "object",
+    default: {
+      threadId: "",
+      assistantId: "",
+    },
+  },
 };
 
 const store = new Store({ schema });
-store.set("identities", []);
+store.set("conversation_cli", []);
 
 // Aptabase Analytics
 initialize("A-EU-8145589126");
@@ -166,6 +174,86 @@ if (isProd) {
       await shell.openExternal(url);
     }
   });
+
+  ipcMain.handle("openai:saveApiKey", async (_, apiKey: string) => {
+    return await OpenAIHelper.saveApiKey(apiKey);
+  });
+
+  ipcMain.handle("openai:getApiKey", async () => {
+    return await OpenAIHelper.getApiKey();
+  });
+
+  ipcMain.handle("openai:deleteApiKey", async () => {
+    return await OpenAIHelper.deleteApiKey();
+  });
+
+  ipcMain.handle("openai:createGeneralAssistant", async () => {
+    return await OpenAIHelper.createGeneralAssistant();
+  });
+
+  ipcMain.handle("openai:createCliAssistant", async () => {
+    return await OpenAIHelper.createCliAssistant();
+  });
+
+  ipcMain.handle("openai:createThread", async (_, initialMessage?: string) => {
+    return await OpenAIHelper.createThread(initialMessage);
+  });
+
+  ipcMain.handle(
+    "openai:sendMessage",
+    async (_, threadId: string, message: string) => {
+      return await OpenAIHelper.sendMessage(threadId, message);
+    }
+  );
+
+  ipcMain.handle(
+    "openai:runAssistant",
+    async (_, threadId: string, assistantId: string) => {
+      return await OpenAIHelper.runAssistant(threadId, assistantId);
+    }
+  );
+
+  ipcMain.handle(
+    "openai:getRunStatus",
+    async (_, threadId: string, runId: string) => {
+      return await OpenAIHelper.getRunStatus(threadId, runId);
+    }
+  );
+
+  ipcMain.handle("openai:getMessages", async (_, threadId: string) => {
+    return await OpenAIHelper.getMessages(threadId);
+  });
+
+  ipcMain.handle(
+    "openai:saveConversation",
+    async (
+      _,
+      threadId: string,
+      assistantId: string,
+      assistantType: "general" | "cli"
+    ) => {
+      return await OpenAIHelper.saveConversation(
+        store,
+        threadId,
+        assistantId,
+        assistantType
+      );
+    }
+  );
+
+  ipcMain.handle(
+    "openai:clearConversation",
+    async (_, assistantType: "general" | "cli") => {
+      return await OpenAIHelper.clearConversation(store, assistantType);
+    }
+  );
+
+  ipcMain.handle(
+    "openai:getConversation",
+    async (_, assistantType: "general" | "cli") => {
+      return await OpenAIHelper.getConversation(store, assistantType);
+    }
+  );
 
   ipcMain.handle("check-editors", async () => {
     return await checkEditors();

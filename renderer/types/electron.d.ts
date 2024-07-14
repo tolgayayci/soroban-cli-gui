@@ -28,6 +28,23 @@ interface Versions {
   getAppVersion: () => Promise<any>;
   getSorobanVersion: () => Promise<any>;
   checkFileExists: (filePath) => Promise<boolean>;
+  saveApiKey: (apiKey: string) => Promise<boolean>;
+  getApiKey: () => Promise<string | null>;
+  deleteApiKey: () => Promise<boolean>;
+  createGeneralAssistant: () => Promise<any>;
+  createCliAssistant: () => Promise<any>;
+  createThread: (initialMessage?: string) => Promise<any>;
+  sendMessage: (threadId: string, message: string) => Promise<any>;
+  runAssistant: (threadId: string, assistantId: string) => Promise<any>;
+  getRunStatus: (threadId: string, runId: string) => Promise<string>;
+  getMessages: (threadId: string) => Promise<any[]>;
+  saveConversation: (
+    threadId: string,
+    assistantId: string,
+    assistantType: "general" | "cli"
+  ) => Promise<void>;
+  clearConversation: (assistantType: "general" | "cli") => Promise<void>;
+  getConversation: (assistantType: "general" | "cli") => Promise<any>;
 }
 
 interface Window {

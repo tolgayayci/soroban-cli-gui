@@ -1,7 +1,9 @@
 // Import necessary components and hooks
 import * as React from "react";
-import { useRouter } from "next/router";
 import Image from "next/image";
+import { useRouter } from "next/router";
+import { useTheme } from "next-themes";
+
 import { SideNav } from "components/sidebar-nav";
 import { ModeToggle } from "components/toggle-mode";
 import { ReloadToggle } from "components/toggle-reload";
@@ -15,6 +17,7 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "components/ui/resizable";
+import { ChatbotButton } from "components/chatbot/chatbot-button";
 
 import {
   HomeIcon,
@@ -26,8 +29,6 @@ import {
   BookKeyIcon,
   RadioIcon,
 } from "lucide-react";
-
-import { useTheme } from "next-themes";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -180,6 +181,9 @@ export default function Layout({ children }: LayoutProps) {
                     ]}
                   />
                   <Separator />
+                </div>
+                <div className="p-2">
+                  <ChatbotButton />
                 </div>
               </div>
             </ResizablePanel>

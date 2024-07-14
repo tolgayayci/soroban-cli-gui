@@ -1,3 +1,4 @@
+// ContractDetail.tsx
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -5,6 +6,8 @@ import { useProject } from "hooks/useProject";
 
 import CliCommandSelector from "components/contracts/command-selector";
 import CommandStatusConfig from "components/contracts/command-status-config";
+import { CommandGenerator } from "components/contracts/command-constructor";
+
 import { Button } from "components/ui/button";
 import { Separator } from "components/ui/separator";
 import { Avatar, AvatarImage } from "components/ui/avatar";
@@ -18,13 +21,14 @@ import {
 } from "components/ui/dialog";
 import { useToast } from "components/ui/use-toast";
 
-import { FileBoxIcon } from "lucide-react";
+import { FileBoxIcon, CodeIcon } from "lucide-react";
 
 export default function ContractDetail() {
   const [commandOutput, setCommandOutput] = useState();
   const [commandError, setCommandError] = useState();
   const [latestCommand, setLatestCommand] = useState();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isOpenCommandGenerator, setIsOpenCommandGenerator] = useState(false);
 
   const router = useRouter();
   const { path } = router.query;
@@ -78,6 +82,14 @@ export default function ContractDetail() {
     }
   }, [commandOutput, commandError, toast]);
 
+  const handleOpenCommandGenerator = () => {
+    setIsOpenCommandGenerator(true);
+  };
+
+  const handleCloseCommandGenerator = () => {
+    setIsOpenCommandGenerator(false);
+  };
+
   if (project) {
     return (
       <>
@@ -117,6 +129,14 @@ export default function ContractDetail() {
                   </DialogContent>
                 </Dialog>
               )}
+              <Button variant="outline" onClick={handleOpenCommandGenerator}>
+                <CodeIcon className="mr-2 h-4 w-4" />
+                Command Generator
+              </Button>
+              <CommandGenerator
+                isOpen={isOpenCommandGenerator}
+                onClose={handleCloseCommandGenerator}
+              />
               <Link href={`/contracts`}>
                 <Button>View All Contracts</Button>
               </Link>

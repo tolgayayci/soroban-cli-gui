@@ -1,0 +1,591 @@
+soroban contract --help
+Tools for smart contract developers
+
+Usage: soroban contract <COMMAND>
+
+Commands:
+  asset     Utilities to deploy a Stellar Asset Contract or get its id
+  bindings  Generate code client bindings for a contract
+  build     Build a contract from source
+  extend    Extend the time to live ledger of a contract-data ledger entry
+  deploy    Deploy a wasm contract
+  fetch     Fetch a contract's Wasm binary
+  id        Generate the contract id for a given contract or asset
+  init      Initialize a Soroban project with an example contract
+  inspect   Inspect a WASM file listing contract functions, meta, etc
+  install   Install a WASM file to the ledger without creating a contract instance
+  invoke    Invoke a contract function
+  optimize  Optimize a WASM file
+  read      Print the current value of a contract-data ledger entry
+  restore   Restore an evicted value for a contract-data legder entry
+
+Options:
+  -h, --help  Print help
+
+------------
+
+soroban contract asset --help
+Utilities to deploy a Stellar Asset Contract or get its id
+
+Usage: soroban contract asset <COMMAND>
+
+Commands:
+  id      Get Id of builtin Soroban Asset Contract. Deprecated, use `soroban contract id asset` instead
+  deploy  Deploy builtin Soroban Asset Contract
+
+Options:
+  -h, --help  Print help
+
+------------
+
+soroban contract bindings --help
+Generate code client bindings for a contract
+
+Usage: soroban contract bindings <COMMAND>
+
+Commands:
+  json        Generate Json Bindings
+  rust        Generate Rust bindings
+  typescript  Generate a TypeScript / JavaScript package
+
+Options:
+  -h, --help  Print help
+
+------------
+
+soroban contract build  --help
+Build a contract from source
+
+Builds all crates that are referenced by the cargo manifest (Cargo.toml) that have cdylib as their crate-type. Crates are built for the wasm32 target. Unless configured otherwise, crates are built with their default features and with their release profile.
+
+To view the commands that will be executed, without executing them, use the --print-commands-only option.
+
+Usage: soroban contract build [OPTIONS]
+
+Options:
+      --manifest-path <MANIFEST_PATH>
+          Path to Cargo.toml
+
+          [default: Cargo.toml]
+
+      --package <PACKAGE>
+          Package to build
+
+          If omitted, all packages that build for crate-type cdylib are built.
+
+      --profile <PROFILE>
+          Build with the specified profile
+
+          [default: release]
+
+      --out-dir <OUT_DIR>
+          Directory to copy wasm files to
+
+          If provided, wasm files can be found in the cargo target directory, and the specified directory.
+
+          If ommitted, wasm files are written only to the cargo target directory.
+
+  -h, --help
+          Print help (see a summary with '-h')
+
+Features:
+      --features <FEATURES>
+          Build with the list of features activated, space or comma separated
+
+      --all-features
+          Build with the all features activated
+
+      --no-default-features
+          Build with the default feature not activated
+
+Other:
+      --print-commands-only
+          Print commands to build without executing them
+
+------------
+
+soroban contract extend --help
+Extend the time to live ledger of a contract-data ledger entry.
+
+If no keys are specified the contract itself is extended.
+
+Usage: soroban contract extend [OPTIONS] --ledgers-to-extend <LEDGERS_TO_EXTEND> --durability <DURABILITY> --source-account <SOURCE_ACCOUNT>
+
+Options:
+      --ledgers-to-extend <LEDGERS_TO_EXTEND>
+          Number of ledgers to extend the entries
+
+      --ttl-ledger-only
+          Only print the new Time To Live ledger
+
+      --id <CONTRACT_ID>
+          Contract ID to which owns the data entries. If no keys provided the Contract's instance will be extended
+
+      --key <KEY>
+          Storage key (symbols only)
+
+      --key-xdr <KEY_XDR>
+          Storage key (base64-encoded XDR)
+
+      --wasm <WASM>
+          Path to Wasm file of contract code to extend
+
+      --wasm-hash <WASM_HASH>
+          Path to Wasm file of contract code to extend
+
+      --durability <DURABILITY>
+          Storage entry durability
+
+          [default: persistent]
+
+          Possible values:
+          - persistent: Persistent
+          - temporary:  Temporary
+
+      --source-account <SOURCE_ACCOUNT>
+          Account that signs the final transaction. Alias `source`. Can be an identity (--source alice), a secret key (--source SC36…), or a seed phrase (--source "kite urban…"). Default: `identity generate --default-seed`
+
+          [env: SOROBAN_ACCOUNT=]
+          [aliases: source]
+
+      --hd-path <HD_PATH>
+          If using a seed phrase, which hierarchical deterministic path to use, e.g. `m/44'/148'/{hd_path}`. Example: `--hd-path 1`. Default: `0`
+
+      --global
+          Use global config
+
+  -h, --help
+          Print help (see a summary with '-h')
+
+Options (RPC):
+      --rpc-url <RPC_URL>
+          RPC server endpoint
+
+          [env: SOROBAN_RPC_URL=]
+
+      --network-passphrase <NETWORK_PASSPHRASE>
+          Network passphrase to sign the transaction sent to the rpc server
+
+          [env: SOROBAN_NETWORK_PASSPHRASE=]
+
+      --network <NETWORK>
+          Name of network to use from config
+
+          [env: SOROBAN_NETWORK=]
+
+      --fee <FEE>
+          fee amount for transaction, in stroops. 1 stroop = 0.0000001 xlm
+
+          [env: SOROBAN_FEE=]
+          [default: 100]
+
+TESTING_OPTIONS:
+      --config-dir <CONFIG_DIR>
+          Location of config directory, default is "."
+
+------------
+
+soroban contract deploy --help
+Deploy a wasm contract
+
+Usage: soroban contract deploy [OPTIONS] --source-account <SOURCE_ACCOUNT> <--wasm <WASM>|--wasm-hash <WASM_HASH>>
+
+Options:
+      --wasm <WASM>
+          WASM file to deploy
+      --wasm-hash <WASM_HASH>
+          Hash of the already installed/deployed WASM file
+      --source-account <SOURCE_ACCOUNT>
+          Account that signs the final transaction. Alias `source`. Can be an identity (--source alice), a secret key (--source SC36…), or a seed phrase (--source "kite urban…"). Default: `identity generate --default-seed` [env: SOROBAN_ACCOUNT=] [aliases: source]
+      --hd-path <HD_PATH>
+          If using a seed phrase, which hierarchical deterministic path to use, e.g. `m/44'/148'/{hd_path}`. Example: `--hd-path 1`. Default: `0`
+      --global
+          Use global config
+  -i, --ignore-checks
+          Whether to ignore safety checks when deploying contracts
+  -h, --help
+          Print help
+
+Options (RPC):
+      --salt <SALT>
+          Custom salt 32-byte salt for the token id
+      --rpc-url <RPC_URL>
+          RPC server endpoint [env: SOROBAN_RPC_URL=]
+      --network-passphrase <NETWORK_PASSPHRASE>
+          Network passphrase to sign the transaction sent to the rpc server [env: SOROBAN_NETWORK_PASSPHRASE=]
+      --network <NETWORK>
+          Name of network to use from config [env: SOROBAN_NETWORK=]
+      --fee <FEE>
+          fee amount for transaction, in stroops. 1 stroop = 0.0000001 xlm [env: SOROBAN_FEE=] [default: 100]
+
+TESTING_OPTIONS:
+      --config-dir <CONFIG_DIR>  Location of config directory, default is "."
+
+------------
+
+soroban contract fetch --help
+Fetch a contract's Wasm binary
+
+Usage: soroban contract fetch [OPTIONS] --id <CONTRACT_ID>
+
+Options:
+      --id <CONTRACT_ID>     Contract ID to fetch [env: SOROBAN_CONTRACT_ID=]
+  -o, --out-file <OUT_FILE>  Where to write output otherwise stdout is used
+      --global               Use global config
+  -h, --help                 Print help
+
+TESTING_OPTIONS:
+      --config-dir <CONFIG_DIR>  Location of config directory, default is "."
+
+Options (RPC):
+      --rpc-url <RPC_URL>
+          RPC server endpoint [env: SOROBAN_RPC_URL=]
+      --network-passphrase <NETWORK_PASSPHRASE>
+          Network passphrase to sign the transaction sent to the rpc server [env: SOROBAN_NETWORK_PASSPHRASE=]
+      --network <NETWORK>
+          Name of network to use from config [env: SOROBAN_NETWORK=]
+
+------------
+
+soroban contract id --help
+Generate the contract id for a given contract or asset
+
+Usage: soroban contract id <COMMAND>
+
+Commands:
+  asset  Deploy builtin Soroban Asset Contract
+  wasm   Deploy normal Wasm Contract
+
+Options:
+  -h, --help  Print help
+
+------------
+
+soroban contract init --help
+Initialize a Soroban project with an example contract
+
+Usage: soroban contract init [OPTIONS] <PROJECT_PATH>
+
+Arguments:
+  <PROJECT_PATH>
+
+
+Options:
+  -w, --with-example <WITH_EXAMPLE>...
+          An optional flag to specify Soroban example contracts to include. A hello-world contract will be included by default.
+
+  -f, --frontend-template <FRONTEND_TEMPLATE>
+          An optional flag to pass in a url for a frontend template repository.
+
+          [default: ]
+
+  -h, --help
+          Print help (see a summary with '-h')
+
+------------
+
+soroban contract inspect --help
+Inspect a WASM file listing contract functions, meta, etc
+
+Usage: soroban contract inspect [OPTIONS] --wasm <WASM>
+
+Options:
+      --wasm <WASM>
+          Path to wasm binary
+
+      --output <OUTPUT>
+          Output just XDR in base64
+
+          [default: docs]
+
+          Possible values:
+          - xdr-base64:       XDR of array of contract spec entries
+          - xdr-base64-array: Array of xdr of contract spec entries
+          - docs:             Pretty print of contract spec entries
+
+      --global
+          Use global config
+
+  -h, --help
+          Print help (see a summary with '-h')
+
+TESTING_OPTIONS:
+      --config-dir <CONFIG_DIR>
+          Location of config directory, default is "."
+
+------------
+
+soroban contract install --help
+Install a WASM file to the ledger without creating a contract instance
+
+Usage: soroban contract install [OPTIONS] --source-account <SOURCE_ACCOUNT> --wasm <WASM>
+
+Options:
+      --source-account <SOURCE_ACCOUNT>
+          Account that signs the final transaction. Alias `source`. Can be an identity (--source alice), a secret key (--source SC36…), or a seed phrase (--source "kite urban…"). Default: `identity generate --default-seed` [env: SOROBAN_ACCOUNT=] [aliases: source]
+      --hd-path <HD_PATH>
+          If using a seed phrase, which hierarchical deterministic path to use, e.g. `m/44'/148'/{hd_path}`. Example: `--hd-path 1`. Default: `0`
+      --global
+          Use global config
+      --wasm <WASM>
+          Path to wasm binary
+  -i, --ignore-checks
+          Whether to ignore safety checks when deploying contracts
+  -h, --help
+          Print help
+
+Options (RPC):
+      --rpc-url <RPC_URL>
+          RPC server endpoint [env: SOROBAN_RPC_URL=]
+      --network-passphrase <NETWORK_PASSPHRASE>
+          Network passphrase to sign the transaction sent to the rpc server [env: SOROBAN_NETWORK_PASSPHRASE=]
+      --network <NETWORK>
+          Name of network to use from config [env: SOROBAN_NETWORK=]
+      --fee <FEE>
+          fee amount for transaction, in stroops. 1 stroop = 0.0000001 xlm [env: SOROBAN_FEE=] [default: 100]
+
+TESTING_OPTIONS:
+      --config-dir <CONFIG_DIR>  Location of config directory, default is "."
+
+------------
+
+soroban contract invoke --help
+Invoke a contract function
+
+Generates an "implicit CLI" for the specified contract on-the-fly using the contract's schema, which gets embedded into every Soroban contract. The "slop" in this command, everything after the `--`, gets passed to this implicit CLI. Get in-depth help for a given contract:
+
+soroban contract invoke ... -- --help
+
+Usage: soroban contract invoke [OPTIONS] --id <CONTRACT_ID> --source-account <SOURCE_ACCOUNT> [-- <CONTRACT_FN_AND_ARGS>...]
+
+Arguments:
+  [CONTRACT_FN_AND_ARGS]...
+          Function name as subcommand, then arguments for that function as `--arg-name value`
+
+Options:
+      --id <CONTRACT_ID>
+          Contract ID to invoke
+
+          [env: SOROBAN_CONTRACT_ID=]
+
+      --cost
+          Output the cost execution to stderr
+
+      --instructions <INSTRUCTIONS>
+          Number of instructions to simulate
+
+      --is-view
+          Do not sign and submit transaction
+
+          [env: SYSTEM_TEST_VERBOSE_OUTPUT=]
+
+      --source-account <SOURCE_ACCOUNT>
+          Account that signs the final transaction. Alias `source`. Can be an identity (--source alice), a secret key (--source SC36…), or a seed phrase (--source "kite urban…"). Default: `identity generate --default-seed`
+
+          [env: SOROBAN_ACCOUNT=]
+          [aliases: source]
+
+      --hd-path <HD_PATH>
+          If using a seed phrase, which hierarchical deterministic path to use, e.g. `m/44'/148'/{hd_path}`. Example: `--hd-path 1`. Default: `0`
+
+      --global
+          Use global config
+
+  -h, --help
+          Print help (see a summary with '-h')
+
+Options (RPC):
+      --rpc-url <RPC_URL>
+          RPC server endpoint
+
+          [env: SOROBAN_RPC_URL=]
+
+      --network-passphrase <NETWORK_PASSPHRASE>
+          Network passphrase to sign the transaction sent to the rpc server
+
+          [env: SOROBAN_NETWORK_PASSPHRASE=]
+
+      --network <NETWORK>
+          Name of network to use from config
+
+          [env: SOROBAN_NETWORK=]
+
+      --fee <FEE>
+          fee amount for transaction, in stroops. 1 stroop = 0.0000001 xlm
+
+          [env: SOROBAN_FEE=]
+          [default: 100]
+
+TESTING_OPTIONS:
+      --config-dir <CONFIG_DIR>
+          Location of config directory, default is "."
+
+------------
+
+soroban contract optimize --help
+Optimize a WASM file
+
+Usage: soroban contract optimize [OPTIONS] --wasm <WASM>
+
+Options:
+      --wasm <WASM>          Path to wasm binary
+      --wasm-out <WASM_OUT>  Path to write the optimized WASM file to (defaults to same location as --wasm with .optimized.wasm suffix)
+  -h, --help                 Print help
+
+------------
+
+soroban contract read --help
+Print the current value of a contract-data ledger entry
+
+Usage: soroban contract read [OPTIONS] --durability <DURABILITY> --source-account <SOURCE_ACCOUNT>
+
+Options:
+      --output <OUTPUT>
+          Type of output to generate
+
+          [default: string]
+
+          Possible values:
+          - string: String
+          - json:   Json
+          - xdr:    XDR
+
+      --id <CONTRACT_ID>
+          Contract ID to which owns the data entries. If no keys provided the Contract's instance will be extended
+
+      --key <KEY>
+          Storage key (symbols only)
+
+      --key-xdr <KEY_XDR>
+          Storage key (base64-encoded XDR)
+
+      --wasm <WASM>
+          Path to Wasm file of contract code to extend
+
+      --wasm-hash <WASM_HASH>
+          Path to Wasm file of contract code to extend
+
+      --durability <DURABILITY>
+          Storage entry durability
+
+          [default: persistent]
+
+          Possible values:
+          - persistent: Persistent
+          - temporary:  Temporary
+
+      --source-account <SOURCE_ACCOUNT>
+          Account that signs the final transaction. Alias `source`. Can be an identity (--source alice), a secret key (--source SC36…), or a seed phrase (--source "kite urban…"). Default: `identity generate --default-seed`
+
+          [env: SOROBAN_ACCOUNT=]
+          [aliases: source]
+
+      --hd-path <HD_PATH>
+          If using a seed phrase, which hierarchical deterministic path to use, e.g. `m/44'/148'/{hd_path}`. Example: `--hd-path 1`. Default: `0`
+
+      --global
+          Use global config
+
+  -h, --help
+          Print help (see a summary with '-h')
+
+Options (RPC):
+      --rpc-url <RPC_URL>
+          RPC server endpoint
+
+          [env: SOROBAN_RPC_URL=]
+
+      --network-passphrase <NETWORK_PASSPHRASE>
+          Network passphrase to sign the transaction sent to the rpc server
+
+          [env: SOROBAN_NETWORK_PASSPHRASE=]
+
+      --network <NETWORK>
+          Name of network to use from config
+
+          [env: SOROBAN_NETWORK=]
+
+TESTING_OPTIONS:
+      --config-dir <CONFIG_DIR>
+          Location of config directory, default is "."
+
+------------
+
+soroban contract restore --help
+Restore an evicted value for a contract-data legder entry.
+
+If no keys are specificed the contract itself is restored.
+
+Usage: soroban contract restore [OPTIONS] --durability <DURABILITY> --source-account <SOURCE_ACCOUNT>
+
+Options:
+      --id <CONTRACT_ID>
+          Contract ID to which owns the data entries. If no keys provided the Contract's instance will be extended
+
+      --key <KEY>
+          Storage key (symbols only)
+
+      --key-xdr <KEY_XDR>
+          Storage key (base64-encoded XDR)
+
+      --wasm <WASM>
+          Path to Wasm file of contract code to extend
+
+      --wasm-hash <WASM_HASH>
+          Path to Wasm file of contract code to extend
+
+      --durability <DURABILITY>
+          Storage entry durability
+
+          [default: persistent]
+
+          Possible values:
+          - persistent: Persistent
+          - temporary:  Temporary
+
+      --ledgers-to-extend <LEDGERS_TO_EXTEND>
+          Number of ledgers to extend the entry
+
+      --ttl-ledger-only
+          Only print the new Time To Live ledger
+
+      --source-account <SOURCE_ACCOUNT>
+          Account that signs the final transaction. Alias `source`. Can be an identity (--source alice), a secret key (--source SC36…), or a seed phrase (--source "kite urban…"). Default: `identity generate --default-seed`
+
+          [env: SOROBAN_ACCOUNT=]
+          [aliases: source]
+
+      --hd-path <HD_PATH>
+          If using a seed phrase, which hierarchical deterministic path to use, e.g. `m/44'/148'/{hd_path}`. Example: `--hd-path 1`. Default: `0`
+
+      --global
+          Use global config
+
+  -h, --help
+          Print help (see a summary with '-h')
+
+Options (RPC):
+      --rpc-url <RPC_URL>
+          RPC server endpoint
+
+          [env: SOROBAN_RPC_URL=]
+
+      --network-passphrase <NETWORK_PASSPHRASE>
+          Network passphrase to sign the transaction sent to the rpc server
+
+          [env: SOROBAN_NETWORK_PASSPHRASE=]
+
+      --network <NETWORK>
+          Name of network to use from config
+
+          [env: SOROBAN_NETWORK=]
+
+      --fee <FEE>
+          fee amount for transaction, in stroops. 1 stroop = 0.0000001 xlm
+
+          [env: SOROBAN_FEE=]
+          [default: 100]
+
+TESTING_OPTIONS:
+      --config-dir <CONFIG_DIR>
+          Location of config directory, default is "."
