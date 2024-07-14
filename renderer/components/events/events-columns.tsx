@@ -15,8 +15,8 @@ export const createContractEventsColumns = (): ColumnDef<Network>[] => {
       header: "Start Ledger",
     },
     {
-      accessorKey: "cursor",
-      header: "Cursor",
+      accessorKey: "rpcUrl",
+      header: "RPC Url",
     },
     {
       accessorKey: "network",

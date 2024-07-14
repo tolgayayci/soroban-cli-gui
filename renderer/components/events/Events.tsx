@@ -12,8 +12,6 @@ import { Button } from "components/ui/button";
 import { LucidePersonStanding } from "lucide-react";
 
 export default function EventsComponent() {
-  const [showCreateContractEventsDialog, setShowCreateContractEventsDialog] =
-    useState(false);
   const [allContractEvents, setAllContractEvents] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -34,7 +32,7 @@ export default function EventsComponent() {
     <div className="flex flex-col h-[calc(100vh-106px)]">
       {isLoading ? (
         <Loading />
-      ) : allContractEvents.length > 0 ? (
+      ) : allContractEvents.length >= 0 ? (
         <EventsDataTable columns={columns} data={allContractEvents} />
       ) : (
         <NoEvents />

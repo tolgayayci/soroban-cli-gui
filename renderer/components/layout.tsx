@@ -116,20 +116,21 @@ export default function Layout({ children }: LayoutProps) {
                           : "ghost",
                       },
                       {
-                        title: "Contracts",
-                        label: "",
-                        href: "/contracts",
-                        icon: HomeIcon,
-                        variant: router.pathname.startsWith("/contracts")
-                          ? "default"
-                          : "ghost",
-                      },
-                      {
                         title: "Identities",
                         label: "",
                         href: "/identities",
                         icon: CircuitBoardIcon,
                         variant: router.pathname.startsWith("/identities")
+                          ? "default"
+                          : "ghost",
+                      },
+
+                      {
+                        title: "Contracts",
+                        label: "",
+                        href: "/contracts",
+                        icon: HomeIcon,
+                        variant: router.pathname.startsWith("/contracts")
                           ? "default"
                           : "ghost",
                       },
@@ -151,6 +152,7 @@ export default function Layout({ children }: LayoutProps) {
                           ? "default"
                           : "ghost",
                       },
+
                       {
                         title: "Config",
                         label: "",

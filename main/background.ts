@@ -105,7 +105,6 @@ const schema = {
 };
 
 const store = new Store({ schema });
-store.set("conversation_cli", []);
 
 // Aptabase Analytics
 initialize("A-EU-8145589126");
@@ -151,8 +150,6 @@ if (isProd) {
   await app.whenReady();
   trackEvent("app_started");
   autoUpdater.checkForUpdatesAndNotify();
-
-  console.log(store.get("contracts"));
 
   const mainWindow = createWindow("main", {
     width: 1500,
@@ -326,7 +323,9 @@ if (isProd) {
 
         if (
           command &&
-          (command === "contract" || command === "lab" || command === "events")
+          (command === "contract" ||
+            command === "lab xdr" ||
+            command === "events")
         ) {
           const formattedResult = result
             ? `Result: ${JSON.stringify(result)}`
