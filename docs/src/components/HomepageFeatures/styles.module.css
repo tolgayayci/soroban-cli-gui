@@ -3,9 +3,10 @@
   align-items: center;
   padding: 2rem 0;
   width: 100%;
+  margin-bottom: 20px;
 }
 
-.featureSvg {
-  height: 200px;
-  width: 200px;
+.featureIcon {
+  height: 170px;
+  width: 170px;
 }

@@ -1,45 +1,50 @@
-import clsx from 'clsx';
-import Heading from '@theme/Heading';
-import styles from './styles.module.css';
+import clsx from "clsx";
+import Heading from "@theme/Heading";
+import {
+  CodeBracketIcon,
+  CpuChipIcon,
+  WrenchScrewdriverIcon,
+} from "@heroicons/react/24/outline";
+import styles from "./styles.module.css";
 
 const FeatureList = [
   {
-    title: 'Easy to Use',
-    Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
+    title: "Streamlined Soroban Development",
+    Icon: CodeBracketIcon,
     description: (
       <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
+        Sora simplifies Soroban smart contract development with an intuitive
+        interface, making it easier to create, deploy, and manage your projects.
       </>
     ),
   },
   {
-    title: 'Focus on What Matters',
-    Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
+    title: "AI-Powered Assistance",
+    Icon: CpuChipIcon,
     description: (
       <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
+        Leverage AI for command generation and get instant help with development
+        questions. Sora's AI features accelerate your Soroban learning curve.
       </>
     ),
   },
   {
-    title: 'Powered by React',
-    Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
+    title: "Comprehensive Toolkit",
+    Icon: WrenchScrewdriverIcon,
     description: (
       <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
+        From project management to identity handling and contract interactions,
+        Sora provides all the tools you need in one unified platform.
       </>
     ),
   },
 ];
 
-function Feature({Svg, title, description}) {
+function Feature({ Icon, title, description }) {
   return (
-    <div className={clsx('col col--4')}>
+    <div className={clsx("col col--4")}>
       <div className="text--center">
-        <Svg className={styles.featureSvg} role="img" />
+        <Icon className={styles.featureIcon} aria-hidden="true" />
       </div>
       <div className="text--center padding-horiz--md">
         <Heading as="h3">{title}</Heading>
