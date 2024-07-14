@@ -261,8 +261,6 @@ export function CommandGenerator({ isOpen, onClose }: CommandGeneratorProps) {
       );
       const actualCommand = commandMatch ? commandMatch[1].trim() : command;
 
-      console.log("Executing command:", actualCommand);
-
       await navigator.clipboard.writeText(actualCommand);
 
       if (actualCommand.startsWith("soroban")) {
