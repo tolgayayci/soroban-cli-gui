@@ -48,7 +48,11 @@ You can still use the SORA application on Windows by following the instructions 
 1. Install WSL 2 by following the instructions [on microsoft docs](https://learn.microsoft.com/en-us/windows/wsl/install).
 2. Once you have WSL installed, you can install `soroban-cli` by following the instructions for Linux. 
 3. Follow the instructions for Linux to install the SORA.
-   
+
+### :small_blue_diamond: **Stellar Suite (Vs Code Extension)**
+
+You can install the extension on [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=tolgayayci.stellar-suite)
+
 ---
 
 ## Key Features
