@@ -17,7 +17,8 @@ import { Button } from "components/ui/button";
 
 export default function EnvironmentVariables() {
   const [soraAppVersion, setSoraAppVersion] = useState("Loading...");
-  const [sorobanVersion, setSorobanVersion] = useState("Loading...");
+  const [cliType, setCliType] = useState("Loading...");
+  const [cliVersion, setCliVersion] = useState("Loading...");
   const [sorobanEnvVersion, setSorobanEnvVersion] = useState("Loading...");
   const [sorobanEnvInterfaceVersion, setSorobanEnvInterfaceVersion] =
     useState("Loading...");
@@ -26,13 +27,27 @@ export default function EnvironmentVariables() {
 
   useEffect(() => {
     async function fetchVersionData() {
-      const versionData = await window.sorobanApi.getSorobanVersion();
+      try {
+        const installationInfo = await window.sorobanApi.isSorobanInstalled();
+        const versionData = await window.sorobanApi.getSorobanVersion();
 
-      setSorobanVersion(versionData.sorobanVersion);
-      setSorobanEnvVersion(versionData.sorobanEnvVersion);
-      setSorobanEnvInterfaceVersion(versionData.sorobanEnvInterfaceVersion);
-      setStellarXdrVersion(versionData.stellarXdrVersion);
-      setXdrCurrVersion(versionData.xdrCurrVersion);
+        if (typeof installationInfo === "object") {
+          setCliType(installationInfo.type || "Unknown");
+          setCliVersion(installationInfo.version || "Unknown");
+        } else {
+          setCliType("Unknown");
+          setCliVersion("Unknown");
+        }
+
+        setSorobanEnvVersion(versionData.sorobanEnvVersion);
+        setSorobanEnvInterfaceVersion(versionData.sorobanEnvInterfaceVersion);
+        setStellarXdrVersion(versionData.stellarXdrVersion);
+        setXdrCurrVersion(versionData.xdrCurrVersion);
+      } catch (error) {
+        console.error("Error fetching version data:", error);
+        setCliType("Error");
+        setCliVersion("Error fetching data");
+      }
     }
 
     fetchVersionData();
@@ -68,12 +83,8 @@ export default function EnvironmentVariables() {
                 <Input value={soraAppVersion} placeholder="0.2.0" disabled />
               </div>
               <div className="flex flex-col justify-between space-y-3">
-                <Label className="w-full">Soroban Version</Label>
-                <Input
-                  value={sorobanVersion}
-                  placeholder="Not Defined"
-                  disabled
-                />
+                <Label className="w-full">Stellar/Soroban Version</Label>
+                <Input value={cliVersion} placeholder="Not Defined" disabled />
               </div>
               <div className="flex flex-col justify-between space-y-3">
                 <Label className="w-full">Soroban-Env Version</Label>

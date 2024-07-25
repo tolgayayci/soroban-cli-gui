@@ -101,9 +101,29 @@ const LabCommandSelector = ({
       })
       .join(" ");
 
-    setLatestCommand(
-      `soroban lab xdr ${selectedCommandDetails.value} ${argsString} ${optionsString}`
-    );
+    // Check the installation info and set the command accordingly
+    window.sorobanApi
+      .isSorobanInstalled()
+      .then((installationInfo) => {
+        let commandPrefix = "soroban lab xdr";
+        if (
+          typeof installationInfo === "object" &&
+          installationInfo.type === "stellar"
+        ) {
+          commandPrefix = "stellar xdr";
+        }
+
+        setLatestCommand(
+          `${commandPrefix} ${selectedCommandDetails.value} ${argsString} ${optionsString}`
+        );
+      })
+      .catch((error) => {
+        console.error("Error checking installation:", error);
+        // Fallback to soroban if there's an error
+        setLatestCommand(
+          `soroban lab xdr ${selectedCommandDetails.value} ${argsString} ${optionsString}`
+        );
+      });
   };
 
   useEffect(() => {
@@ -189,8 +209,17 @@ const LabCommandSelector = ({
         isNaN(arg) ? arg : parseInt(arg, 10)
       );
 
+      let commandPrefix = "lab xdr";
+      const installationInfo = await window.sorobanApi.isSorobanInstalled();
+      if (
+        typeof installationInfo === "object" &&
+        installationInfo.type === "stellar"
+      ) {
+        commandPrefix = "xdr";
+      }
+
       const result = await window.sorobanApi.runSorobanCommand(
-        "lab xdr",
+        commandPrefix,
         command,
         [...processedArgs], // Use processedArgs instead of args
         optionsArray
