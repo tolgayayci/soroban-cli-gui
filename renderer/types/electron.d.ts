@@ -14,7 +14,7 @@ interface Versions {
   manageIdentities: (action, identity?, newIdentity?) => Promise<any>;
   manageContractEvents: (action, contractSettings?) => Promise<any>;
   isSorobanProject: (projectPath) => Promise<boolean>;
-  isSorobanInstalled: () => Promise<boolean>;
+  isSorobanInstalled: () => Promise<any>;
   listContracts: (directoryPath) => Promise<any>;
   jsonRead: (filePath, directoryPath) => Promise<any>;
   jsonWrite: (filePath, directoryPath, data) => Promise<any>;

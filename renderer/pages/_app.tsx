@@ -1,49 +1,62 @@
 import React, { useEffect, useState } from "react";
 import type { AppProps } from "next/app";
 import Layout from "components/layout";
-import SorobanNotInstalled from "components/common/is-soroban-installed";
+import SorobanInstallationAlert from "components/common/is-soroban-installed";
 import { ThemeProvider } from "components/theme-provider";
-
 import "../styles/globals.css";
 
+interface InstallationInfo {
+  installed: boolean;
+  type: string | null;
+  version: string | null;
+  error?: string;
+}
+
 function MyApp({ Component, pageProps }: AppProps) {
-  const [isSorobanInstalled, setIsSorobanInstalled] = useState<boolean | null>(
-    null
-  );
+  const [installationInfo, setInstallationInfo] =
+    useState<InstallationInfo | null>(null);
 
   useEffect(() => {
-    async function checkIsSorobanInstalled() {
-      try {
-        const result = await window.sorobanApi.isSorobanInstalled();
-        setIsSorobanInstalled(result);
-      } catch (error) {
-        setIsSorobanInstalled(false);
+    async function checkInstallation() {
+      if (typeof window !== "undefined" && window.sorobanApi) {
+        try {
+          const result = await window.sorobanApi.isSorobanInstalled();
+          setInstallationInfo(result);
+        } catch (error) {
+          setInstallationInfo({
+            installed: false,
+            type: null,
+            version: null,
+            error:
+              error.message || "An error occurred while checking installation",
+          });
+        }
       }
     }
 
-    if (typeof window !== "undefined") {
-      checkIsSorobanInstalled();
-    }
+    checkInstallation();
   }, []);
 
-  if (isSorobanInstalled === null) {
+  if (installationInfo === null) {
     return null;
-  } else if (isSorobanInstalled) {
-    return (
-      <ThemeProvider
-        attribute="class"
-        defaultTheme="system"
-        enableSystem
-        disableTransitionOnChange
-      >
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
-      </ThemeProvider>
-    );
-  } else {
-    return <SorobanNotInstalled />;
   }
+
+  if (!installationInfo.installed) {
+    return <SorobanInstallationAlert installationInfo={installationInfo} />;
+  }
+
+  return (
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="system"
+      enableSystem
+      disableTransitionOnChange
+    >
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
+    </ThemeProvider>
+  );
 }
 
 export default MyApp;

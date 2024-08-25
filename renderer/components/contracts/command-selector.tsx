@@ -103,9 +103,29 @@ const CliCommandSelector = ({
       })
       .join(" ");
 
-    setLatestCommand(
-      `soroban contract ${selectedCommandDetails.value} ${argsString} ${optionsString}`
-    );
+    // Check the installation info and set the command accordingly
+    window.sorobanApi
+      .isSorobanInstalled()
+      .then((installationInfo) => {
+        let commandPrefix = "soroban";
+        if (
+          typeof installationInfo === "object" &&
+          installationInfo.type === "stellar"
+        ) {
+          commandPrefix = "stellar";
+        }
+
+        setLatestCommand(
+          `${commandPrefix} contract ${selectedCommandDetails.value} ${argsString} ${optionsString}`
+        );
+      })
+      .catch((error) => {
+        console.error("Error checking installation:", error);
+        // Fallback to soroban if there's an error
+        setLatestCommand(
+          `soroban contract ${selectedCommandDetails.value} ${argsString} ${optionsString}`
+        );
+      });
   };
 
   useEffect(() => {

@@ -15,7 +15,7 @@ function ContractDetailPage() {
       <Head>
         <title>Contract Actions - Sora</title>
       </Head>
-      <ContractDetail projectPath={path as string} />
+      <ContractDetail />
     </React.Fragment>
   );
 }

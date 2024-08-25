@@ -9,7 +9,18 @@ import {
   AlertDialogTitle,
 } from "components/ui/alert-dialog";
 
-export default function SorobanNotInstalled() {
+interface SorobanInstallationProps {
+  installationInfo: {
+    installed: boolean;
+    type: string | null;
+    version: string | null;
+    error?: string;
+  };
+}
+
+export default function SorobanInstallationAlert({
+  installationInfo,
+}: SorobanInstallationProps) {
   async function openExternalLink(url: string) {
     try {
       await window.sorobanApi.openExternalLink(url);
@@ -26,25 +37,35 @@ export default function SorobanNotInstalled() {
     }
   }
 
+  const title = installationInfo.installed
+    ? `${installationInfo.type} is installed!`
+    : "Soroban/Stellar is not installed!";
+
+  const description = installationInfo.installed
+    ? `You have ${installationInfo.type} version ${installationInfo.version} installed.`
+    : "You need to install Soroban or Stellar to use this application. Please visit the repository for more information.";
+
   return (
     <AlertDialog open={true}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Soroban is not installed!</AlertDialogTitle>
+          <AlertDialogTitle>{title}</AlertDialogTitle>
           <AlertDialogDescription>
-            You need to install Soroban to use this application. Please visit
-            the repository for more information.
+            {description}
+            {installationInfo.error && (
+              <p className="text-red-500 mt-2">
+                Error: {installationInfo.error}
+              </p>
+            )}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel onClick={() => reloadApplication() as any}>
+          <AlertDialogCancel onClick={() => reloadApplication()}>
             Reload Application
           </AlertDialogCancel>
           <AlertDialogAction
             onClick={() =>
-              openExternalLink(
-                "https://github.com/tolgayayci/soroban-cli-gui"
-              ) as any
+              openExternalLink("https://github.com/tolgayayci/soroban-cli-gui")
             }
           >
             Visit GitHub
