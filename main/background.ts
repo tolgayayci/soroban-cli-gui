@@ -324,16 +324,23 @@ if (isProd) {
         if (
           command &&
           (command === "contract" ||
-            command === "lab xdr" ||
+            command === "lab" ||
+            command === "xdr" ||
             command === "events")
         ) {
           const formattedResult = result
             ? `Result: ${JSON.stringify(result)}`
             : "";
 
+          // Check the installed CLI type
+          const versionOutput = await executeSorobanCommand("--version");
+          const cliType = versionOutput.trim().startsWith("stellar")
+            ? "stellar"
+            : "soroban";
+
           commandLog.info(
-            "soroban",
-            command ? command : "",
+            cliType,
+            command,
             subcommand ? subcommand : "",
             args ? args.join(" ") : "",
             flags ? flags.join(" ") : "",
@@ -344,7 +351,7 @@ if (isProd) {
 
         return result;
       } catch (error) {
-        log.error("Error while executing Soroban command:", error);
+        log.error("Error while executing command:", error);
         throw error;
       }
     }
@@ -467,14 +474,64 @@ if (isProd) {
     try {
       if (mainWindow) {
         const result = await executeSorobanCommand("--version");
-        const isSorobanInstalled = result.trim().startsWith("soroban");
-        return isSorobanInstalled;
+        const trimmedResult = result.trim();
+
+        if (trimmedResult.startsWith("stellar")) {
+          const versionMatch = trimmedResult.match(/stellar (\d+\.\d+\.\d+)/);
+          if (versionMatch) {
+            return {
+              installed: true,
+              type: "stellar",
+              version: versionMatch[1],
+            };
+          }
+        } else if (trimmedResult.startsWith("soroban")) {
+          const versionMatch = trimmedResult.match(/soroban (\d+\.\d+\.\d+)/);
+          if (versionMatch) {
+            return {
+              installed: true,
+              type: "soroban",
+              version: versionMatch[1],
+            };
+          }
+        }
+
+        // If we couldn't parse the version, but it starts with stellar or soroban
+        if (
+          trimmedResult.startsWith("stellar") ||
+          trimmedResult.startsWith("soroban")
+        ) {
+          return {
+            installed: true,
+            type: trimmedResult.startsWith("stellar") ? "stellar" : "soroban",
+            version: "unknown",
+          };
+        }
+
+        // If we get here, the command succeeded but the output was unexpected
+        return {
+          installed: false,
+          type: null,
+          version: null,
+          error: "Unexpected output format",
+        };
       } else {
         console.error("Main window not found");
+        return {
+          installed: false,
+          type: null,
+          version: null,
+          error: "Main window not found",
+        };
       }
     } catch (error) {
       console.error(`Error while checking for Soroban installation: ${error}`);
-      return false;
+      return {
+        installed: false,
+        type: null,
+        version: null,
+        error: error.message || "Unknown error",
+      };
     }
   });
 

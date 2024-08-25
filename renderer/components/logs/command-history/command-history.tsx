@@ -5,6 +5,7 @@ import { createCommandHistoryColumns } from "components/logs/command-history/com
 interface LogEntry {
   date: string;
   time: string;
+  cliType: string;
   subcommand: string;
   command: string;
   path: string;
@@ -15,7 +16,6 @@ export default function CommandHistory() {
   const [commands, setCommands] = useState<LogEntry[]>([]);
   const [subcommandFilter, setSubcommandFilter] = useState("");
 
-  // CommandHistory.tsx
   async function getCommandHistory() {
     try {
       const commandContent: string = await window.sorobanApi.readCommandLogs();
@@ -24,7 +24,9 @@ export default function CommandHistory() {
         .filter((entry) => entry.trim() !== "");
 
       const parsedCommands = commandEntries
-        .filter((entry) => entry.includes("soroban"))
+        .filter(
+          (entry) => entry.includes("soroban") || entry.includes("stellar")
+        )
         .map((entry) => {
           const [timestamp, ...commandParts] = entry.split(/]\s+/);
           const command = commandParts.join("]").trim();
@@ -32,11 +34,16 @@ export default function CommandHistory() {
           // Extract date and time from the timestamp
           const [date, time] = timestamp.slice(1, -1).split(" ");
 
-          // Extract subcommand from the command
-          const subcommand = command.split(" ")[1];
+          // Determine CLI type (soroban or stellar)
+          const cliType = command.startsWith("stellar") ? "stellar" : "soroban";
 
-          // Check if the subcommand is one of "contract", "network", or "lab"
-          const validSubcommands = ["contract", "network", "lab"];
+          // Extract subcommand from the command
+          const subcommandParts = command.split(" ");
+          const subcommandIndex = cliType === "stellar" ? 1 : 1;
+          const subcommand = subcommandParts[subcommandIndex];
+
+          // Check if the subcommand is one of "contract", "network", "lab", or "xdr" (for stellar)
+          const validSubcommands = ["contract", "network", "lab", "xdr"];
           const mappedSubcommand = validSubcommands.includes(subcommand)
             ? subcommand.trim()
             : "";
@@ -68,6 +75,7 @@ export default function CommandHistory() {
           return {
             date: date,
             time: time.slice(0, 8),
+            cliType: cliType,
             subcommand: mappedSubcommand,
             command: commandWithoutResult,
             path: path,
