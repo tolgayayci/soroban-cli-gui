@@ -1,0 +1,27 @@
+{
+  "id": "features/ai-command-constructor",
+  "title": "AI Command Constructor",
+  "description": "We're excited to announce that new content is on its way! This page will be updated with detailed information about AI Command Constructor in the near future.",
+  "source": "@site/docs/features/ai-command-constructor.md",
+  "sourceDirName": "features",
+  "slug": "/features/ai-command-constructor",
+  "permalink": "/docs/features/ai-command-constructor",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/tolgayayci/sora/tree/main/docs/docs/features/ai-command-constructor.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "AI Command Constructor",
+    "sidebar_label": "AI Command Constructor"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Event Monitoring",
+    "permalink": "/docs/features/event-monitoring"
+  },
+  "next": {
+    "title": "SOR.AI",
+    "permalink": "/docs/features/sorai-assistant"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "id": "troubleshooting/common-issues",
+  "title": "Common Issues",
+  "description": "Troubleshoot frequent problems encountered while using Sora.",
+  "source": "@site/docs/troubleshooting/common-issues.md",
+  "sourceDirName": "troubleshooting",
+  "slug": "/troubleshooting/common-issues",
+  "permalink": "/docs/troubleshooting/common-issues",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/tolgayayci/sora/tree/main/docs/docs/troubleshooting/common-issues.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Common Issues",
+    "sidebar_label": "Common Issues"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Advanced Usage",
+    "permalink": "/docs/guides/advanced-usage"
+  },
+  "next": {
+    "title": "FAQ",
+    "permalink": "/docs/troubleshooting/faq"
+  }
+}

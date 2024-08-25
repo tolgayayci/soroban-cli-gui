@@ -1,0 +1,27 @@
+{
+  "id": "getting-started/quick-start",
+  "title": "Quick Start Guide",
+  "description": "Get up and running with Sora in minutes!",
+  "source": "@site/docs/getting-started/quick-start.md",
+  "sourceDirName": "getting-started",
+  "slug": "/getting-started/quick-start",
+  "permalink": "/docs/getting-started/quick-start",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/tolgayayci/sora/tree/main/docs/docs/getting-started/quick-start.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Quick Start Guide",
+    "sidebar_label": "Quick Start"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Installation",
+    "permalink": "/docs/getting-started/installation"
+  },
+  "next": {
+    "title": "Project Management",
+    "permalink": "/docs/features/project-management"
+  }
+}

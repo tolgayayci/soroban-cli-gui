@@ -1,0 +1,23 @@
+{
+  "id": "getting-started/installation",
+  "title": "Installation",
+  "description": "This guide will walk you through the process of installing Sora on your system.",
+  "source": "@site/docs/getting-started/installation.md",
+  "sourceDirName": "getting-started",
+  "slug": "/getting-started/installation",
+  "permalink": "/docs/getting-started/installation",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/tolgayayci/sora/tree/main/docs/docs/getting-started/installation.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Installation",
+    "sidebar_label": "Installation"
+  },
+  "sidebar": "docsSidebar",
+  "next": {
+    "title": "Quick Start",
+    "permalink": "/docs/getting-started/quick-start"
+  }
+}

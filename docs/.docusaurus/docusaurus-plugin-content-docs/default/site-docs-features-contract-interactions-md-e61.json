@@ -1,0 +1,27 @@
+{
+  "id": "features/contract-interactions",
+  "title": "Contract Interactions",
+  "description": "We're excited to announce that new content is on its way! This page will be updated with detailed information about Contract Interactions in the near future.",
+  "source": "@site/docs/features/contract-interactions.md",
+  "sourceDirName": "features",
+  "slug": "/features/contract-interactions",
+  "permalink": "/docs/features/contract-interactions",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/tolgayayci/sora/tree/main/docs/docs/features/contract-interactions.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Contract Interactions",
+    "sidebar_label": "Contract Interactions"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Identity Management",
+    "permalink": "/docs/features/identity-management"
+  },
+  "next": {
+    "title": "Event Monitoring",
+    "permalink": "/docs/features/event-monitoring"
+  }
+}
