@@ -9,8 +9,8 @@ export default defineConfig({
     // https://vitepress.dev/reference/default-theme-config
     siteTitle: false,
     logo: {
-      light: "/images/sora-dark.svg",
-      dark: "/images/sora-light.svg",
+      light: "/public/sora-dark.svg",
+      dark: "/public/sora-light.svg",
     },
 
     nav: [
