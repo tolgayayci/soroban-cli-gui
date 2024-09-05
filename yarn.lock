@@ -985,7 +985,7 @@
     core-js-pure "^3.30.2"
     regenerator-runtime "^0.14.0"
 
-"@babel/runtime@7.23.9", "@babel/runtime@^7.13.10", "@babel/runtime@^7.23.7", "@babel/runtime@^7.8.4":
+"@babel/runtime@7.23.9", "@babel/runtime@^7.13.10", "@babel/runtime@^7.8.4":
   version "7.23.9"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.23.9.tgz#47791a15e4603bb5f905bc0753801cf21d6345f7"
   integrity sha512-0CX6F+BI2s9dkUqr08KFrAIZgNFj75rdBU/DjCyYLIaV/quFjkk6T+EJ2LkZHyZTbEV4L5p97mNkUsHl2wLFAw==
@@ -6024,12 +6024,10 @@ supports-preserve-symlinks-flag@^1.0.0:
   resolved "https://registry.yarnpkg.com/supports-preserve-symlinks-flag/-/supports-preserve-symlinks-flag-1.0.0.tgz#6eda4bd344a3c94aea376d4cc31bc77311039e09"
   integrity sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==
 
-tailwind-merge@^2.2.1:
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/tailwind-merge/-/tailwind-merge-2.2.1.tgz#3f10f296a2dba1d88769de8244fafd95c3324aeb"
-  integrity sha512-o+2GTLkthfa5YUt4JxPfzMIpQzZ3adD1vLVkvKE1Twl9UAhGsEbIZhHHZVRttyW177S8PDJI3bTQNaebyofK3Q==
-  dependencies:
-    "@babel/runtime" "^7.23.7"
+tailwind-merge@^2.5.2:
+  version "2.5.2"
+  resolved "https://registry.yarnpkg.com/tailwind-merge/-/tailwind-merge-2.5.2.tgz#000f05a703058f9f9f3829c644235f81d4c08a1f"
+  integrity sha512-kjEBm+pvD+6eAwzJL2Bi+02/9LFLal1Gs61+QB7HvTfQQ0aXwC5LGT8PEt1gS0CWKktKe6ysPTAy3cBC5MeiIg==
 
 tailwindcss-animate@^1.0.7:
   version "1.0.7"

@@ -60,7 +60,7 @@
     "react-resizable-panels": "^2.0.3",
     "react-syntax-highlighter": "^15.5.0",
     "react-use": "^17.5.0",
-    "tailwind-merge": "^2.2.1",
+    "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
     "toml": "^3.0.0",
     "vaul": "^0.9.1",
