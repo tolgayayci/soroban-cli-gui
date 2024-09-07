@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@docusaurus/core": "3.5.2",
-    "@docusaurus/preset-classic": "3.5.0",
+    "@docusaurus/preset-classic": "3.5.2",
     "@heroicons/react": "^2.1.5",
     "@mdx-js/react": "^3.0.0",
     "clsx": "^2.0.0",
