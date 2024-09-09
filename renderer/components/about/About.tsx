@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { Label } from "components/ui/label";
 import { Input } from "components/ui/input";
 import { ScrollArea, ScrollBar } from "components/ui/scroll-area";
-import { Separator } from "components/ui/separator";
 
 import {
   Card,
@@ -75,9 +74,7 @@ export default function EnvironmentVariables() {
       <div className="flex flex-row space-x-7">
         <div className="w-3/5">
           <ScrollArea className="h-[calc(100vh-100px)] overflow-y-auto">
-            <Label className="text-xl ">About Sora</Label>
-            <Separator className="mt-3" />
-            <div className="space-y-4 mt-6">
+            <div className="space-y-6 mt-3">
               <div className="flex flex-col justify-between space-y-3">
                 <Label className="w-full">Sora App Version</Label>
                 <Input value={soraAppVersion} placeholder="0.2.0" disabled />

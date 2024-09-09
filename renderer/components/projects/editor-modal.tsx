@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-
+import React, { useEffect, useState } from "react";
 import { Button } from "components/ui/button";
 import {
   DialogTitle,
@@ -10,7 +9,6 @@ import {
   Dialog,
 } from "components/ui/dialog";
 import { RadioGroup } from "components/ui/radio-group";
-
 import { CodeIcon } from "lucide-react";
 import { useToast } from "components/ui/use-toast";
 
@@ -38,7 +36,6 @@ export default function EditorModal({
         console.error("Error checking available editors:", error);
       }
     };
-
     checkAvailableEditors();
   }, []);
 
@@ -46,7 +43,6 @@ export default function EditorModal({
     const editor = availableEditors.find(
       (editor) => editor.name === selectedEditor
     );
-
     if (editor) {
       try {
         await window.sorobanApi.openEditor(projectPath, editor);
@@ -67,8 +63,12 @@ export default function EditorModal({
     }
   };
 
+  const handleClose = () => {
+    setShowEditorDialog(false);
+  };
+
   return (
-    <Dialog open={showEditorDialog}>
+    <Dialog open={showEditorDialog} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Open "{projectName}"</DialogTitle>
@@ -103,7 +103,7 @@ export default function EditorModal({
           </RadioGroup>
         </div>
         <DialogFooter>
-          <Button variant="outline" onClick={() => setShowEditorDialog(false)}>
+          <Button variant="outline" onClick={handleClose}>
             Cancel
           </Button>
           <Button type="submit" onClick={handleOpenProject}>

@@ -6,7 +6,7 @@ import { ContractsDataTable } from "components/contracts/contracts-data-table";
 import NoContracts from "components/contracts/no-contracts";
 import Loading from "components/common/loading";
 
-export default function CanistersComponent() {
+export default function ContractsComponent() {
   const [allContracts, setAllContracts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 

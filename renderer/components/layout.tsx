@@ -154,7 +154,7 @@ export default function Layout({ children }: LayoutProps) {
                       },
 
                       {
-                        title: "Config",
+                        title: "Network",
                         label: "",
                         href: "/settings",
                         icon: SettingsIcon,

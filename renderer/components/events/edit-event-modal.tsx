@@ -226,7 +226,7 @@ export const EditContractEventModal = ({ contractEvent, isOpen, onClose }) => {
                       )}
                     />
                   </div>
-                  <Accordion type="single" collapsible>
+                  <Accordion type="multiple">
                     <AccordionItem value="options">
                       <AccordionTrigger>Filters</AccordionTrigger>
                       <AccordionContent>

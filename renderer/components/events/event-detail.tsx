@@ -97,12 +97,7 @@ export default function ContractEventDetail({
               />
             </div>
             <div className="w-2/5 pr-4">
-              <CommandStatusConfig
-                canister={project}
-                projectPath={projectPath}
-                commandOutput={commandOutput}
-                commandError={commandError}
-              />
+              
             </div> */}
           </div>
         </div>

@@ -28,6 +28,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  SelectGroup,
 } from "components/ui/select";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -75,7 +76,7 @@ export default function ProjectModal({
   >({
     resolver: zodResolver(createNewProjectFormSchema),
     defaultValues: {
-      include_examples: false,
+      include_examples: true,
     },
   });
 
@@ -162,7 +163,7 @@ export default function ProjectModal({
                     Initialize a Soroban project with an example contract
                   </DialogDescription>
                 </DialogHeader>
-                <ScrollArea className="max-h-[calc(70vh-106px)] overflow-y-auto">
+                <ScrollArea className="max-h-[calc(80vh-140px)] overflow-y-auto">
                   <div>
                     <div className="space-y-4 py-4 pb-4">
                       <div>
@@ -264,38 +265,42 @@ export default function ProjectModal({
                                       <SelectValue placeholder="Select an example" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                      {[
-                                        "account",
-                                        "alloc",
-                                        "atomic_multiswap",
-                                        "atomic_swap",
-                                        "auth",
-                                        "cross_contract",
-                                        "custom_types",
-                                        "deep_contract_auth",
-                                        "deployer",
-                                        "errors",
-                                        "eth_abi",
-                                        "events",
-                                        "fuzzing",
-                                        "increment",
-                                        "liquidity_pool",
-                                        "logging",
-                                        "mint_lock",
-                                        "simple_account",
-                                        "single_offer",
-                                        "timelock",
-                                        "token",
-                                        "upgradeable_contract",
-                                        "workspace",
-                                      ].map((exampleValue) => (
-                                        <SelectItem
-                                          key={exampleValue}
-                                          value={exampleValue}
-                                        >
-                                          {exampleValue}
-                                        </SelectItem>
-                                      ))}
+                                      <SelectGroup className="h-[150px]">
+                                        {" "}
+                                        {[
+                                          "account",
+                                          "alloc",
+                                          "atomic_multiswap",
+                                          "atomic_swap",
+                                          "auth",
+                                          "cross_contract",
+                                          "custom_types",
+                                          "deep_contract_auth",
+                                          "deployer",
+                                          "errors",
+                                          "eth_abi",
+                                          "events",
+                                          "fuzzing",
+                                          "increment",
+                                          "liquidity_pool",
+                                          "logging",
+                                          "mint_lock",
+                                          "simple_account",
+                                          "single_offer",
+                                          "timelock",
+                                          "token",
+                                          "ttl",
+                                          "upgradeable_contract",
+                                          "workspace",
+                                        ].map((exampleValue) => (
+                                          <SelectItem
+                                            key={exampleValue}
+                                            value={exampleValue}
+                                          >
+                                            {exampleValue}
+                                          </SelectItem>
+                                        ))}
+                                      </SelectGroup>
                                     </SelectContent>
                                   </Select>
                                 </FormControl>
@@ -303,6 +308,24 @@ export default function ProjectModal({
                             />
                           </div>
                         )}
+                        <FormField
+                          control={createNewProjectform.control}
+                          name="frontend_template"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Frontend Template</FormLabel>
+                              <FormControl>
+                                <Input
+                                  {...field}
+                                  placeholder="Hello Soroban"
+                                  className="w-full"
+                                />
+                              </FormControl>
+
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
                       </div>
                     </div>
                   </div>

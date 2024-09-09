@@ -60,6 +60,7 @@ import {
 export default function IdentityModal({
   showCreateIdentityDialog,
   setShowCreateIdentityDialog,
+  onIdentityChange,
 }) {
   const [isSubmittingCreateIdentity, setIsSubmittingCreateIdentity] =
     useState(false);
@@ -67,20 +68,27 @@ export default function IdentityModal({
 
   const { toast } = useToast();
 
+  const newIdentityForm = useForm<z.infer<typeof newIdentityFormSchema>>({
+    resolver: zodResolver(newIdentityFormSchema),
+  });
+
+  const addIdentityForm = useForm<z.infer<typeof addIdentityFormSchema>>({
+    resolver: zodResolver(addIdentityFormSchema),
+  });
+
   const handleCreateNewIdentity = async (data) => {
+    setIsSubmittingCreateIdentity(true);
     try {
-      await onNewIdentityFormSubmit(data).then((res) => {
-        //@ts-ignore
-        if (res) {
-          toast(identityCreateSuccess(data.identity_name));
-          setShowCreateIdentityDialog(false);
-        }
+      await onNewIdentityFormSubmit(data).then(() => {
+        toast(identityCreateSuccess(data.identity_name));
+        setShowCreateIdentityDialog(false);
+        newIdentityForm.reset();
+        onIdentityChange();
       });
     } catch (error) {
       toast(identityCreateError(data.identity_name, error));
-      console.log(error);
     } finally {
-      setShowCreateIdentityDialog(false);
+      setIsSubmittingCreateIdentity(false);
     }
   };
 
@@ -99,14 +107,6 @@ export default function IdentityModal({
       setShowCreateIdentityDialog(false);
     }
   };
-
-  const newIdentityForm = useForm<z.infer<typeof newIdentityFormSchema>>({
-    resolver: zodResolver(newIdentityFormSchema),
-  });
-
-  const addIdentityForm = useForm<z.infer<typeof addIdentityFormSchema>>({
-    resolver: zodResolver(addIdentityFormSchema),
-  });
 
   async function getDirectoryPath() {
     try {
@@ -220,7 +220,7 @@ export default function IdentityModal({
                           )}
                         />
                       </div>
-                      <Accordion type="single" collapsible>
+                      <Accordion type="multiple">
                         <AccordionItem value="options">
                           <AccordionTrigger>Options</AccordionTrigger>
                           <AccordionContent>
@@ -414,7 +414,6 @@ export default function IdentityModal({
                   </Button>
                   {isSubmittingCreateIdentity ? (
                     <Button disabled>
-                      {" "}
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       Creating...
                     </Button>
@@ -500,7 +499,7 @@ export default function IdentityModal({
                           )}
                         />
                       </div>
-                      <Accordion type="single" collapsible>
+                      <Accordion type="multiple">
                         <AccordionItem value="item-1">
                           <AccordionTrigger>Options</AccordionTrigger>
                           <AccordionContent>

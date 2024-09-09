@@ -35,21 +35,25 @@ export default function ContractDetail() {
   const { command } = router.query;
 
   const project = useProject(path as string);
-  const { toast } = useToast();
+  const { toast, dismiss } = useToast();
 
   useEffect(() => {
     if (commandOutput && !commandError) {
-      toast({
+      const { id } = toast({
         title: "Command Executed Successfully",
         description: (
           <div>
-            <pre className="bg-gray-100 text-black p-1 px-2 rounded-md mt-1">
+            <pre className="bg-gray-100 text-black p-1 px-2 rounded-md mt-1 overflow-hidden text-ellipsis whitespace-nowrap max-w-[340px]">
+              {" "}
               {latestCommand}
             </pre>
             <Button
               variant="default"
               size="sm"
-              onClick={() => setIsModalOpen(true)}
+              onClick={() => {
+                setIsModalOpen(true);
+                dismiss(id);
+              }}
               className="mt-2"
             >
               View Output
@@ -58,18 +62,22 @@ export default function ContractDetail() {
         ),
         variant: "default",
         className: "border-green-500",
+        duration: 2000,
       });
     } else if (commandError) {
-      toast({
+      const { id } = toast({
         title: "Command Execution Failed",
         description: (
           <div>
-            <pre className="bg-gray-100 text-black p-1 px-2 rounded-md mt-1">
+            <pre className="bg-gray-100 text-black p-1 px-2 rounded-md mt-1 overflow-hidden text-ellipsis whitespace-nowrap max-w-[340px]">
               {latestCommand}
             </pre>
             <Button
               variant="default"
-              onClick={() => setIsModalOpen(true)}
+              onClick={() => {
+                setIsModalOpen(true);
+                dismiss(id);
+              }}
               className="mt-2"
             >
               View Output
@@ -78,6 +86,7 @@ export default function ContractDetail() {
         ),
         variant: "default",
         className: "border-red-500",
+        duration: 2000,
       });
     }
   }, [commandOutput, commandError, toast]);

@@ -126,7 +126,7 @@ export function ContractsDataTable<TData, TValue>({
                     colSpan={columns.length}
                     className="h-[54vh] text-center"
                   >
-                    No canisters found with the given canister name!
+                    No contracts found with the given contract name!
                   </TableCell>
                 </TableRow>
               )}

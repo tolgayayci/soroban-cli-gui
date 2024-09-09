@@ -182,7 +182,6 @@ export default function IdentitySwitcher({ className }: TeamSwitcherProps) {
                           <AvatarImage
                             src={`https://avatar.vercel.sh/${team.value}.png`}
                             alt={team.label}
-                            className="grayscale"
                           />
                           <AvatarFallback>SC</AvatarFallback>
                         </Avatar>

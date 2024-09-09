@@ -256,9 +256,7 @@ export function CommandGenerator({ isOpen, onClose }: CommandGeneratorProps) {
 
   const executeCommand = async (command: string) => {
     try {
-      const commandMatch = command.match(
-        /```(?:plaintext)?\s*(soroban.*?)```/s
-      );
+      const commandMatch = command.match(/```(?:plaintext)?\s*(soroban.*?)```/);
       const actualCommand = commandMatch ? commandMatch[1].trim() : command;
 
       await navigator.clipboard.writeText(actualCommand);
@@ -384,7 +382,7 @@ export function CommandGenerator({ isOpen, onClose }: CommandGeneratorProps) {
                               variant="outline"
                               onClick={() => {
                                 const commandMatch = message.content.match(
-                                  /```(?:plaintext)?\s*(soroban.*?)```/s
+                                  /```(?:plaintext)?\s*(soroban.*?)```/
                                 );
                                 const actualCommand = commandMatch
                                   ? commandMatch[1].trim()

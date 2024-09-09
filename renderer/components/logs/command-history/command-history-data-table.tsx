@@ -10,6 +10,7 @@ import {
   ColumnFiltersState,
   getFilteredRowModel,
   SortingState,
+  getSortedRowModel,
 } from "@tanstack/react-table";
 
 import {
@@ -51,7 +52,9 @@ export function CommandHistoryDataTable<TData, TValue>({
   data,
   subcommandFilter,
 }: DataTableProps<TData, TValue> & { subcommandFilter: string }) {
-  const [sorting, setSorting] = useState<SortingState>([]);
+  const [sorting, setSorting] = useState<SortingState>([
+    { id: "date", desc: true },
+  ]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
   const table = useReactTable({
@@ -61,6 +64,8 @@ export function CommandHistoryDataTable<TData, TValue>({
     getPaginationRowModel: getPaginationRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    onSortingChange: setSorting,
     initialState: {
       pagination: {
         pageSize: 5,

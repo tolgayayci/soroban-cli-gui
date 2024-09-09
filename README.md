@@ -4,6 +4,7 @@
   <img src="https://github.com/tolgayayci/sora/assets/37740842/5b644571-e581-4126-b87c-005e43be89ca" alt="Your Image Description" style="width: 20%;">
 </p>
 
+
 SORA is a cross platform, electron based application designed to streamline the use of the Soroban CLI. It offers a user-friendly interface for managing projects, identities, networks, and contract methods with ease.
 
 You can watch the **how-to-use demo** [here](https://drive.google.com/file/d/1qHP7ZM4MlGhPxSExTLoUOV9m_2jbDKet/view?usp=drive_link).
@@ -85,3 +86,5 @@ For feature requests or bug reports, please use our issue templates:
 ## License
 
 SORA is released under the **MIT**. See ([LICENSE](https://github.com/tolgayayci/soroban-cli-gui/blob/main/LICENSE)) for more details.
+
+[![Netlify Status](https://api.netlify.com/api/v1/badges/2fd36ac9-a4ac-4c4d-9300-30b352f9ac5c/deploy-status)](https://app.netlify.com/sites/sora-docs/deploys)

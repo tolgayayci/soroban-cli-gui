@@ -14,6 +14,7 @@ import { Avatar, AvatarImage } from "components/ui/avatar";
 import { Alert, AlertDescription, AlertTitle } from "components/ui/alert";
 import { Button } from "components/ui/button";
 import { Input } from "components/ui/input";
+import { Label } from "components/ui/label";
 
 import { LucidePersonStanding } from "lucide-react";
 import IdentityModal from "components/identities/identity-modal";
@@ -22,6 +23,28 @@ import NoIdentities from "components/identities/no-identities";
 
 import { FundIdentityModal } from "components/identities/fund-identity-modal";
 import { RemoveIdentityModal } from "components/identities/remove-identity-modal";
+
+import { useCopyToClipboard } from "react-use";
+import { Info, Copy, CheckCircle2 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogDescription,
+} from "components/ui/dialog";
+import { Loader2 } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "components/ui/alert-dialog";
 
 const IdentityCard = ({
   identity,
@@ -35,21 +58,77 @@ const IdentityCard = ({
   const [showFundIdentityDialog, setShowFundIdentityDialog] = useState(false);
   const [showRemoveIdentityDialog, setShowRemoveIdentityDialog] =
     useState(false);
+  const [showInfoDialog, setShowInfoDialog] = useState(false);
+  const [identityDetails, setIdentityDetails] = useState({
+    show: "",
+    address: "",
+  });
+  const [isLoadingDetails, setIsLoadingDetails] = useState(false);
+  const [_, copyToClipboard] = useCopyToClipboard();
+  const [copiedField, setCopiedField] = useState("");
+
+  const handleShowInfo = async () => {
+    setShowInfoDialog(true);
+    setIsLoadingDetails(true);
+    try {
+      const showResult = await window.sorobanApi.runSorobanCommand(
+        "keys",
+        "show",
+        [identity.name],
+        []
+      );
+      const addressResult = await window.sorobanApi.runSorobanCommand(
+        "keys",
+        "address",
+        [identity.name],
+        []
+      );
+      setIdentityDetails({ show: showResult, address: addressResult });
+    } catch (error) {
+      console.error("Error fetching identity details:", error);
+      setIdentityDetails({
+        show: "Error fetching details",
+        address: "Error fetching details",
+      });
+    } finally {
+      setIsLoadingDetails(false);
+    }
+  };
+
+  const handleCopyDetails = (field: "show" | "address") => {
+    copyToClipboard(identityDetails[field]);
+    setCopiedField(field);
+    setTimeout(() => setCopiedField(""), 2000);
+  };
 
   return (
     <Card className="col-span-1" key={identity.name}>
       <CardHeader>
-        <div className="flex items-center">
-          <Avatar className="mr-4 h-10 w-10">
-            <AvatarImage
-              src={`https://avatar.vercel.sh/${identity.name}.png`}
-              alt={identity.name}
-            />
-          </Avatar>
-          <div className="flex flex-col space-y-1">
-            <CardTitle className="text-medium">{identity.name}</CardTitle>
-            <CardDescription>Local Identity</CardDescription>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center flex-grow overflow-hidden">
+            <Avatar className="mr-3 h-10 w-10">
+              <AvatarImage
+                src={`https://avatar.vercel.sh/${identity.name}.png`}
+                alt={identity.name}
+              />
+            </Avatar>
+            <div className="flex flex-col space-y-1 overflow-hidden">
+              <CardTitle className="text-medium truncate">
+                {identity.name}
+              </CardTitle>
+              <CardDescription className="truncate">
+                Local Identity
+              </CardDescription>
+            </div>
           </div>
+          <Button
+            variant="outline"
+            size="sm"
+            className="hover:bg-secondary ml-2"
+            onClick={handleShowInfo}
+          >
+            <Info className="h-5 w-5" />
+          </Button>
         </div>
       </CardHeader>
       <CardContent className="grid grid-cols-2 gap-4">
@@ -85,6 +164,82 @@ const IdentityCard = ({
           )}
         </div>
       </CardContent>
+
+      {/* Info Dialog */}
+      <Dialog open={showInfoDialog} onOpenChange={setShowInfoDialog}>
+        <DialogContent className="sm:max-w-[700px]">
+          <DialogHeader>
+            <DialogTitle className="mb-1">
+              Identity Details: {identity.name}
+            </DialogTitle>
+            <DialogDescription>
+              View the private key and public address for this identity. Use
+              caution when sharing this information.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-2">
+            {isLoadingDetails ? (
+              <div className="flex justify-center">
+                <Loader2 className="h-6 w-6 animate-spin" />
+              </div>
+            ) : (
+              <>
+                <div className="space-y-2">
+                  <Label htmlFor="show" className="text-left font-medium">
+                    Private Key
+                  </Label>
+                  <div className="flex items-center space-x-2">
+                    <Input
+                      id="show"
+                      value={identityDetails.show}
+                      readOnly
+                      className="font-mono text-sm flex-grow"
+                    />
+                    <Button
+                      size="sm"
+                      onClick={() => handleCopyDetails("show")}
+                      className="px-3"
+                    >
+                      {copiedField === "show" ? (
+                        <CheckCircle2 className="h-4 w-4" />
+                      ) : (
+                        <Copy className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="address" className="text-left font-medium">
+                    Public Address
+                  </Label>
+                  <div className="flex items-center space-x-2">
+                    <Input
+                      id="address"
+                      value={identityDetails.address}
+                      readOnly
+                      className="font-mono text-sm flex-grow"
+                    />
+                    <Button
+                      size="sm"
+                      onClick={() => handleCopyDetails("address")}
+                      className="px-3"
+                    >
+                      {copiedField === "address" ? (
+                        <CheckCircle2 className="h-4 w-4" />
+                      ) : (
+                        <Copy className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+          <DialogFooter>
+            <Button onClick={() => setShowInfoDialog(false)}>Close</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 };
@@ -92,7 +247,7 @@ const IdentityCard = ({
 export default function IdentitiesComponent() {
   const [showCreateIdentityDialog, setShowCreateIdentityDialog] =
     useState(false);
-  const [identities, setIdentities] = useState<any>();
+  const [identities, setIdentities] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeIdentityName, setActiveIdentityName] = useState("");
 
@@ -106,15 +261,22 @@ export default function IdentitiesComponent() {
     }
   }
 
+  const refreshIdentities = async () => {
+    await window.sorobanApi.reloadApplication();
+  };
+
   const handleSearchChange = (e: any) => {
     e.preventDefault();
     setSearchQuery(e.target.value);
   };
 
-  // Call checkIdentities when the component mounts
   useEffect(() => {
     checkIdentities();
   }, []);
+
+  const filteredIdentities = identities.filter((identity) =>
+    identity.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="flex flex-col h-[calc(100vh-106px)]">
@@ -139,34 +301,27 @@ export default function IdentitiesComponent() {
         <IdentityModal
           showCreateIdentityDialog={showCreateIdentityDialog}
           setShowCreateIdentityDialog={setShowCreateIdentityDialog}
+          onIdentityChange={refreshIdentities}
         />
       </div>
 
-      {identities ? (
-        <div className="flex-grow">
-          <div className="my-6">
-            <Input
-              type="search"
-              placeholder={`Search for an identity between ${identities.length} identities`}
-              onChange={handleSearchChange}
-              value={searchQuery}
-            />
-          </div>
+      {identities.length > 0 ? (
+        <div className="mt-6 space-y-6">
+          <Input
+            type="search"
+            placeholder={`Search for an identity between ${identities.length} identities`}
+            onChange={handleSearchChange}
+            value={searchQuery}
+          />
           <ScrollArea className="h-[calc(100vh-300px)] overflow-y-auto">
             <div className="grid grid-cols-3 gap-8">
-              {identities
-                .filter((identity) =>
-                  identity.name
-                    .toLowerCase()
-                    .includes(searchQuery.toLowerCase())
-                )
-                .map((identity) => (
-                  <IdentityCard
-                    key={identity.name}
-                    identity={identity}
-                    activeIdentityName={activeIdentityName}
-                  />
-                ))}
+              {filteredIdentities.map((identity) => (
+                <IdentityCard
+                  key={identity.name}
+                  identity={identity}
+                  activeIdentityName={activeIdentityName}
+                />
+              ))}
             </div>
             <ScrollBar />
           </ScrollArea>

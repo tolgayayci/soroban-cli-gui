@@ -327,7 +327,7 @@ export function ChatbotDrawer({
                 >
                   <TrashIcon className="w-5 h-5" />
                 </Button>
-                <Button
+                {/* <Button
                   variant="ghost"
                   size="icon"
                   className="hover:bg-muted/50"
@@ -338,7 +338,7 @@ export function ChatbotDrawer({
                   ) : (
                     <MaximizeIcon className="w-5 h-5" />
                   )}
-                </Button>
+                </Button> */}
                 <Button
                   variant="ghost"
                   size="icon"

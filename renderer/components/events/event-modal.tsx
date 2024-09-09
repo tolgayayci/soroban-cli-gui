@@ -225,7 +225,7 @@ export default function ContractEventModal({
                       )}
                     />
                   </div>
-                  <Accordion type="single" collapsible>
+                  <Accordion type="multiple">
                     <AccordionItem value="options">
                       <AccordionTrigger>Filters</AccordionTrigger>
                       <AccordionContent>

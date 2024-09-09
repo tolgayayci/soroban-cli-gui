@@ -14,6 +14,17 @@ export const checkEditors = async () => {
       ],
     },
     {
+      name: "Visual Studio Code Insiders",
+      command: "code-insiders",
+      paths: [
+        "/Applications/Visual Studio Code - Insiders.app/Contents/Resources/app/bin/code-insiders",
+        "/usr/local/bin/code-insiders",
+        "/usr/bin/code-insiders",
+        "C:\\Program Files\\Microsoft VS Code Insiders\\bin\\code-insiders.cmd",
+        "C:\\Program Files (x86)\\Microsoft VS Code Insiders\\bin\\code-insiders.cmd",
+      ],
+    },
+    {
       name: "WebStorm",
       command: "webstorm",
       paths: [

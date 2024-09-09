@@ -29,7 +29,7 @@ export default function CommandHistory() {
         )
         .map((entry) => {
           const [timestamp, ...commandParts] = entry.split(/]\s+/);
-          const command = commandParts.join("]").trim();
+          let command = commandParts.join("]").trim();
 
           // Extract date and time from the timestamp
           const [date, time] = timestamp.slice(1, -1).split(" ");
@@ -53,35 +53,52 @@ export default function CommandHistory() {
           const pathMatch = command.match(pathRegex);
           const path = pathMatch ? pathMatch[0] : "";
 
-          // Extract result from the command
-          const resultIndex = command.indexOf("Result:");
-          const result =
-            resultIndex !== -1
-              ? command
-                  .slice(resultIndex + 8)
-                  .trim()
-                  .replace(/^"/, "")
-                  .replace(/"$/, "")
-                  .replace(/\\n/g, "\n")
-              : "";
+          // Check if the entry is an error log
+          const isError = entry.includes("Error:");
+          let result = "";
+          if (isError) {
+            result = entry.slice(entry.indexOf("Error:")).trim();
+            // For error logs, the command is everything before "Error:"
+            command = entry.slice(0, entry.indexOf("Error:")).trim();
+          } else {
+            const resultIndex = command.indexOf("Result:");
+            result =
+              resultIndex !== -1
+                ? command
+                    .slice(resultIndex + 8)
+                    .trim()
+                    .replace(/^"/, "")
+                    .replace(/"$/, "")
+                    .replace(/\\n/g, "\n")
+                : "";
+            // For non-error logs, remove the result from the command
+            command =
+              resultIndex !== -1
+                ? command.slice(0, resultIndex).trim()
+                : command;
+          }
 
-          // Remove the result from the command
-          const commandWithoutResult = command
-            .slice(0, resultIndex)
-            .trim()
-            .replace(path, "")
-            .trim();
+          // Remove the path from the command display
+          const commandWithoutPath = command.replace(path, "").trim();
 
           return {
             date: date,
             time: time.slice(0, 8),
             cliType: cliType,
             subcommand: mappedSubcommand,
-            command: commandWithoutResult,
+            command: commandWithoutPath,
             path: path,
             result: result,
+            isError: isError,
           };
         });
+
+      // Sort the commands to have the latest first
+      parsedCommands.sort((a, b) => {
+        const dateA = new Date(`${a.date} ${a.time}`);
+        const dateB = new Date(`${b.date} ${b.time}`);
+        return dateB.getTime() - dateA.getTime();
+      });
 
       setCommands(parsedCommands);
     } catch (error) {

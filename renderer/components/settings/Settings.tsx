@@ -176,7 +176,7 @@ const NetworkCard = ({
                         )}
                       />
                     </div>
-                    <Accordion type="single" collapsible>
+                    <Accordion type="multiple">
                       <AccordionItem value="options" className="pt-0">
                         <AccordionTrigger>Options</AccordionTrigger>
                         <AccordionContent>

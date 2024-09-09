@@ -154,6 +154,8 @@ if (isProd) {
   const mainWindow = createWindow("main", {
     width: 1500,
     height: 700,
+    minWidth: 1250,
+    minHeight: 680,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
     },
@@ -352,6 +354,31 @@ if (isProd) {
         return result;
       } catch (error) {
         log.error("Error while executing command:", error);
+
+        if (
+          command &&
+          (command === "contract" ||
+            command === "lab" ||
+            command === "xdr" ||
+            command === "events")
+        ) {
+          // Check the installed CLI type
+          const versionOutput = await executeSorobanCommand("--version");
+          const cliType = versionOutput.trim().startsWith("stellar")
+            ? "stellar"
+            : "soroban";
+
+          commandLog.error(
+            cliType,
+            command,
+            subcommand ? subcommand : "",
+            args ? args.join(" ") : "",
+            flags ? flags.join(" ") : "",
+            path ? path : "",
+            `Error: ${error.message}`
+          );
+        }
+
         throw error;
       }
     }
@@ -418,12 +445,17 @@ if (isProd) {
           identity ? "Identity: " + identity : "",
           newIdentity ? "New Identity: " + newIdentity : ""
         );
+
+        // // First, retrieve the current identities
+        // await retrieveAndStoreIdentities();
+
         const result = await handleIdentities(
           store,
           action,
           identity,
           newIdentity
         );
+
         return result;
       } catch (error) {
         log.error("Error on managing identities:", error);
@@ -459,8 +491,59 @@ if (isProd) {
       const cargoTomlContent = fs.readFileSync(cargoTomlPath, "utf8");
       const parsedToml = toml.parse(cargoTomlContent);
 
-      if (parsedToml.dependencies && "soroban-sdk" in parsedToml.dependencies) {
-        return true;
+      // Check if it's a workspace
+      if (parsedToml.workspace) {
+        // Check if soroban-sdk is in workspace dependencies
+        if (
+          parsedToml.workspace.dependencies &&
+          "soroban-sdk" in parsedToml.workspace.dependencies
+        ) {
+          return true;
+        }
+
+        // Check if members include "contracts/*"
+        if (
+          parsedToml.workspace.members &&
+          parsedToml.workspace.members.includes("contracts/*")
+        ) {
+          // It's likely a Soroban project, but let's check a contract to be sure
+          const contractsDir = path.join(directoryPath, "contracts");
+          if (fs.existsSync(contractsDir)) {
+            const contractDirs = fs
+              .readdirSync(contractsDir, { withFileTypes: true })
+              .filter((dirent) => dirent.isDirectory())
+              .map((dirent) => dirent.name);
+
+            for (const contractDir of contractDirs) {
+              const contractCargoToml = path.join(
+                contractsDir,
+                contractDir,
+                "Cargo.toml"
+              );
+              if (fs.existsSync(contractCargoToml)) {
+                const contractTomlContent = fs.readFileSync(
+                  contractCargoToml,
+                  "utf8"
+                );
+                const contractParsedToml = toml.parse(contractTomlContent);
+                if (
+                  contractParsedToml.dependencies &&
+                  "soroban-sdk" in contractParsedToml.dependencies
+                ) {
+                  return true;
+                }
+              }
+            }
+          }
+        }
+      } else {
+        // If it's not a workspace, check for soroban-sdk in the root Cargo.toml
+        if (
+          parsedToml.dependencies &&
+          "soroban-sdk" in parsedToml.dependencies
+        ) {
+          return true;
+        }
       }
 
       return false;
@@ -573,19 +656,11 @@ if (isProd) {
           (identity) => identity.trim() !== "" && identity.trim() !== "*"
         );
 
-      for (const name of identityNames) {
-        // Create an identity object
-        const identity = {
-          name: name,
-        };
+      const currentIdentities = identityNames.map((name) => ({ name }));
 
-        // Add each identity to the store
-        try {
-          await handleIdentities(store, "add", identity);
-        } catch (error) {
-          console.error(`Error adding identity '${name}':`, error);
-        }
-      }
+      store.set("identities", currentIdentities);
+
+      console.log("Identities retrieved and stored successfully");
     } catch (error) {
       console.error("Error retrieving identities:", error);
     }

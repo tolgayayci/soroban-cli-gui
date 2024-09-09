@@ -1,12 +1,12 @@
 // command-history-columns.tsx
 import { useState } from "react";
 
-import { DataTableColumnHeader } from "components/logs/application-logs/application-logs-data-table-column-header";
 import { ColumnDef } from "@tanstack/react-table";
 import { useRouter } from "next/router";
 import { useToast } from "components/ui/use-toast";
 import { Play, Copy, Info } from "lucide-react";
 import { useCopyToClipboard } from "react-use";
+import { ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
 
 import { Button } from "components/ui/button";
 import { Badge } from "components/ui/badge";
@@ -42,6 +42,8 @@ const getSubcommandColor = (subcommand: string) => {
       return "text-green-500";
     case "lab":
       return "text-purple-500";
+    case "xdr":
+      return "text-orange-500";
     default:
       return "";
   }
@@ -80,22 +82,34 @@ export const createCommandHistoryColumns = (
   return [
     {
       accessorKey: "date",
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Date" />
-      ),
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Date
+            {column.getIsSorted() === "asc" ? (
+              <ArrowUp className="ml-2 h-4 w-4" />
+            ) : column.getIsSorted() === "desc" ? (
+              <ArrowDown className="ml-2 h-4 w-4" />
+            ) : (
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            )}
+          </Button>
+        );
+      },
       cell: ({ row }) => <div className="uppercase">{row.original.date}</div>,
     },
     {
       accessorKey: "time",
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Time" />
-      ),
+      header: "Time",
       cell: ({ row }) => <div className="uppercase">{row.original.time}</div>,
     },
     {
       accessorKey: "subcommand",
       header: () => (
-        <div className="flex items-center space-x-2">
+        <div className="w-[110px] flex justify-center items-center">
           <Select
             value={subcommandFilter}
             onValueChange={(value) => setSubcommandFilter(value)}
@@ -108,13 +122,16 @@ export const createCommandHistoryColumns = (
               <SelectItem value="contract">Contract</SelectItem>
               <SelectItem value="network">Network</SelectItem>
               <SelectItem value="lab">Lab</SelectItem>
+              <SelectItem value="xdr">XDR</SelectItem>
             </SelectContent>
           </Select>
         </div>
       ),
       cell: ({ row }) => (
         <div
-          className={`${getSubcommandColor(row.original.subcommand)} uppercase`}
+          className={`w-[140px] ${getSubcommandColor(
+            row.original.subcommand
+          )} uppercase text-center`}
         >
           {row.original.subcommand}
         </div>
@@ -125,7 +142,7 @@ export const createCommandHistoryColumns = (
       accessorKey: "command",
       header: "Command",
       cell: ({ row }) => (
-        <div className="max-w-xs truncate">{row.original.command}</div>
+        <div className="max-w-[250px] truncate">{row.original.command}</div>
       ),
     },
     {
@@ -145,21 +162,36 @@ export const createCommandHistoryColumns = (
               <DialogContent className="min-w-[calc(70vw-106px)]">
                 <DialogHeader>
                   <DialogTitle className="flex items-center">
-                    <span>Command Output</span>
-                    <Badge className="ml-4">
-                      {"Path: " + row.original.path}
-                    </Badge>
+                    <span>
+                      {row.original.isError
+                        ? "Command Error"
+                        : "Command Output"}
+                    </span>
+                    {row.original.subcommand !== "xdr" && (
+                      <Badge className="ml-4">
+                        {"Path: " + row.original.path}
+                      </Badge>
+                    )}
                   </DialogTitle>
                   <DialogDescription className="pt-2">
-                    <pre className="bg-white text-black shadow-lg border border-black p-2 pl-3 rounded-md">
-                      {row.original.command}
+                    <pre className="bg-white text-black shadow-lg border border-black p-2 pl-3 rounded-md whitespace-pre-wrap break-words">
+                      {row.original.command.length > 100
+                        ? row.original.command.slice(0, 100) + "..."
+                        : row.original.command}
                     </pre>
                   </DialogDescription>
                 </DialogHeader>
-                <CommandStatusConfig
-                  commandOutput={row.original.result}
-                  commandError={""}
-                />
+                {row.original.isError ? (
+                  <CommandStatusConfig
+                    commandOutput={""}
+                    commandError={row.original.result}
+                  />
+                ) : (
+                  <CommandStatusConfig
+                    commandOutput={row.original.result}
+                    commandError=""
+                  />
+                )}
               </DialogContent>
             </Dialog>
             <Button

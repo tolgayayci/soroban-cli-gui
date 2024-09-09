@@ -22,37 +22,46 @@ export default defineConfig({
       {
         text: "Getting Started",
         items: [
+          {
+            text: "Introduction to SORA",
+            link: "/getting-started/introduction",
+          },
           { text: "Installation", link: "/getting-started/installation" },
-          { text: "Quick Start", link: "/getting-started/quick-start" },
+          { text: "Quick Start Guide", link: "/getting-started/quick-start" },
+        ],
+      },
+      {
+        text: "Core Features",
+        items: [
+          { text: "Projects", link: "/features/projects" },
+          { text: "Identities", link: "/features/identities" },
+          { text: "Contracts", link: "/features/contracts" },
+          { text: "Events", link: "/features/events" },
+          { text: "Lab", link: "/features/lab" },
+          { text: "Config", link: "/features/config" },
+          { text: "Logs", link: "/features/logs" },
+          { text: "About", link: "/features/logs" },
         ],
       },
       {
         text: "Guides",
         items: [
-          { text: "Using VsCode Extension", link: "/markdown-examples" },
-          { text: "Installing Soroban", link: "/api-examples" },
-          { text: "Installing Sora", link: "/api-examples" },
+          { text: "Basic Usage", link: "/guides/basic-usage" },
+          { text: "Advanced Techniques", link: "/guides/advanced-techniques" },
         ],
       },
       {
-        text: "Pages",
+        text: "Contribute",
         items: [
-          { text: "Projects", link: "/markdown-examples" },
-          { text: "Identities", link: "/api-examples" },
-          { text: "Contracts", link: "/api-examples" },
-          { text: "Events", link: "/api-examples" },
-          { text: "Lab", link: "/api-examples" },
-          { text: "Config", link: "/api-examples" },
-          { text: "Logs", link: "/api-examples" },
-          { text: "About", link: "/api-examples" },
+          { text: "How to Contribute", link: "/contribute/how-to-contribute" },
+          { text: "Reporting Issues", link: "/contribute/reporting-issues" },
         ],
       },
       {
-        text: "Troubleshooting",
+        text: "About",
         items: [
-          { text: "Common Issues", link: "/markdown-examples" },
-          { text: "Frequently Asked Questions", link: "/api-examples" },
-          { text: "Contributions", link: "/api-examples" },
+          { text: "About SORA", link: "/about/about-sora" },
+          { text: "Changelog", link: "/about/changelog" },
         ],
       },
     ],

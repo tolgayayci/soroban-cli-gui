@@ -4,10 +4,7 @@ export const createNewProjectFormSchema = z.object({
   project_name: z
     .string()
     .min(3, { message: "Project name must be at least 3 characters long" })
-    .max(40, { message: "Project name must be at most 40 characters long" })
-    .regex(/^[A-Za-z0-9]+$/, {
-      message: "Project name must only contain letters and digits",
-    }),
+    .max(40, { message: "Project name must be at most 40 characters long" }),
   path: z
     .string()
     .min(3, {
@@ -38,10 +35,12 @@ export const createNewProjectFormSchema = z.object({
       "single_offer",
       "timelock",
       "token",
+      "ttl",
       "upgradeable_contract",
       "workspace",
     ])
     .optional(),
+  frontend_template: z.string().optional(),
 });
 
 export async function onCreateNewProjectForm(
@@ -53,6 +52,7 @@ export async function onCreateNewProjectForm(
     const args = [data.path + "/" + data.project_name];
     const flags = [
       data.include_examples ? `-w ${data.with_example}` : null,
+      data.frontend_template ? `-f ${data.frontend_template}` : null,
     ].filter(Boolean);
 
     const result = await window.sorobanApi
