@@ -16,10 +16,9 @@ import { Button } from "components/ui/button";
 import { Input } from "components/ui/input";
 import { Label } from "components/ui/label";
 
-import { LucidePersonStanding } from "lucide-react";
+import { UserIcon, Trash2, Search } from "lucide-react";
 import IdentityModal from "components/identities/identity-modal";
 import { ScrollArea, ScrollBar } from "components/ui/scroll-area";
-import NoIdentities from "components/identities/no-identities";
 
 import { FundIdentityModal } from "components/identities/fund-identity-modal";
 import { RemoveIdentityModal } from "components/identities/remove-identity-modal";
@@ -35,16 +34,6 @@ import {
   DialogDescription,
 } from "components/ui/dialog";
 import { Loader2 } from "lucide-react";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "components/ui/alert-dialog";
 
 const IdentityCard = ({
   identity,
@@ -283,7 +272,7 @@ export default function IdentitiesComponent() {
       <div className="flex items-center justify-between">
         <Alert className="flex items-center justify-between py-6">
           <div className="flex items-center">
-            <LucidePersonStanding className="h-5 w-5 mr-4" />
+            <UserIcon className="h-5 w-5 mr-4" />
             <div>
               <AlertTitle>
                 You have {identities?.length ? identities?.length : "0"}{" "}
@@ -314,6 +303,7 @@ export default function IdentitiesComponent() {
             value={searchQuery}
           />
           <ScrollArea className="h-[calc(100vh-300px)] overflow-y-auto">
+          {filteredIdentities.length > 0 ? (
             <div className="grid grid-cols-3 gap-8">
               {filteredIdentities.map((identity) => (
                 <IdentityCard
@@ -323,11 +313,36 @@ export default function IdentitiesComponent() {
                 />
               ))}
             </div>
+             ) : (
+              <div className="h-[calc(100vh-300px)] w-full rounded-md border flex flex-col items-center justify-center space-y-4">
+                <Search className="h-12 w-12" />
+                <p className="text-lg">No Identities Found</p>
+                <p className="text-sm text-gray-600 text-center max-w-md leading-relaxed">
+                  No identities match your search query "{searchQuery}".
+                  <br />
+                  Try adjusting your search or create a new identity.
+                </p>
+                <Button onClick={() => setShowCreateIdentityDialog(true)}>
+                  Create New Identity
+                </Button>
+              </div>
+            )}
             <ScrollBar />
           </ScrollArea>
         </div>
       ) : (
-        <NoIdentities />
+        <div className="h-[calc(100vh-10px)] w-full rounded-md border p-4 flex flex-col items-center justify-center space-y-4 mt-3">
+        <UserIcon className="h-12 w-12" />
+        <p className="text-lg">No Identities Found</p>
+        <p className="text-sm text-gray-600 text-center max-w-md leading-relaxed">
+          You haven't created any identities yet.
+          <br />
+          Start by creating a new identity to begin using the SORA.
+        </p>
+        <Button onClick={() => setShowCreateIdentityDialog(true)}>
+          Create New Identity
+        </Button>
+      </div>
       )}
     </div>
   );

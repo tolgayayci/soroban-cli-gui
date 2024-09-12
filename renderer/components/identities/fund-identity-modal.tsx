@@ -91,16 +91,16 @@ export const FundIdentityModal = ({ identity, isOpen, onClose }) => {
               handleFundIdentityFormSubmit
             )}
           >
-            <DialogHeader className="space-y-3">
+            <DialogHeader className="space-y-3 mx-1">
               <DialogTitle>Fund "{identity.name}"</DialogTitle>
               <DialogDescription>
                 Fund an identity on a test network
               </DialogDescription>
             </DialogHeader>
-            <ScrollArea className="max-h-[calc(70vh-106px)] overflow-y-auto">
+            <ScrollArea className="max-h-[calc(70vh-106px)] overflow-y-auto pr-2">
               <div>
                 <div className="space-y-3 py-4 pb-4">
-                  <div className="space-y-3">
+                  <div className="space-y-3 mx-1">
                     <FormField
                       control={fundIdentityForm.control}
                       name="identity_name"
@@ -124,7 +124,7 @@ export const FundIdentityModal = ({ identity, isOpen, onClose }) => {
                       )}
                     />
                   </div>
-                  <div className="space-y-3">
+                  <div className="space-y-3 mx-1">
                     <FormField
                       control={fundIdentityForm.control}
                       name="network_name"
@@ -145,7 +145,7 @@ export const FundIdentityModal = ({ identity, isOpen, onClose }) => {
                       )}
                     />
                   </div>
-                  <div className="space-y-3">
+                  <div className="space-y-3 mx-1">
                     <FormField
                       control={fundIdentityForm.control}
                       name="network_passphrase"
@@ -162,7 +162,7 @@ export const FundIdentityModal = ({ identity, isOpen, onClose }) => {
                       )}
                     />
                   </div>
-                  <div className="space-y-3">
+                  <div className="space-y-3 mx-1">
                     <FormField
                       control={fundIdentityForm.control}
                       name="rpc_url"
@@ -183,10 +183,10 @@ export const FundIdentityModal = ({ identity, isOpen, onClose }) => {
                   </div>
                   <Accordion type="multiple">
                     <AccordionItem value="options" className="pt-0">
-                      <AccordionTrigger>Options</AccordionTrigger>
+                      <AccordionTrigger className="mx-1">Options</AccordionTrigger>
                       <AccordionContent>
                         <div className="space-y-4">
-                          <div className="space-y-3">
+                          <div className="space-y-3 mx-1">
                             <FormField
                               control={fundIdentityForm.control}
                               name="global"
@@ -208,7 +208,7 @@ export const FundIdentityModal = ({ identity, isOpen, onClose }) => {
                               )}
                             />
                           </div>
-                          <div className="space-y-3">
+                          <div className="space-y-3 mx-1">
                             <FormField
                               control={fundIdentityForm.control}
                               name="hd_path"
@@ -229,7 +229,7 @@ export const FundIdentityModal = ({ identity, isOpen, onClose }) => {
                               )}
                             />
                           </div>
-                          <div className="space-y-3">
+                          <div className="space-y-3 mx-1">
                             <FormField
                               control={fundIdentityForm.control}
                               name="config_dir"
@@ -270,7 +270,7 @@ export const FundIdentityModal = ({ identity, isOpen, onClose }) => {
                   </Accordion>
                 </div>
               </div>
-              <ScrollBar />
+              <ScrollBar className="w-4"/>
             </ScrollArea>
             <DialogFooter>
               <Button variant="outline" type="button" onClick={onClose}>

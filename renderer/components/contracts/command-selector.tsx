@@ -26,7 +26,6 @@ import {
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "components/ui/tooltip";
 
@@ -40,6 +39,7 @@ const CliCommandSelector = ({
   setCommandOutput,
   setCommandError,
   setLatestCommand,
+  setCommandExecuted,
 }: {
   path: string;
   initialCommand: string;
@@ -47,6 +47,7 @@ const CliCommandSelector = ({
   setCommandOutput: (any) => void;
   setCommandError: (any) => void;
   setLatestCommand: (any) => void;
+  setCommandExecuted: (executed: boolean) => void;
 }) => {
   const defaultCommand = commands.length > 0 ? commands[0].value : "";
 
@@ -176,12 +177,11 @@ const CliCommandSelector = ({
   const handleRunCommand = async () => {
     setIsRunningCommand(true);
     try {
-      await runCli(selectedCommand, Object.values(commandArgs)).then(() => {
-        // toast success message
-      });
+      await runCli(selectedCommand, Object.values(commandArgs));
+      setCommandExecuted(true); // Set the flag when command is executed
     } catch (error) {
-      // toast error message
       console.error("Error executing command:", error);
+      setCommandExecuted(true); // Set the flag even if there's an error
     } finally {
       setIsRunningCommand(false);
     }

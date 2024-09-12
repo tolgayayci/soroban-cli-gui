@@ -31,7 +31,7 @@ import { Avatar, AvatarImage } from "components/ui/avatar";
 import { Alert, AlertDescription, AlertTitle } from "components/ui/alert";
 import { Button } from "components/ui/button";
 import { Input } from "components/ui/input";
-import { Loader2, Trash2, CodeIcon } from "lucide-react";
+import { Loader2, Trash2, FolderOpen, Search, Folder } from "lucide-react";
 import { ScrollArea, ScrollBar } from "components/ui/scroll-area";
 
 import { useForm } from "react-hook-form";
@@ -39,7 +39,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 
 import ProjectModal from "components/projects/project-modal";
-import NoProjects from "components/projects/no-project";
 import EditorModal from "components/projects/editor-modal";
 
 import {
@@ -250,7 +249,7 @@ const ProjectsComponent = () => {
     <div className="flex flex-col h-[calc(100vh-106px)]">
       <Alert className="flex items-center justify-between py-6">
         <div className="flex items-center">
-          <CodeIcon className="h-5 w-5 mr-4" />
+          <Folder className="h-5 w-5 mr-4" />
           <div>
             <AlertTitle>You have {projects.length} projects</AlertTitle>
             <AlertDescription>
@@ -278,6 +277,8 @@ const ProjectsComponent = () => {
             value={searchQuery}
           />
           <ScrollArea className="h-[calc(100vh-300px)]">
+          {filteredProjects.length > 0 ? (
+
             <div className="grid grid-cols-3 gap-8">
               {filteredProjects.map((project) => (
                 <ProjectCard
@@ -287,11 +288,36 @@ const ProjectsComponent = () => {
                 />
               ))}
             </div>
+            ) : (
+              <div className="h-[calc(100vh-300px)] w-full rounded-md border flex flex-col items-center justify-center space-y-4">
+                <Search className="h-12 w-12" />
+                <p className="text-lg">No Projects Found</p>
+                <p className="text-sm text-gray-600 text-center max-w-md leading-relaxed">
+                  No projects match your search query "{searchQuery}".
+                  <br />
+                  Try adjusting your search or create a new project.
+                </p>
+                
+                <Button onClick={() => setShowCreateProjectDialog(true)}>
+                  Create New Project
+                </Button>
+              </div>
+            )}
             <ScrollBar />
           </ScrollArea>
         </div>
       ) : (
-        <NoProjects />
+        <div className="h-[calc(100vh-10px)] w-full rounded-md border p-4 flex flex-col items-center justify-center space-y-4 mt-3">
+          <FolderOpen className="h-12 w-12" />
+          <p className="text-lg">No Projects Found</p>
+          <p className="text-sm text-gray-600 text-center max-w-md leading-relaxed">
+            You haven't created any projects yet.                   <br />
+            Start by creating a new project to begin your development journey.
+          </p>
+          <Button onClick={() => setShowCreateProjectDialog(true)}>
+            Create New Project
+          </Button>
+        </div>
       )}
     </div>
   );

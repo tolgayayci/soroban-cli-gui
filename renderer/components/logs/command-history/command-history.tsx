@@ -34,6 +34,32 @@ export default function CommandHistory() {
           // Extract date and time from the timestamp
           const [date, time] = timestamp.slice(1, -1).split(" ");
 
+          // Check if the entry is an error log
+          const isError = entry.includes("Error:");
+          let result = "";
+          if (isError) {
+            const errorIndex = command.indexOf("Error:");
+            result = command.slice(errorIndex).trim();
+            // For error logs, remove the error message from the command
+            command = command.slice(0, errorIndex).trim();
+          } else {
+            const resultIndex = command.indexOf("Result:");
+            result =
+              resultIndex !== -1
+                ? command
+                    .slice(resultIndex + 8)
+                    .trim()
+                    .replace(/^"/, "")
+                    .replace(/"$/, "")
+                    .replace(/\\n/g, "\n")
+                : "";
+            // For non-error logs, remove the result from the command
+            command =
+              resultIndex !== -1
+                ? command.slice(0, resultIndex).trim()
+                : command;
+          }
+
           // Determine CLI type (soroban or stellar)
           const cliType = command.startsWith("stellar") ? "stellar" : "soroban";
 
@@ -52,31 +78,6 @@ export default function CommandHistory() {
           const pathRegex = /\/[^\s]+/;
           const pathMatch = command.match(pathRegex);
           const path = pathMatch ? pathMatch[0] : "";
-
-          // Check if the entry is an error log
-          const isError = entry.includes("Error:");
-          let result = "";
-          if (isError) {
-            result = entry.slice(entry.indexOf("Error:")).trim();
-            // For error logs, the command is everything before "Error:"
-            command = entry.slice(0, entry.indexOf("Error:")).trim();
-          } else {
-            const resultIndex = command.indexOf("Result:");
-            result =
-              resultIndex !== -1
-                ? command
-                    .slice(resultIndex + 8)
-                    .trim()
-                    .replace(/^"/, "")
-                    .replace(/"$/, "")
-                    .replace(/\\n/g, "\n")
-                : "";
-            // For non-error logs, remove the result from the command
-            command =
-              resultIndex !== -1
-                ? command.slice(0, resultIndex).trim()
-                : command;
-          }
 
           // Remove the path from the command display
           const commandWithoutPath = command.replace(path, "").trim();
@@ -114,6 +115,8 @@ export default function CommandHistory() {
     subcommandFilter,
     setSubcommandFilter
   );
+
+  console.log(commands);
 
   return (
     <CommandHistoryDataTable

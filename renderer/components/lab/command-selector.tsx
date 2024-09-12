@@ -59,7 +59,9 @@ const LabCommandSelector = ({
     if (initialCommand) {
       const [command, ...args] = initialCommand.split(" ");
 
-      const commandValue = args[2];
+      console.log(command, args);
+
+      const commandValue = args[1];
       setSelectedCommand(commandValue);
       handleCommandChange(commandValue, args);
     }

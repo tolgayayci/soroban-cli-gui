@@ -197,25 +197,17 @@ export const createCommandHistoryColumns = (
             <Button
               onClick={async () => {
                 const { path, command, subcommand } = row.original;
-                if (subcommand === "lab") {
-                  // Extract the specific command after "lab xdr"
+                console.log(subcommand);
+                if (subcommand === "xdr") {
                   router.push({
                     pathname: `/lab/[command]`,
-                    query: { command: command },
+                    query: { command },
                   });
                 } else {
-                  const exist = await isExists(path);
-                  if (exist) {
                     router.push({
                       pathname: `/contracts/[path]`,
-                      query: { path, command },
-                    });
-                  } else {
-                    toast({
-                      title: "Path Not Found",
-                      description: `Project does not exist at "${path}" `,
-                    });
-                  }
+                    query: { path, command },
+                  });
                 }
               }}
             >
@@ -227,7 +219,7 @@ export const createCommandHistoryColumns = (
                 toast({
                   title: "Copied to Clipboard",
                   description: (
-                    <pre className="bg-gray-100 text-black p-1 px-2 rounded-md mt-1">
+                    <pre className="bg-gray-100 text-black p-1 px-2 rounded-md mt-1 overflow-hidden text-ellipsis whitespace-nowrap max-w-[340px]">
                       {row.original.command}
                     </pre>
                   ),

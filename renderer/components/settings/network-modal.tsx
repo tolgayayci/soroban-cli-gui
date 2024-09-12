@@ -103,16 +103,16 @@ export default function NetworkModal({
               handleNewNetworkFormSubmit
             )}
           >
-            <DialogHeader>
+            <DialogHeader className="mx-1">
               <DialogTitle>Create New Network</DialogTitle>
               <DialogDescription>
                 Add a new network for Soroban
               </DialogDescription>
             </DialogHeader>
-            <ScrollArea className="max-h-[calc(70vh-106px)] overflow-y-auto">
+            <ScrollArea className="max-h-[calc(70vh-106px)] overflow-y-auto pr-2">
               <div>
                 <div className="space-y-4 py-4 pb-4">
-                  <div className="space-y-3">
+                  <div className="space-y-3 mx-1">
                     <FormField
                       control={createNewNetworkform.control}
                       name="network_name"
@@ -133,7 +133,7 @@ export default function NetworkModal({
                       )}
                     />
                   </div>
-                  <div className="space-y-3">
+                  <div className="space-y-3 mx-1">
                     <FormField
                       control={createNewNetworkform.control}
                       name="rpc_url"
@@ -152,7 +152,7 @@ export default function NetworkModal({
                       )}
                     />
                   </div>
-                  <div className="space-y-3">
+                  <div className="space-y-3 mx-1">
                     <FormField
                       control={createNewNetworkform.control}
                       name="network_passphrase"
@@ -172,10 +172,10 @@ export default function NetworkModal({
 
                   <Accordion type="multiple">
                     <AccordionItem value="options" className="pt-0">
-                      <AccordionTrigger>Options</AccordionTrigger>
+                      <AccordionTrigger className="mx-1">Options</AccordionTrigger>
                       <AccordionContent>
                         <div className="space-y-4">
-                          <div className="space-y-3">
+                          <div className="space-y-3 mx-1">
                             <FormField
                               control={createNewNetworkform.control}
                               name="global"
@@ -197,7 +197,7 @@ export default function NetworkModal({
                               )}
                             />
                           </div>
-                          <div className="space-y-3">
+                          <div className="space-y-3 mx-1">
                             <FormField
                               control={createNewNetworkform.control}
                               name="config_dir"
@@ -238,9 +238,9 @@ export default function NetworkModal({
                   </Accordion>
                 </div>
               </div>
-              <ScrollBar />
+              <ScrollBar className="w-4"/>
             </ScrollArea>
-            <DialogFooter>
+            <DialogFooter className="mr-3">
               <Button
                 variant="outline"
                 type="button"

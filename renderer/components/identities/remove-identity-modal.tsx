@@ -90,7 +90,7 @@ export const RemoveIdentityModal = ({ identity, isOpen, onClose }) => {
               handleRemoveIdentityFormSubmit
             )}
           >
-            <DialogHeader className="space-y-3">
+            <DialogHeader className="space-y-3 mx-1">
               <DialogTitle>Remove "{identity.name}"</DialogTitle>
               <DialogDescription>
                 Remove an identity from Soroban
@@ -98,7 +98,7 @@ export const RemoveIdentityModal = ({ identity, isOpen, onClose }) => {
             </DialogHeader>
             <div>
               <div className="py-4 pb-6">
-                <div className="space-y-3">
+                <div className="space-y-3 mx-1">
                   <FormField
                     control={removeIdentityForm.control}
                     name="identity_name"
@@ -123,11 +123,11 @@ export const RemoveIdentityModal = ({ identity, isOpen, onClose }) => {
                   />
                 </div>
                 <Accordion type="multiple">
-                  <AccordionItem value="options" className="pt-0">
-                    <AccordionTrigger>Options</AccordionTrigger>
-                    <AccordionContent>
+                  <AccordionItem value="options" className="pt-0 mx-1">
+                    <AccordionTrigger className="mx-1">Options</AccordionTrigger>
+                    <AccordionContent >
                       <div className="space-y-4">
-                        <div className="space-y-3">
+                        <div className="space-y-3 mx-1">
                           <FormField
                             control={removeIdentityForm.control}
                             name="global"
@@ -149,7 +149,7 @@ export const RemoveIdentityModal = ({ identity, isOpen, onClose }) => {
                             )}
                           />
                         </div>
-                        <div className="space-y-3">
+                        <div className="space-y-3 mx-1">
                           <FormField
                             control={removeIdentityForm.control}
                             name="config_dir"

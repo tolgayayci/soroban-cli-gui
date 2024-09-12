@@ -133,17 +133,17 @@ export default function IdentityModal({
               <form
                 onSubmit={newIdentityForm.handleSubmit(handleCreateNewIdentity)}
               >
-                <DialogHeader className="space-y-3">
+                <DialogHeader className="space-y-3 mx-1">
                   <DialogTitle>Generate New Identity</DialogTitle>
                   <DialogDescription>
                     Identities you will add are global. They are not confined to
                     a specific project context.
                   </DialogDescription>
                 </DialogHeader>
-                <ScrollArea className="max-h-[calc(70vh-106px)] overflow-y-auto pr-1">
+                <ScrollArea className="max-h-[calc(70vh-106px)] overflow-y-auto pr-2">
                   <div>
                     <div className="space-y-4 py-4 pb-6">
-                      <div className="space-y-3">
+                      <div className="space-y-3 mx-1">
                         <FormField
                           control={newIdentityForm.control}
                           name="identity_name"
@@ -165,7 +165,7 @@ export default function IdentityModal({
                         />
                       </div>
 
-                      <div className="space-y-3">
+                      <div className="space-y-3 mx-1">
                         <FormField
                           control={newIdentityForm.control}
                           name="network_passphrase"
@@ -182,7 +182,7 @@ export default function IdentityModal({
                           )}
                         />
                       </div>
-                      <div className="space-y-3">
+                      <div className="space-y-3 mx-1">
                         <FormField
                           control={newIdentityForm.control}
                           name="network"
@@ -199,7 +199,7 @@ export default function IdentityModal({
                           )}
                         />
                       </div>
-                      <div className="space-y-3">
+                      <div className="space-y-3 mx-1">
                         <FormField
                           control={newIdentityForm.control}
                           name="rpc_url"
@@ -222,10 +222,10 @@ export default function IdentityModal({
                       </div>
                       <Accordion type="multiple">
                         <AccordionItem value="options">
-                          <AccordionTrigger>Options</AccordionTrigger>
-                          <AccordionContent>
+                          <AccordionTrigger className="mx-1">Options</AccordionTrigger>
+                          <AccordionContent >
                             <div className="space-y-4">
-                              <div className="space-y-3">
+                              <div className="space-y-3 mx-1">
                                 <FormField
                                   control={newIdentityForm.control}
                                   name="seed"
@@ -246,7 +246,7 @@ export default function IdentityModal({
                                   )}
                                 />
                               </div>
-                              <div className="space-y-3">
+                              <div className="space-y-3 mx-1">
                                 <FormField
                                   control={newIdentityForm.control}
                                   name="hd_path"
@@ -283,7 +283,7 @@ export default function IdentityModal({
                                   )}
                                 />
                               </div>
-                              <div className="space-y-3">
+                              <div className="space-y-3 mx-1">
                                 <FormField
                                   control={newIdentityForm.control}
                                   name="as_secret"
@@ -306,7 +306,7 @@ export default function IdentityModal({
                                   )}
                                 />
                               </div>
-                              <div className="space-y-3">
+                              <div className="space-y-3 mx-1">
                                 <FormField
                                   control={newIdentityForm.control}
                                   name="global"
@@ -328,7 +328,7 @@ export default function IdentityModal({
                                   )}
                                 />
                               </div>
-                              <div className="space-y-3">
+                              <div className="space-y-3 mx-1">
                                 <FormField
                                   control={newIdentityForm.control}
                                   name="default_seed"
@@ -356,10 +356,10 @@ export default function IdentityModal({
                           </AccordionContent>
                         </AccordionItem>
                         <AccordionItem value="testing-options">
-                          <AccordionTrigger>Testing Options</AccordionTrigger>
+                          <AccordionTrigger className="mx-1">Testing Options</AccordionTrigger>
                           <AccordionContent>
                             <div className="space-y-4">
-                              <div className="space-y-3">
+                              <div className="space-y-3 mx-1">
                                 <FormField
                                   control={newIdentityForm.control}
                                   name="config_dir"
@@ -427,16 +427,16 @@ export default function IdentityModal({
           <TabsContent value="add">
             <Form {...addIdentityForm}>
               <form onSubmit={addIdentityForm.handleSubmit(handleAddIdentity)}>
-                <DialogHeader className="space-y-3">
+                <DialogHeader className="space-y-3 mx-1">
                   <DialogTitle>Add Identity</DialogTitle>
                   <DialogDescription>
                     Add a new identity (keypair, ledger, macOS keychain)
                   </DialogDescription>
                 </DialogHeader>
-                <ScrollArea className="max-h-[calc(70vh-106px)] overflow-y-auto">
+                <ScrollArea className="max-h-[calc(70vh-106px)] overflow-y-auto pr-2">
                   <div>
                     <div className="space-y-4 py-4 pb-6">
-                      <div className="space-y-3">
+                      <div className="space-y-3 mx-1">
                         <FormField
                           control={addIdentityForm.control}
                           name="identity_name"
@@ -457,7 +457,7 @@ export default function IdentityModal({
                           )}
                         />
                       </div>
-                      <div className="space-y-3">
+                      <div className="space-y-3 mx-1">
                         <FormField
                           control={addIdentityForm.control}
                           name="seed_phrase"
@@ -478,7 +478,7 @@ export default function IdentityModal({
                           )}
                         />
                       </div>
-                      <div className="space-y-3">
+                      <div className="space-y-3 mx-1">
                         <FormField
                           control={addIdentityForm.control}
                           name="secret_key"
@@ -501,10 +501,10 @@ export default function IdentityModal({
                       </div>
                       <Accordion type="multiple">
                         <AccordionItem value="item-1">
-                          <AccordionTrigger>Options</AccordionTrigger>
+                          <AccordionTrigger className="mx-1">Options</AccordionTrigger>
                           <AccordionContent>
                             <div className="space-y-4">
-                              <div className="space-y-3">
+                              <div className="space-y-3 mx-1">
                                 <FormField
                                   control={addIdentityForm.control}
                                   name="global"
@@ -526,7 +526,7 @@ export default function IdentityModal({
                                   )}
                                 />
                               </div>
-                              <div className="space-y-3">
+                              <div className="space-y-3 mx-1">
                                 <FormField
                                   control={addIdentityForm.control}
                                   name="config_dir"

@@ -157,20 +157,20 @@ export default function ProjectModal({
                   handleNewProjectFormSubmit
                 )}
               >
-                <DialogHeader>
+                <DialogHeader className="mx-1">
                   <DialogTitle>Create Project</DialogTitle>
                   <DialogDescription>
                     Initialize a Soroban project with an example contract
                   </DialogDescription>
                 </DialogHeader>
-                <ScrollArea className="max-h-[calc(80vh-140px)] overflow-y-auto">
-                  <div>
+                <ScrollArea className="max-h-[calc(80vh-140px)] overflow-y-auto pr-2">
                     <div className="space-y-4 py-4 pb-4">
-                      <div>
+                      <div className="mx-1">
                         <FormField
                           control={createNewProjectform.control}
                           name="project_name"
                           render={({ field }) => (
+                            
                             <FormItem>
                               <FormLabel className="text-small">
                                 Project Name
@@ -187,7 +187,7 @@ export default function ProjectModal({
                           )}
                         />
                       </div>
-                      <div>
+                      <div className="mx-1">
                         <FormField
                           control={createNewProjectform.control}
                           name="path"
@@ -222,7 +222,7 @@ export default function ProjectModal({
                           )}
                         />
                       </div>
-                      <div className="space-y-4">
+                      <div className="space-y-4 mx-1">
                         <FormLabel className="text-small"> Options</FormLabel>
                         <div className="space-y-3">
                           <FormField
@@ -265,7 +265,7 @@ export default function ProjectModal({
                                       <SelectValue placeholder="Select an example" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                      <SelectGroup className="h-[150px]">
+                                      <SelectGroup className="h-[180px]">
                                         {" "}
                                         {[
                                           "account",
@@ -328,10 +328,9 @@ export default function ProjectModal({
                         />
                       </div>
                     </div>
-                  </div>
-                  <ScrollBar />
+                  <ScrollBar className="w-2" />
                 </ScrollArea>
-                <DialogFooter>
+                <DialogFooter className="mr-3 mt-2">
                   <Button
                     variant="outline"
                     type="button"
@@ -361,7 +360,7 @@ export default function ProjectModal({
                   handleExistingProjectFormSubmit
                 )}
               >
-                <DialogHeader>
+                <DialogHeader className="mx-1">
                   <DialogTitle>Import Existing Project</DialogTitle>
                   <DialogDescription>
                     Import existing Soroban project from your computer
@@ -369,7 +368,7 @@ export default function ProjectModal({
                 </DialogHeader>
                 <div>
                   <div className="space-y-4 py-4 pb-4">
-                    <div>
+                    <div className="mx-1">
                       <FormField
                         control={addExistingProjectForm.control}
                         name="project_name"
@@ -390,7 +389,7 @@ export default function ProjectModal({
                         )}
                       />
                     </div>
-                    <div>
+                    <div className="mx-1">
                       <FormField
                         control={addExistingProjectForm.control}
                         name="path"
