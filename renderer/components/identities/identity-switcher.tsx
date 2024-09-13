@@ -235,6 +235,7 @@ export default function IdentitySwitcher({ className }: TeamSwitcherProps) {
       <IdentityModal
         showCreateIdentityDialog={showNewTeamDialog}
         setShowCreateIdentityDialog={setShowNewTeamDialog}
+        onIdentityChange={checkIdentities}
       />
     </Dialog>
   );

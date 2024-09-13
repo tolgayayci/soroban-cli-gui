@@ -46,6 +46,17 @@ export const checkEditors = async () => {
         "C:\\Program Files (x86)\\JetBrains\\CLion\\bin\\clion.bat",
       ],
     },
+    {
+      name: "Cursor",
+      command: "cursor",
+      paths: [
+        "/Applications/Cursor.app/Contents/MacOS/Cursor",
+        "/usr/local/bin/cursor",
+        "/usr/bin/cursor",
+        "C:\\Program Files\\Cursor\\Cursor.exe",
+        "C:\\Program Files (x86)\\Cursor\\Cursor.exe",
+      ],
+    },
   ];
 
   const installedEditors = [];

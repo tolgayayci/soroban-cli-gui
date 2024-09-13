@@ -23,6 +23,7 @@
     "docs:dev": "vitepress dev documentation",
     "docs:build": "vitepress build documentation",
     "docs:preview": "vitepress preview documentation"
+    
   },
   "dependencies": {
     "@aptabase/electron": "^0.3.1",
@@ -73,6 +74,7 @@
     "@types/node": "^20.11.16",
     "@types/react": "^18.2.52",
     "autoprefixer": "^10.4.16",
+    "cross-env": "^7.0.3",
     "electron": "^28.2.1",
     "electron-builder": "^24.9.1",
     "next": "^12.3.4",
