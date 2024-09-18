@@ -2,6 +2,7 @@ export const labCommands = [
   {
     label: "types list",
     value: "types list",
+    description: "List all types",
     options: [
       {
         name: "--output",
@@ -51,6 +52,7 @@ export const labCommands = [
   {
     label: "decode",
     value: "decode",
+    description: "Decode XDR",
     args: [],
     options: [
       {
@@ -82,6 +84,7 @@ export const labCommands = [
   {
     label: "encode",
     value: "encode",
+    description: "Encode XDR",
     args: [],
     options: [
       {
@@ -113,6 +116,7 @@ export const labCommands = [
   {
     label: "version",
     value: "version",
+    description: "Print version",
     options: [
       {
         name: "--help",

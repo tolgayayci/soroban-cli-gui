@@ -395,7 +395,7 @@ if (isProd) {
 
       for await (const line of rl) {
         lines.push(line);
-        if (lines.length > 75) {
+        if (lines.length > 50) {
           lines.shift();
         }
       }

@@ -41,6 +41,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "components/ui/tabs";
 import { Button } from "components/ui/button";
 import { Input } from "components/ui/input";
 import { Loader2 } from "lucide-react";
+import { HelpCircle } from "lucide-react";
 
 import {
   createNewProjectFormSchema,
@@ -59,6 +60,12 @@ import {
   projectImportSuccess,
   projectImportError,
 } from "lib/notifications";
+
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "components/ui/tooltip";
 
 export default function ProjectModal({
   showNewProjectDialog,
@@ -222,8 +229,18 @@ export default function ProjectModal({
                           )}
                         />
                       </div>
-                      <div className="space-y-4 mx-1">
-                        <FormLabel className="text-small"> Options</FormLabel>
+                      <div className="space-y-6 mx-1">
+                        <FormLabel className="text-small flex items-center">
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <HelpCircle className="h-4 w-4 text-gray-500 mr-2" />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Options for the project</p>
+                            </TooltipContent>
+                          </Tooltip>
+                          Options
+                        </FormLabel>
                         <div className="space-y-3">
                           <FormField
                             control={createNewProjectform.control}
@@ -256,54 +273,68 @@ export default function ProjectModal({
                               control={createNewProjectform.control}
                               name="with_example"
                               render={({ field }) => (
-                                <FormControl>
-                                  <Select
-                                    onValueChange={field.onChange}
-                                    defaultValue={field.value}
-                                  >
-                                    <SelectTrigger className="w-full">
-                                      <SelectValue placeholder="Select an example" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      <SelectGroup className="h-[180px]">
-                                        {" "}
-                                        {[
-                                          "account",
-                                          "alloc",
-                                          "atomic_multiswap",
-                                          "atomic_swap",
-                                          "auth",
-                                          "cross_contract",
-                                          "custom_types",
-                                          "deep_contract_auth",
-                                          "deployer",
-                                          "errors",
-                                          "eth_abi",
-                                          "events",
-                                          "fuzzing",
-                                          "increment",
-                                          "liquidity_pool",
-                                          "logging",
-                                          "mint_lock",
-                                          "simple_account",
-                                          "single_offer",
-                                          "timelock",
-                                          "token",
-                                          "ttl",
-                                          "upgradeable_contract",
-                                          "workspace",
-                                        ].map((exampleValue) => (
-                                          <SelectItem
-                                            key={exampleValue}
-                                            value={exampleValue}
-                                          >
-                                            {exampleValue}
-                                          </SelectItem>
-                                        ))}
-                                      </SelectGroup>
-                                    </SelectContent>
-                                  </Select>
-                                </FormControl>
+                                <FormItem>
+                                  <FormLabel className="flex items-center">
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <HelpCircle className="h-4 w-4 text-gray-500 mr-2" />
+                                      </TooltipTrigger>
+                                      <TooltipContent>
+                                        <p>Select a specific example contract to include</p>
+                                      </TooltipContent>
+                                    </Tooltip>
+                                    Example
+                                  </FormLabel>
+                                  <FormControl>
+                                    <Select
+                                      onValueChange={field.onChange}
+                                      defaultValue={field.value}
+                                    >
+                                      <SelectTrigger className="w-full">
+                                        <SelectValue placeholder="Select an example" />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        <SelectGroup className="h-[180px]">
+                                          {" "}
+                                          {[
+                                            "account",
+                                            "alloc",
+                                            "atomic_multiswap",
+                                            "atomic_swap",
+                                            "auth",
+                                            "cross_contract",
+                                            "custom_types",
+                                            "deep_contract_auth",
+                                            "deployer",
+                                            "errors",
+                                            "eth_abi",
+                                            "events",
+                                            "fuzzing",
+                                            "increment",
+                                            "liquidity_pool",
+                                            "logging",
+                                            "mint_lock",
+                                            "simple_account",
+                                            "single_offer",
+                                            "timelock",
+                                            "token",
+                                            "ttl",
+                                            "upgradeable_contract",
+                                            "workspace",
+                                          ].map((exampleValue) => (
+                                            <SelectItem
+                                              key={exampleValue}
+                                              value={exampleValue}
+                                            >
+                                              {exampleValue}
+                                            </SelectItem>
+                                          ))}
+                                        </SelectGroup>
+                                      </SelectContent>
+                                    </Select>
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
                               )}
                             />
                           </div>
@@ -313,7 +344,17 @@ export default function ProjectModal({
                           name="frontend_template"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Frontend Template</FormLabel>
+                              <FormLabel className="flex items-center">
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <HelpCircle className="h-4 w-4 text-gray-500 mr-2" />
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p>URL for a frontend template repository</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                                Frontend Template
+                              </FormLabel>
                               <FormControl>
                                 <Input
                                   {...field}

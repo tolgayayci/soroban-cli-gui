@@ -26,7 +26,6 @@ import {
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "components/ui/tooltip";
 
@@ -241,23 +240,35 @@ const LabCommandSelector = ({
       </div>
       <ScrollArea className="max-h-[calc(80vh-200px)] overflow-y-auto">
         <div className="flex flex-col space-y-4 mx-1 pt-1">
-          <Select
-            value={selectedCommand}
-            onValueChange={(e) => handleCommandChange(e)}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Select a contract command" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup className="h-[150px]">
-                {commands.map((command) => (
-                  <SelectItem key={command.value} value={command.value}>
-                    {command.label}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
+          <div className="relative">
+            <Select
+              value={selectedCommand}
+              onValueChange={(e) => handleCommandChange(e)}
+            >
+              <SelectTrigger className="w-full pr-10">
+                <SelectValue placeholder="Select a lab command" />
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2">
+                      <QuestionMarkCircledIcon className="h-4 w-4 text-gray-500" />
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent side="right" className="max-w-[300px]">
+                    <p>{selectedCommand ? commands.find(c => c.value === selectedCommand)?.description : "Choose a command to see its description"}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup className="h-[150px]">
+                  {commands.map((command) => (
+                    <SelectItem key={command.value} value={command.value}>
+                      {command.label}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
           <Accordion
             type="single"
             className="w-full space-y-4"

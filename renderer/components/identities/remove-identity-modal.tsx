@@ -1,4 +1,10 @@
 import { useState } from "react";
+import { HelpCircle } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "components/ui/tooltip";
 
 import {
   Accordion,
@@ -90,21 +96,29 @@ export const RemoveIdentityModal = ({ identity, isOpen, onClose }) => {
               handleRemoveIdentityFormSubmit
             )}
           >
-            <DialogHeader className="space-y-3 mx-1">
+            <DialogHeader className="space-y-3 mx-1 mb-2">
               <DialogTitle>Remove "{identity.name}"</DialogTitle>
               <DialogDescription>
                 Remove an identity from Soroban
               </DialogDescription>
             </DialogHeader>
             <div>
-              <div className="py-4 pb-6">
+              <div className="space-y-5 py-4 pb-6">
                 <div className="space-y-3 mx-1">
                   <FormField
                     control={removeIdentityForm.control}
                     name="identity_name"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-small">
+                        <FormLabel className="text-small flex items-center">
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <HelpCircle className="h-4 w-4 text-gray-500 mr-2" />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Identity to remove</p>
+                            </TooltipContent>
+                          </Tooltip>
                           Identity Name
                         </FormLabel>
                         {identity ? (
@@ -123,10 +137,10 @@ export const RemoveIdentityModal = ({ identity, isOpen, onClose }) => {
                   />
                 </div>
                 <Accordion type="multiple">
-                  <AccordionItem value="options" className="pt-0 mx-1">
-                    <AccordionTrigger className="mx-1">Options</AccordionTrigger>
+                  <AccordionItem value="options" className="pt-0">
+                    <AccordionTrigger className="mx-1 -mt-4">Options</AccordionTrigger>
                     <AccordionContent >
-                      <div className="space-y-4">
+                      <div className="space-y-5">
                         <div className="space-y-3 mx-1">
                           <FormField
                             control={removeIdentityForm.control}
@@ -155,7 +169,15 @@ export const RemoveIdentityModal = ({ identity, isOpen, onClose }) => {
                             name="config_dir"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel className="text-small">
+                                <FormLabel className="text-small flex items-center">
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <HelpCircle className="h-4 w-4 text-gray-500 mr-2" />
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      <p>Location of config directory, default is "."</p>
+                                    </TooltipContent>
+                                  </Tooltip>
                                   Config Directory (Testing)
                                 </FormLabel>
                                 <FormControl>

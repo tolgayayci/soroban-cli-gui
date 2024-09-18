@@ -3,9 +3,8 @@ import { CommandHistoryDataTable } from "components/logs/command-history/command
 import { createCommandHistoryColumns } from "components/logs/command-history/command-history-columns";
 import { Button } from "components/ui/button";
 import Link from "next/link";
-import { Search } from "lucide-react";
 import Image from "next/image";
-import { useTheme } from "next-themes"; // Add this import
+import { useTheme } from "next-themes";
 
 
 interface LogEntry {

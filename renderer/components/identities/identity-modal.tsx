@@ -8,6 +8,12 @@ import { ScrollArea, ScrollBar } from "components/ui/scroll-area";
 import { Button } from "components/ui/button";
 import { Input } from "components/ui/input";
 import { Loader2 } from "lucide-react";
+import { HelpCircle } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "components/ui/tooltip";
 
 import {
   Accordion,
@@ -133,7 +139,7 @@ export default function IdentityModal({
               <form
                 onSubmit={newIdentityForm.handleSubmit(handleCreateNewIdentity)}
               >
-                <DialogHeader className="space-y-3 mx-1">
+                <DialogHeader className="space-y-3 mx-1 mb-2">
                   <DialogTitle>Generate New Identity</DialogTitle>
                   <DialogDescription>
                     Identities you will add are global. They are not confined to
@@ -142,14 +148,22 @@ export default function IdentityModal({
                 </DialogHeader>
                 <ScrollArea className="max-h-[calc(70vh-106px)] overflow-y-auto pr-2">
                   <div>
-                    <div className="space-y-4 py-4 pb-6">
+                    <div className="space-y-5 py-4 pb-6">
                       <div className="space-y-3 mx-1">
                         <FormField
                           control={newIdentityForm.control}
                           name="identity_name"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="text-small">
+                              <FormLabel className="text-small flex items-center">
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <HelpCircle className="h-4 w-4 text-gray-500 mr-2" />
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p>Name of the identity</p>
+                                  </TooltipContent>
+                                </Tooltip>
                                 Identity Name
                               </FormLabel>
                               <FormControl>
@@ -171,7 +185,15 @@ export default function IdentityModal({
                           name="network_passphrase"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="text-small">
+                              <FormLabel className="text-small flex items-center">
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <HelpCircle className="h-4 w-4 text-gray-500 mr-2" />
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p>Network passphrase to sign the transaction sent to the RPC server</p>
+                                  </TooltipContent>
+                                </Tooltip>
                                 Network Passphrase
                               </FormLabel>
                               <FormControl>
@@ -188,7 +210,15 @@ export default function IdentityModal({
                           name="network"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="text-small">
+                              <FormLabel className="text-small flex items-center">
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <HelpCircle className="h-4 w-4 text-gray-500 mr-2" />
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p>Name of network to use from config</p>
+                                  </TooltipContent>
+                                </Tooltip>
                                 Network
                               </FormLabel>
                               <FormControl>
@@ -205,7 +235,15 @@ export default function IdentityModal({
                           name="rpc_url"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="text-small">
+                              <FormLabel className="text-small flex items-center">
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <HelpCircle className="h-4 w-4 text-gray-500 mr-2" />
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p>RPC server endpoint</p>
+                                  </TooltipContent>
+                                </Tooltip>
                                 RPC Url
                               </FormLabel>
                               <FormControl>
@@ -222,16 +260,24 @@ export default function IdentityModal({
                       </div>
                       <Accordion type="multiple">
                         <AccordionItem value="options">
-                          <AccordionTrigger className="mx-1">Options</AccordionTrigger>
+                          <AccordionTrigger className="mx-1 -mt-4">Options</AccordionTrigger>
                           <AccordionContent >
-                            <div className="space-y-4">
+                            <div className="space-y-5">
                               <div className="space-y-3 mx-1">
                                 <FormField
                                   control={newIdentityForm.control}
                                   name="seed"
                                   render={({ field }) => (
                                     <FormItem>
-                                      <FormLabel className="text-small">
+                                      <FormLabel className="text-small flex items-center">
+                                        <Tooltip>
+                                          <TooltipTrigger asChild>
+                                            <HelpCircle className="h-4 w-4 text-gray-500 mr-2" />
+                                          </TooltipTrigger>
+                                          <TooltipContent>
+                                            <p>Optional seed to use when generating seed phrase. Random otherwise</p>
+                                          </TooltipContent>
+                                        </Tooltip>
                                         Seed
                                       </FormLabel>
                                       <FormControl>
@@ -252,7 +298,15 @@ export default function IdentityModal({
                                   name="hd_path"
                                   render={({ field }) => (
                                     <FormItem>
-                                      <FormLabel className="text-small">
+                                      <FormLabel className="text-small flex items-center">
+                                        <Tooltip>
+                                          <TooltipTrigger asChild>
+                                            <HelpCircle className="h-4 w-4 text-gray-500 mr-2" />
+                                          </TooltipTrigger>
+                                          <TooltipContent>
+                                            <p>When generating a secret key, which `hd_path` should be used from the original `seed_phrase`</p>
+                                          </TooltipContent>
+                                        </Tooltip>
                                         Hd Path
                                       </FormLabel>
                                       <FormControl>
@@ -365,7 +419,15 @@ export default function IdentityModal({
                                   name="config_dir"
                                   render={({ field }) => (
                                     <FormItem>
-                                      <FormLabel className="text-small">
+                                      <FormLabel className="text-small flex items-center">
+                                        <Tooltip>
+                                          <TooltipTrigger asChild>
+                                            <HelpCircle className="h-4 w-4 text-gray-500 mr-2" />
+                                          </TooltipTrigger>
+                                          <TooltipContent>
+                                            <p>Location of config directory, default is "."</p>
+                                          </TooltipContent>
+                                        </Tooltip>
                                         Config Directory
                                       </FormLabel>
                                       <FormControl>
@@ -427,7 +489,7 @@ export default function IdentityModal({
           <TabsContent value="add">
             <Form {...addIdentityForm}>
               <form onSubmit={addIdentityForm.handleSubmit(handleAddIdentity)}>
-                <DialogHeader className="space-y-3 mx-1">
+                <DialogHeader className="space-y-3 mx-1 mb-2">
                   <DialogTitle>Add Identity</DialogTitle>
                   <DialogDescription>
                     Add a new identity (keypair, ledger, macOS keychain)
@@ -435,14 +497,22 @@ export default function IdentityModal({
                 </DialogHeader>
                 <ScrollArea className="max-h-[calc(70vh-106px)] overflow-y-auto pr-2">
                   <div>
-                    <div className="space-y-4 py-4 pb-6">
+                    <div className="space-y-6 py-4 pb-6">
                       <div className="space-y-3 mx-1">
                         <FormField
                           control={addIdentityForm.control}
                           name="identity_name"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="text-small">
+                              <FormLabel className="text-small flex items-center">
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <HelpCircle className="h-4 w-4 text-gray-500 mr-2" />
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p>Name of the identity</p>
+                                  </TooltipContent>
+                                </Tooltip>
                                 Identity Name
                               </FormLabel>
                               <FormControl>
@@ -463,7 +533,15 @@ export default function IdentityModal({
                           name="seed_phrase"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="text-small">
+                              <FormLabel className="text-small flex items-center">
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <HelpCircle className="h-4 w-4 text-gray-500 mr-2" />
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p>Seed phrase for the identity</p>
+                                  </TooltipContent>
+                                </Tooltip>
                                 Seed Phrase
                               </FormLabel>
                               <FormControl>
@@ -484,7 +562,15 @@ export default function IdentityModal({
                           name="secret_key"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="text-small">
+                              <FormLabel className="text-small flex items-center">
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <HelpCircle className="h-4 w-4 text-gray-500 mr-2" />
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p>Secret key for the identity</p>
+                                  </TooltipContent>
+                                </Tooltip>
                                 Secret Key
                               </FormLabel>
                               <FormControl>
@@ -501,9 +587,9 @@ export default function IdentityModal({
                       </div>
                       <Accordion type="multiple">
                         <AccordionItem value="item-1">
-                          <AccordionTrigger className="mx-1">Options</AccordionTrigger>
+                          <AccordionTrigger className="mx-1 -mt-4">Options</AccordionTrigger>
                           <AccordionContent>
-                            <div className="space-y-4">
+                            <div className="space-y-6">
                               <div className="space-y-3 mx-1">
                                 <FormField
                                   control={addIdentityForm.control}
@@ -532,7 +618,15 @@ export default function IdentityModal({
                                   name="config_dir"
                                   render={({ field }) => (
                                     <FormItem>
-                                      <FormLabel className="text-small">
+                                      <FormLabel className="text-small flex items-center">
+                                        <Tooltip>
+                                          <TooltipTrigger asChild>
+                                            <HelpCircle className="h-4 w-4 text-gray-500 mr-2" />
+                                          </TooltipTrigger>
+                                          <TooltipContent>
+                                            <p>Location of config directory, default is "."</p>
+                                          </TooltipContent>
+                                        </Tooltip>
                                         Config Directory (Testing)
                                       </FormLabel>
                                       <FormControl>

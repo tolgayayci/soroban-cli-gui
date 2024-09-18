@@ -33,10 +33,6 @@ export function ModeToggle() {
           <Icons.moon className="mr-2 h-4 w-4" />
           <span>Dark</span>
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("system")}>
-          <Icons.laptop className="mr-2 h-4 w-4" />
-          <span>System</span>
-        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

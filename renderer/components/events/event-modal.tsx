@@ -6,8 +6,8 @@ import { Checkbox } from "components/ui/checkbox";
 import { ScrollArea, ScrollBar } from "components/ui/scroll-area";
 import { Button } from "components/ui/button";
 import { Input } from "components/ui/input";
-import { Loader2 } from "lucide-react";
-import { HelpCircle } from "lucide-react";
+import { Loader2, HelpCircle } from "lucide-react";
+
 import {
   Accordion,
   AccordionContent,
@@ -42,6 +42,12 @@ import {
   SelectValue,
 } from "components/ui/select";
 
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "components/ui/tooltip";
+
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -52,13 +58,6 @@ import {
 } from "components/events/forms/addContractEvent";
 
 import { useToast } from "components/ui/use-toast";
-
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "components/ui/tooltip";
 
 export default function ContractEventModal({
   showCreateContractEventDialog,
@@ -138,19 +137,17 @@ export default function ContractEventModal({
                       name="start_ledger"
                       render={({ field }) => (
                         <FormItem>
-                          <div className="flex items-center justify-between">
-                            <FormLabel className="text-small">Start Ledger *</FormLabel>
-                            <TooltipProvider>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <HelpCircle className="h-4 w-4 text-gray-500" />
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                  <p>The first ledger sequence number in the range to pull events</p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                          </div>
+                          <FormLabel className="text-small flex items-center">
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <HelpCircle className="h-4 w-4 text-gray-500 mr-2" />
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>The first ledger sequence number in the range to pull events</p>
+                              </TooltipContent>
+                            </Tooltip>
+                            Start Ledger *
+                          </FormLabel>
                           <FormControl>
                             <Input
                               {...field}
@@ -171,19 +168,17 @@ export default function ContractEventModal({
                       name="network_passphrase"
                       render={({ field }) => (
                         <FormItem>
-                          <div className="flex items-center justify-between">
-                            <FormLabel className="text-small">Network Passphrase *</FormLabel>
-                            <TooltipProvider>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <HelpCircle className="h-4 w-4 text-gray-500" />
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                  <p>Network passphrase to sign the transaction sent to the RPC server</p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                          </div>
+                          <FormLabel className="text-small flex items-center">
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <HelpCircle className="h-4 w-4 text-gray-500 mr-2" />
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Network passphrase to sign the transaction sent to the RPC server</p>
+                              </TooltipContent>
+                            </Tooltip>
+                            Network Passphrase *
+                          </FormLabel>
                           <FormControl>
                             <Input {...field} id="network_passphrase" />
                           </FormControl>
@@ -199,19 +194,17 @@ export default function ContractEventModal({
                       name="network"
                       render={({ field }) => (
                         <FormItem>
-                          <div className="flex items-center justify-between">
-                            <FormLabel className="text-small">Network *</FormLabel>
-                            <TooltipProvider>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <HelpCircle className="h-4 w-4 text-gray-500" />
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                  <p>Name of network to use from config</p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                          </div>
+                          <FormLabel className="text-small flex items-center">
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <HelpCircle className="h-4 w-4 text-gray-500 mr-2" />
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Name of network to use from config</p>
+                              </TooltipContent>
+                            </Tooltip>
+                            Network *
+                          </FormLabel>
                           <FormControl>
                             <Input {...field} id="network" />
                           </FormControl>
@@ -227,19 +220,17 @@ export default function ContractEventModal({
                       name="rpc_url"
                       render={({ field }) => (
                         <FormItem>
-                          <div className="flex items-center justify-between">
-                            <FormLabel className="text-small">RPC Url *</FormLabel>
-                            <TooltipProvider>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <HelpCircle className="h-4 w-4 text-gray-500" />
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                  <p>RPC server endpoint</p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                          </div>
+                          <FormLabel className="text-small flex items-center">
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <HelpCircle className="h-4 w-4 text-gray-500 mr-2" />
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>RPC server endpoint</p>
+                              </TooltipContent>
+                            </Tooltip>
+                            RPC Url *
+                          </FormLabel>
                           <FormControl>
                             <Input
                               {...field}
@@ -259,19 +250,17 @@ export default function ContractEventModal({
                       name="cursor"
                       render={({ field }) => (
                         <FormItem>
-                          <div className="flex items-center justify-between">
-                            <FormLabel className="text-small">Cursor</FormLabel>
-                            <TooltipProvider>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <HelpCircle className="h-4 w-4 text-gray-500" />
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                  <p>The cursor corresponding to the start of the event range</p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                          </div>
+                          <FormLabel className="text-small flex items-center">
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <HelpCircle className="h-4 w-4 text-gray-500 mr-2" />
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>The cursor corresponding to the start of the event range</p>
+                              </TooltipContent>
+                            </Tooltip>
+                            Cursor
+                          </FormLabel>
                           <FormControl>
                             <Input
                               {...field}
@@ -291,19 +280,17 @@ export default function ContractEventModal({
                       name="count"
                       render={({ field }) => (
                         <FormItem>
-                          <div className="flex items-center justify-between">
-                            <FormLabel className="text-small">Count</FormLabel>
-                            <TooltipProvider>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <HelpCircle className="h-4 w-4 text-gray-500" />
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                  <p>The maximum number of events to display</p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                          </div>
+                          <FormLabel className="text-small flex items-center">
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <HelpCircle className="h-4 w-4 text-gray-500 mr-2" />
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>The maximum number of events to display</p>
+                              </TooltipContent>
+                            </Tooltip>
+                            Count
+                          </FormLabel>
                           <FormControl>
                             <Input {...field} id="count" placeholder="10" />
                           </FormControl>
@@ -315,7 +302,7 @@ export default function ContractEventModal({
 
                   <Accordion type="multiple">
                     <AccordionItem value="options">
-                      <AccordionTrigger className="mx-1 mb-2">Filters</AccordionTrigger>
+                      <AccordionTrigger className="mx-1 -mt-4">Filters</AccordionTrigger>
                       <AccordionContent>
                         <div className="space-y-6">
                           <div className="space-y-3 mx-1">
@@ -324,19 +311,17 @@ export default function ContractEventModal({
                               name="contract_id"
                               render={({ field }) => (
                                 <FormItem>
-                                  <div className="flex items-center justify-between">
-                                    <FormLabel className="text-small">Contract ID</FormLabel>
-                                    <TooltipProvider>
-                                      <Tooltip>
-                                        <TooltipTrigger asChild>
-                                          <HelpCircle className="h-4 w-4 text-gray-500" />
-                                        </TooltipTrigger>
-                                        <TooltipContent>
-                                          <p>A set of (up to 5) contract IDs to filter events on</p>
-                                        </TooltipContent>
-                                      </Tooltip>
-                                    </TooltipProvider>
-                                  </div>
+                                  <FormLabel className="text-small flex items-center">
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <HelpCircle className="h-4 w-4 text-gray-500 mr-2" />
+                                      </TooltipTrigger>
+                                      <TooltipContent>
+                                        <p>A set of (up to 5) contract IDs to filter events on</p>
+                                      </TooltipContent>
+                                    </Tooltip>
+                                    Contract ID
+                                  </FormLabel>
                                   <FormControl>
                                     <Input
                                       {...field}
@@ -355,19 +340,17 @@ export default function ContractEventModal({
                               name="topic_filters"
                               render={({ field }) => (
                                 <FormItem>
-                                  <div className="flex items-center justify-between">
-                                    <FormLabel className="text-small">Topic Filters</FormLabel>
-                                    <TooltipProvider>
-                                      <Tooltip>
-                                        <TooltipTrigger asChild>
-                                          <HelpCircle className="h-4 w-4 text-gray-500" />
-                                        </TooltipTrigger>
-                                        <TooltipContent>
-                                          <p>A set of (up to 4) topic filters to filter event topics on</p>
-                                        </TooltipContent>
-                                      </Tooltip>
-                                    </TooltipProvider>
-                                  </div>
+                                  <FormLabel className="text-small flex items-center">
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <HelpCircle className="h-4 w-4 text-gray-500 mr-2" />
+                                      </TooltipTrigger>
+                                      <TooltipContent>
+                                        <p>A set of (up to 4) topic filters to filter event topics on</p>
+                                      </TooltipContent>
+                                    </Tooltip>
+                                    Topic Filters
+                                  </FormLabel>
                                   <FormControl>
                                     <Input
                                       {...field}
@@ -381,19 +364,17 @@ export default function ContractEventModal({
                             />
                           </div>
                           <div className="space-y-3 mx-1">
-                            <div className="flex items-center justify-between">
-                              <FormLabel className="text-small">Event Type</FormLabel>
-                              <TooltipProvider>
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <HelpCircle className="h-4 w-4 text-gray-500" />
-                                  </TooltipTrigger>
-                                  <TooltipContent>
-                                    <p>Specifies which type of contract events to display</p>
-                                  </TooltipContent>
-                                </Tooltip>
-                              </TooltipProvider>
-                            </div>
+                            <FormLabel className="text-small flex items-center">
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <HelpCircle className="h-4 w-4 text-gray-500 mr-2" />
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>Specifies which type of contract events to display</p>
+                                </TooltipContent>
+                              </Tooltip>
+                              Event Type
+                            </FormLabel>
                             <FormField
                               control={addContractEventForm.control}
                               name="event_type"
@@ -436,19 +417,17 @@ export default function ContractEventModal({
                               name="config_dir"
                               render={({ field }) => (
                                 <FormItem>
-                                  <div className="flex items-center justify-between">
-                                    <FormLabel className="text-small">Config Directory</FormLabel>
-                                    <TooltipProvider>
-                                      <Tooltip>
-                                        <TooltipTrigger asChild>
-                                          <HelpCircle className="h-4 w-4 text-gray-500" />
-                                        </TooltipTrigger>
-                                        <TooltipContent>
-                                          <p>Location of config directory</p>
-                                        </TooltipContent>
-                                      </Tooltip>
-                                    </TooltipProvider>
-                                  </div>
+                                  <FormLabel className="text-small flex items-center">
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <HelpCircle className="h-4 w-4 text-gray-500 mr-2" />
+                                      </TooltipTrigger>
+                                      <TooltipContent>
+                                        <p>Location of config directory</p>
+                                      </TooltipContent>
+                                    </Tooltip>
+                                    Config Directory
+                                  </FormLabel>
                                   <FormControl>
                                     <div className="flex w-full items-center space-x-2">
                                       <Input

@@ -40,7 +40,19 @@ export const createNewProjectFormSchema = z.object({
       "workspace",
     ])
     .optional(),
-  frontend_template: z.string().optional(),
+  frontend_template: z
+    .string()
+    .url({ message: "Frontend template must be a valid URL" })
+    .optional()
+    .or(z.literal('')),
+}).refine((data) => {
+  if (data.include_examples && !data.with_example) {
+    return false;
+  }
+  return true;
+}, {
+  message: "You must select an example when 'With Example' is enabled",
+  path: ["with_example"], // This specifies which field the error is associated with
 });
 
 export async function onCreateNewProjectForm(

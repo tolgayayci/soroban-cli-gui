@@ -226,9 +226,7 @@ const IdentityCard = ({
               </>
             )}
           </div>
-          <DialogFooter>
-            <Button onClick={() => setShowInfoDialog(false)}>Close</Button>
-          </DialogFooter>
+          
         </DialogContent>
       </Dialog>
     </Card>
