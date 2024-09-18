@@ -1,8 +1,8 @@
 import * as z from "zod";
 
 export const removeContractEventFormSchema = z.object({
-  startLedger: z.string(),
-  contractId: z.string().optional(),
+  start_ledger: z.string(),
+  rpc_url: z.string(),
 });
 
 export async function onRemoveContractEventFormSubmit(
@@ -10,9 +10,10 @@ export async function onRemoveContractEventFormSubmit(
 ) {
   try {
     const result = await window.sorobanApi.manageContractEvents("remove", {
-      startLedger: data.startLedger,
-      contractId: data.contractId ? data.contractId : undefined,
+      start_ledger: data.start_ledger,
+      rpc_url: data.rpc_url,
     });
+    return result;
   } catch (error) {
     throw error;
   }

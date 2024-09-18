@@ -88,7 +88,6 @@ const schema = {
       },
       required: [
         "start_ledger",
-        "cursor",
         "rpc_url",
         "network_passphrase",
         "network",
@@ -468,14 +467,10 @@ if (isProd) {
     "store:manageContractEvents",
     async (event, action, contractEvents) => {
       try {
-        const result = await handleContractEvents(
-          store,
-          action,
-          contractEvents
-        );
+        const result = await handleContractEvents(store, action, contractEvents);
         return result;
       } catch (error) {
-        console.error("Error on contracts:", error);
+        console.error("Error on contract events:", error);
         throw error;
       }
     }

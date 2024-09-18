@@ -79,7 +79,7 @@ export default function Layout({ children }: LayoutProps) {
             <IdentitySwitcher />
             <Button
               variant="outline"
-              onClick={() => window.sorobanApi.openExternalLink("https://thesora.app")}
+              onClick={() => window.sorobanApi.openExternalLink("https://thesora.app/getting-started/quick-start")}
               className="h-10"
             >
               <BookOpenIcon className="h-4 w-4 mr-2" />

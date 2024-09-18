@@ -3,8 +3,10 @@ import { useProjects } from "hooks/useProjects";
 
 import { createContractsColumns } from "components/contracts/contracts-columns";
 import { ContractsDataTable } from "components/contracts/contracts-data-table";
-import NoContracts from "components/contracts/no-contracts";
 import Loading from "components/common/loading";
+import { FileTextIcon } from "lucide-react"; 
+import { Button } from "components/ui/button"; 
+import Link from "next/link";
 
 export default function ContractsComponent() {
   const [allContracts, setAllContracts] = useState([]);
@@ -56,7 +58,17 @@ export default function ContractsComponent() {
       ) : allContracts.length > 0 ? (
         <ContractsDataTable columns={columns} data={allContracts} />
       ) : (
-        <NoContracts />
+        <div className="h-[calc(100vh-106px)] w-full rounded-md border flex flex-col items-center justify-center space-y-4">
+          <FileTextIcon className="h-12 w-12" />
+          <p className="text-lg">No Contracts Found</p>
+          <p className="text-sm text-gray-600 text-center max-w-sm leading-relaxed">
+            
+            Create a new project to get started or add an existing project to list your contracts.
+          </p>
+          <Link href="/projects">
+            <Button>Go to Projects</Button>
+          </Link>
+        </div>
       )}
     </div>
   );

@@ -5,14 +5,14 @@ import ContractEventDetail from "components/events/event-detail";
 
 function ContractEventsDetailPage() {
   const router = useRouter();
-  const { path } = router.query;
+  const { path, rpcUrl } = router.query;
 
   return (
     <React.Fragment>
       <Head>
         <title>Contract Events - Soroban</title>
       </Head>
-      <ContractEventDetail eventDetail={path as string} />
+      <ContractEventDetail startLedger={path as string} rpcUrl={rpcUrl as string} />
     </React.Fragment>
   );
 }

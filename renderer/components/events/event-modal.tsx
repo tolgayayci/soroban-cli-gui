@@ -7,7 +7,7 @@ import { ScrollArea, ScrollBar } from "components/ui/scroll-area";
 import { Button } from "components/ui/button";
 import { Input } from "components/ui/input";
 import { Loader2 } from "lucide-react";
-
+import { HelpCircle } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -53,6 +53,13 @@ import {
 
 import { useToast } from "components/ui/use-toast";
 
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "components/ui/tooltip";
+
 export default function ContractEventModal({
   showCreateContractEventDialog,
   setShowCreateContractEventialog,
@@ -63,18 +70,30 @@ export default function ContractEventModal({
   const { toast } = useToast();
 
   const handleAddContractEvent = async (data) => {
+    setIsSubmittingContractEvent(true);
     try {
-      await onAddContractEventFormSubmit(data).then((res) => {
-        //@ts-ignore
-        if (res) {
-          //   toast(identityAddSuccess(data.identity_name));
-          setShowCreateContractEventialog(false);
-        }
-      });
+      const result = await onAddContractEventFormSubmit(data);
+      if (result.success) {
+        toast({
+          title: "Success",
+          description: result.message,
+        });
+        setShowCreateContractEventialog(false);
+      } else {
+        toast({
+          title: "Error",
+          description: result.message,
+          variant: "destructive",
+        });
+      }
     } catch (error) {
-      //   toast(identityAddError(data.identity_name, error));
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred.",
+        variant: "destructive",
+      });
     } finally {
-      setShowCreateContractEventialog(false);
+      setIsSubmittingContractEvent(false);
     }
   };
 
@@ -103,25 +122,35 @@ export default function ContractEventModal({
           <form
             onSubmit={addContractEventForm.handleSubmit(handleAddContractEvent)}
           >
-            <DialogHeader className="space-y-3">
+            <DialogHeader className="space-y-3 mx-1 mb-2">
               <DialogTitle>Add New Contract Event</DialogTitle>
               <DialogDescription>
                 Contract events you will add are global, you can show them
                 later.
               </DialogDescription>
             </DialogHeader>
-            <ScrollArea className="max-h-[calc(70vh-106px)] overflow-y-auto pr-1">
+            <ScrollArea className="max-h-[calc(70vh-106px)] overflow-y-auto pr-2">
               <div>
-                <div className="space-y-4 py-4 pb-6">
-                  <div className="space-y-3">
+                <div className="space-y-6 py-4 pb-6">
+                  <div className="space-y-3 mx-1">
                     <FormField
                       control={addContractEventForm.control}
                       name="start_ledger"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-small">
-                            Start Ledger *
-                          </FormLabel>
+                          <div className="flex items-center justify-between">
+                            <FormLabel className="text-small">Start Ledger *</FormLabel>
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <HelpCircle className="h-4 w-4 text-gray-500" />
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>The first ledger sequence number in the range to pull events</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          </div>
                           <FormControl>
                             <Input
                               {...field}
@@ -136,15 +165,25 @@ export default function ContractEventModal({
                     />
                   </div>
 
-                  <div className="space-y-3">
+                  <div className="space-y-3 mx-1">
                     <FormField
                       control={addContractEventForm.control}
                       name="network_passphrase"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-small">
-                            Network Passphrase *
-                          </FormLabel>
+                          <div className="flex items-center justify-between">
+                            <FormLabel className="text-small">Network Passphrase *</FormLabel>
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <HelpCircle className="h-4 w-4 text-gray-500" />
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>Network passphrase to sign the transaction sent to the RPC server</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          </div>
                           <FormControl>
                             <Input {...field} id="network_passphrase" />
                           </FormControl>
@@ -153,15 +192,26 @@ export default function ContractEventModal({
                       )}
                     />
                   </div>
-                  <div className="space-y-3">
+
+                  <div className="space-y-3 mx-1">
                     <FormField
                       control={addContractEventForm.control}
                       name="network"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-small">
-                            Network *
-                          </FormLabel>
+                          <div className="flex items-center justify-between">
+                            <FormLabel className="text-small">Network *</FormLabel>
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <HelpCircle className="h-4 w-4 text-gray-500" />
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>Name of network to use from config</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          </div>
                           <FormControl>
                             <Input {...field} id="network" />
                           </FormControl>
@@ -170,15 +220,26 @@ export default function ContractEventModal({
                       )}
                     />
                   </div>
-                  <div className="space-y-3">
+
+                  <div className="space-y-3 mx-1">
                     <FormField
                       control={addContractEventForm.control}
                       name="rpc_url"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-small">
-                            RPC Url *
-                          </FormLabel>
+                          <div className="flex items-center justify-between">
+                            <FormLabel className="text-small">RPC Url *</FormLabel>
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <HelpCircle className="h-4 w-4 text-gray-500" />
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>RPC server endpoint</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          </div>
                           <FormControl>
                             <Input
                               {...field}
@@ -191,13 +252,26 @@ export default function ContractEventModal({
                       )}
                     />
                   </div>
-                  <div className="space-y-3">
+
+                  <div className="space-y-3 mx-1">
                     <FormField
                       control={addContractEventForm.control}
                       name="cursor"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-small">Cursor</FormLabel>
+                          <div className="flex items-center justify-between">
+                            <FormLabel className="text-small">Cursor</FormLabel>
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <HelpCircle className="h-4 w-4 text-gray-500" />
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>The cursor corresponding to the start of the event range</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          </div>
                           <FormControl>
                             <Input
                               {...field}
@@ -210,13 +284,26 @@ export default function ContractEventModal({
                       )}
                     />
                   </div>
-                  <div className="space-y-3">
+
+                  <div className="space-y-3 mx-1">
                     <FormField
                       control={addContractEventForm.control}
                       name="count"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-small">Count</FormLabel>
+                          <div className="flex items-center justify-between">
+                            <FormLabel className="text-small">Count</FormLabel>
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <HelpCircle className="h-4 w-4 text-gray-500" />
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>The maximum number of events to display</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          </div>
                           <FormControl>
                             <Input {...field} id="count" placeholder="10" />
                           </FormControl>
@@ -225,20 +312,31 @@ export default function ContractEventModal({
                       )}
                     />
                   </div>
+
                   <Accordion type="multiple">
                     <AccordionItem value="options">
-                      <AccordionTrigger>Filters</AccordionTrigger>
+                      <AccordionTrigger className="mx-1 mb-2">Filters</AccordionTrigger>
                       <AccordionContent>
-                        <div className="space-y-4">
-                          <div className="space-y-3">
+                        <div className="space-y-6">
+                          <div className="space-y-3 mx-1">
                             <FormField
                               control={addContractEventForm.control}
                               name="contract_id"
                               render={({ field }) => (
                                 <FormItem>
-                                  <FormLabel className="text-small">
-                                    Id
-                                  </FormLabel>
+                                  <div className="flex items-center justify-between">
+                                    <FormLabel className="text-small">Contract ID</FormLabel>
+                                    <TooltipProvider>
+                                      <Tooltip>
+                                        <TooltipTrigger asChild>
+                                          <HelpCircle className="h-4 w-4 text-gray-500" />
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                          <p>A set of (up to 5) contract IDs to filter events on</p>
+                                        </TooltipContent>
+                                      </Tooltip>
+                                    </TooltipProvider>
+                                  </div>
                                   <FormControl>
                                     <Input
                                       {...field}
@@ -251,15 +349,25 @@ export default function ContractEventModal({
                               )}
                             />
                           </div>
-                          <div className="space-y-3">
+                          <div className="space-y-3 mx-1">
                             <FormField
                               control={addContractEventForm.control}
                               name="topic_filters"
                               render={({ field }) => (
                                 <FormItem>
-                                  <FormLabel className="text-small">
-                                    Topic
-                                  </FormLabel>
+                                  <div className="flex items-center justify-between">
+                                    <FormLabel className="text-small">Topic Filters</FormLabel>
+                                    <TooltipProvider>
+                                      <Tooltip>
+                                        <TooltipTrigger asChild>
+                                          <HelpCircle className="h-4 w-4 text-gray-500" />
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                          <p>A set of (up to 4) topic filters to filter event topics on</p>
+                                        </TooltipContent>
+                                      </Tooltip>
+                                    </TooltipProvider>
+                                  </div>
                                   <FormControl>
                                     <Input
                                       {...field}
@@ -272,8 +380,20 @@ export default function ContractEventModal({
                               )}
                             />
                           </div>
-                          <div className="space-y-3">
-                            <FormLabel className="text-small">Type</FormLabel>
+                          <div className="space-y-3 mx-1">
+                            <div className="flex items-center justify-between">
+                              <FormLabel className="text-small">Event Type</FormLabel>
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <HelpCircle className="h-4 w-4 text-gray-500" />
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p>Specifies which type of contract events to display</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+                            </div>
                             <FormField
                               control={addContractEventForm.control}
                               name="event_type"
@@ -307,18 +427,28 @@ export default function ContractEventModal({
                       </AccordionContent>
                     </AccordionItem>
                     <AccordionItem value="testing-options">
-                      <AccordionTrigger>Testing Options</AccordionTrigger>
+                      <AccordionTrigger className="mx-1 mb-2">Testing Options</AccordionTrigger>
                       <AccordionContent>
-                        <div className="space-y-4">
-                          <div className="space-y-3">
+                        <div className="space-y-6">
+                          <div className="space-y-3 mx-1">
                             <FormField
                               control={addContractEventForm.control}
                               name="config_dir"
                               render={({ field }) => (
                                 <FormItem>
-                                  <FormLabel className="text-small">
-                                    Config Directory
-                                  </FormLabel>
+                                  <div className="flex items-center justify-between">
+                                    <FormLabel className="text-small">Config Directory</FormLabel>
+                                    <TooltipProvider>
+                                      <Tooltip>
+                                        <TooltipTrigger asChild>
+                                          <HelpCircle className="h-4 w-4 text-gray-500" />
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                          <p>Location of config directory</p>
+                                        </TooltipContent>
+                                      </Tooltip>
+                                    </TooltipProvider>
+                                  </div>
                                   <FormControl>
                                     <div className="flex w-full items-center space-x-2">
                                       <Input
@@ -349,7 +479,7 @@ export default function ContractEventModal({
                       </AccordionContent>
                     </AccordionItem>
                   </Accordion>
-                  <div className="space-y-3">
+                  <div className="space-y-3 mx-1">
                     <FormField
                       control={addContractEventForm.control}
                       name="is_global"
@@ -383,7 +513,6 @@ export default function ContractEventModal({
               </Button>
               {isSubmittingContractEvent ? (
                 <Button disabled>
-                  {" "}
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Adding...
                 </Button>
