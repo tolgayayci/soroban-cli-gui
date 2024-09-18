@@ -1,5 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
+import { useTheme } from "next-themes";
+import Image from "next/image";
 
 import {
   ColumnDef,
@@ -85,6 +87,8 @@ export function ApplicationLogsDataTable<TData, TValue>({
     table.getColumn("message")?.setFilterValue(searchQuery);
   }, [searchQuery]);
 
+  const { theme } = useTheme();
+
   const filteredRows = table.getFilteredRowModel().rows;
 
   return (
@@ -139,15 +143,24 @@ export function ApplicationLogsDataTable<TData, TValue>({
           </div>
         </div>
       ) : (
-        <div className="h-[calc(85vh-130px)] w-full rounded-md border flex flex-col items-center justify-center space-y-4">
-          <Search className="h-12 w-12" />
-          <p className="text-lg">No Matching Logs Found</p>
-          <p className="text-sm text-gray-600 text-center max-w-md leading-relaxed">
-            No logs match your search query "{searchQuery}".
-            <br />
-            Try adjusting your search terms.
-          </p>
-          <Button onClick={() => setSearchQuery("")}>Clear Search</Button>
+        <div className="h-[calc(85vh-130px)] w-full rounded-md border flex flex-col items-center justify-center">
+          <div className="flex items-center justify-center -mt-8">
+            <Image
+              src={theme === "dark" ? "/icons/not_found_light.svg" : "/icons/not_found_dark.svg"}
+              alt="Application Logs"
+              width={220}
+              height={220}
+            />
+          </div>
+          <div className="flex flex-col items-center justify-center space-y-4 -mt-3">
+            <p className="text-lg">No Matching Logs Found</p>
+            <p className="text-sm text-gray-600 text-center max-w-md leading-relaxed">
+              No logs match your search query "{searchQuery}".
+              <br />
+              Try adjusting your search terms.
+            </p>
+            <Button onClick={() => setSearchQuery("")}>Clear Search</Button>
+          </div>
         </div>
       )}
       {filteredRows.length > 0 && (

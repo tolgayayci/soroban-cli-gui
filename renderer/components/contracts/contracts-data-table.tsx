@@ -1,5 +1,7 @@
 "use client";
 import { useState } from "react";
+import { useTheme } from "next-themes";
+import Image from "next/image";
 
 import {
   ColumnDef,
@@ -54,6 +56,7 @@ export function ContractsDataTable<TData, TValue>({
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const { theme } = useTheme();
 
   const table = useReactTable({
     data,
@@ -141,17 +144,30 @@ export function ContractsDataTable<TData, TValue>({
             </Table>
           </div>
         ) : (
-          <div className="h-full w-full rounded-md border flex flex-col items-center justify-center space-y-4">
-            <Search className="h-12 w-12" />
-            <p className="text-lg">No Contracts Found</p>
-            <p className="text-sm text-gray-600 text-center max-w-md leading-relaxed">
-              No contracts match your search query "{searchQuery}".
-              <br />
-              Try adjusting your search or create/add a new project to list your contracts.
-            </p>
-            <Link href="/projects">
-              <Button>Go to Projects</Button>
-            </Link>
+          <div className="h-[calc(100vh-190px)] w-full rounded-md border flex flex-col items-center justify-center">
+            <div className="flex items-center justify-center -mt-8">
+              <Image
+                src={
+                  theme === "dark"
+                    ? "/icons/not_found_light.svg"
+                    : "/icons/not_found_dark.svg"
+                }
+                alt="Contracts"
+                width={220}
+                height={220}
+              />
+            </div>
+            <div className="flex flex-col items-center justify-center space-y-4 -mt-3">
+              <p className="text-lg">No Contracts Found</p>
+              <p className="text-sm text-gray-600 text-center max-w-md leading-relaxed">
+                No contracts match your search query "{searchQuery}".
+                <br />
+                Try adjusting your search or create/add a new project to list your contracts.
+              </p>
+              <Link href="/projects">
+                <Button>Go to Projects</Button>
+              </Link>
+            </div>
           </div>
         )}
       </div>

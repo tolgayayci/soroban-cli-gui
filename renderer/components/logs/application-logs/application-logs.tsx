@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { ApplicationLogsDataTable } from "components/logs/application-logs/application-logs-data-table";
 import { createApplicationLogsColumns } from "components/logs/application-logs/application-logs-columns";
-import { Button } from "components/ui/button";
-import Link from "next/link";
-import { Search } from "lucide-react";
+import Image from "next/image";
+import { useTheme } from "next-themes";
 
 interface LogEntry {
   timestamp: string;
@@ -45,17 +44,32 @@ export default function ApplicationLogs() {
 
   const columns = createApplicationLogsColumns();
 
+  const { theme } = useTheme();
+
   if (logs.length === 0) {
     return (
       <div className="h-[calc(92vh-106px)] w-full rounded-md border flex flex-col items-center justify-center space-y-4 mt-4">
-        <Search className="h-12 w-12" />
+          <div className="flex items-center justify-center -mt-8">
+            <Image
+              src={
+                theme === "dark"
+                  ? "/icons/not_found_light.svg"
+                  : "/icons/not_found_dark.svg"
+              }
+              alt="Projects"
+              width={250}
+              height={250}
+            />
+          </div>
+                    <div className="flex flex-col items-center justify-center space-y-4 -mt-3">
+
         <p className="text-lg">No Application Logs Found</p>
         <p className="text-sm text-gray-600 text-center max-w-sm leading-relaxed">
           There are no application logs available.
           <br />
           Logs are generating while you use the application, please check back later.
         </p>
-       
+        </div>
       </div>
     );
   }

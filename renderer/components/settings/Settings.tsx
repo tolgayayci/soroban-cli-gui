@@ -1,5 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
+import { useTheme } from "next-themes";
+import Image from "next/image";
 
 import {
   Accordion,
@@ -273,6 +275,7 @@ export default function SettingsComponent() {
   const [showCreateNetworkDialog, setShowCreateNetworkDialog] = useState(false);
   const [networks, setNetworks] = useState<any>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const { theme } = useTheme();
 
   async function checkNetworks() {
     try {
@@ -332,56 +335,80 @@ export default function SettingsComponent() {
         />
       </div>
       {networks?.length > 0 ? (
-        <div>
-          <div className="my-6">
-            <Input
-              type="search"
-              placeholder={`Search for a network between ${networks.length} networks`}
-              onChange={handleSearchChange}
-              value={searchQuery}
-            />
-          </div>
-          <ScrollArea className="h-[calc(100vh-300px)] overflow-y-auto">
-          {filteredNetworks.length > 0 ? (
-            <div className="grid grid-cols-3 gap-8">
-              {filteredNetworks.map((network) => (
-                <NetworkCard
-                  key={network}
-                  network={network}
-                  onNetworkChange={refreshNetworks}
-                />
-              ))}
-            </div>
+        <div className="mt-6 space-y-6">
+          <Input
+            type="search"
+            placeholder={`Search for a network between ${networks.length} networks`}
+            onChange={handleSearchChange}
+            value={searchQuery}
+          />
+          <ScrollArea className="h-[calc(100vh-300px)]">
+            {filteredNetworks.length > 0 ? (
+              <div className="grid grid-cols-3 gap-8">
+                {filteredNetworks.map((network) => (
+                  <NetworkCard
+                    key={network}
+                    network={network}
+                    onNetworkChange={refreshNetworks}
+                  />
+                ))}
+              </div>
             ) : (
-              <div className="h-[calc(100vh-300px)] w-full rounded-md border flex flex-col items-center justify-center space-y-4">
-                <Search className="h-12 w-12" />
-                <p className="text-lg">No Networks Found</p>
-                <p className="text-sm text-gray-600 text-center max-w-md leading-relaxed">
-                  No networks match your search query "{searchQuery}".
-                  <br />
-                  Try adjusting your search or create a new identity.
-                </p>
-                <Button onClick={() => setShowCreateNetworkDialog(true)}>
-                  Create New Network
-                </Button>
+              <div className="h-[calc(100vh-300px)] w-full rounded-md border flex flex-col items-center justify-center">
+                <div className="flex items-center justify-center -mt-8">
+                  <Image
+                    src={
+                      theme === "dark"
+                        ? "/icons/not_found_light.svg"
+                        : "/icons/not_found_dark.svg"
+                    }
+                    alt="Networks"
+                    width={220}
+                    height={220}
+                  />
+                </div>
+                <div className="flex flex-col items-center justify-center space-y-4 -mt-3">
+                  <p className="text-lg">No Networks Found</p>
+                  <p className="text-sm text-gray-600 text-center max-w-md leading-relaxed">
+                    No networks match your search query "{searchQuery}".
+                    <br />
+                    Try adjusting your search or create a new network.
+                  </p>
+                  <Button onClick={() => setShowCreateNetworkDialog(true)}>
+                    Create New Network
+                  </Button>
+                </div>
               </div>
             )}
             <ScrollBar />
           </ScrollArea>
         </div>
       ) : (
-        <div className="h-[calc(100vh-10px)] w-full rounded-md border p-4 flex flex-col items-center justify-center space-y-4 mt-3">
-        <NetworkIcon className="h-12 w-12" />
-        <p className="text-lg">No Network Found</p>
-        <p className="text-sm text-gray-600 text-center max-w-md leading-relaxed">
-          You haven't created any network yet.
-          <br />
-          Start by creating a new network to begin using the SORA.
-        </p>
-        <Button onClick={() => setShowCreateNetworkDialog(true)}>
-          Create New Network
-        </Button>
-      </div>
+        <div className="h-[calc(100vh-10px)] w-full rounded-md border flex flex-col items-center justify-center mt-3">
+          <div className="flex items-center justify-center -mt-8">
+            <Image
+              src={
+                theme === "dark"
+                  ? "/icons/not_found_light.svg"
+                  : "/icons/not_found_dark.svg"
+              }
+              alt="Networks"
+              width={250}
+              height={250}
+            />
+          </div>
+          <div className="flex flex-col items-center justify-center space-y-4 -mt-3">
+            <p className="text-lg">No Networks Found</p>
+            <p className="text-sm text-gray-600 text-center max-w-md leading-relaxed">
+              You haven't created any networks yet.
+              <br />
+              Start by creating a new network to begin using the SORA.
+            </p>
+            <Button onClick={() => setShowCreateNetworkDialog(true)}>
+              Create New Network
+            </Button>
+          </div>
+        </div>
       )}
     </div>
   );

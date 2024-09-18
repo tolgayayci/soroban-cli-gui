@@ -1,5 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
+import { useTheme } from "next-themes";
+import Image from "next/image";
 
 import {
   ColumnDef,
@@ -94,6 +96,8 @@ export function CommandHistoryDataTable<TData, TValue>({
     table.getColumn("command")?.setFilterValue(searchQuery);
   }, [searchQuery]);
 
+  const { theme } = useTheme();
+
   const filteredRows = table.getFilteredRowModel().rows;
 
   return (
@@ -157,15 +161,24 @@ export function CommandHistoryDataTable<TData, TValue>({
             </Table>
           </div>
         ) : (
-          <div className="h-full w-full rounded-md border flex flex-col items-center justify-center space-y-4">
-            <Search className="h-12 w-12" />
-            <p className="text-lg">No Matching Logs Found</p>
-            <p className="text-sm text-gray-600 text-center max-w-md leading-relaxed">
-              No logs match your search query "{searchQuery}".
-              <br />
-              Try adjusting your search terms.
-            </p>
-            <Button onClick={() => setSearchQuery("")}>Clear Search</Button>
+          <div className="h-full w-full rounded-md border flex flex-col items-center justify-center">
+            <div className="flex items-center justify-center -mt-8">
+              <Image
+                src={theme === "dark" ? "/icons/not_found_light.svg" : "/icons/not_found_dark.svg"}
+                alt="Command History"
+                width={220}
+                height={220}
+              />
+            </div>
+            <div className="flex flex-col items-center justify-center space-y-4 -mt-3">
+              <p className="text-lg">No Matching Commands Found</p>
+              <p className="text-sm text-gray-600 text-center max-w-md leading-relaxed">
+                No commands match your search query "{searchQuery}".
+                <br />
+                Try adjusting your search terms.
+              </p>
+              <Button onClick={() => setSearchQuery("")}>Clear Search</Button>
+            </div>
           </div>
         )}
       </div>

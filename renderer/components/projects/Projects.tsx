@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import Image from 'next/image';
-import { useTheme } from 'next-themes'; // Add this import
+import Image from "next/image";
+import { useTheme } from "next-themes"; // Add this import
 
 import {
   Form,
@@ -221,7 +221,7 @@ const ProjectsComponent = () => {
   const [projects, setProjects] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const { theme } = useTheme(); // Add this line
+  const { theme } = useTheme();
 
   async function checkProjects() {
     try {
@@ -280,30 +280,42 @@ const ProjectsComponent = () => {
             value={searchQuery}
           />
           <ScrollArea className="h-[calc(100vh-300px)]">
-          {filteredProjects.length > 0 ? (
-
-            <div className="grid grid-cols-3 gap-8">
-              {filteredProjects.map((project) => (
-                <ProjectCard
-                  key={project.path}
-                  project={project}
-                  onProjectChange={refreshProjects}
-                />
-              ))}
-            </div>
+            {filteredProjects.length > 0 ? (
+              <div className="grid grid-cols-3 gap-8">
+                {filteredProjects.map((project) => (
+                  <ProjectCard
+                    key={project.path}
+                    project={project}
+                    onProjectChange={refreshProjects}
+                  />
+                ))}
+              </div>
             ) : (
-              <div className="h-[calc(100vh-300px)] w-full rounded-md border flex flex-col items-center justify-center space-y-4">
-                <Search className="h-12 w-12" />
-                <p className="text-lg">No Projects Found</p>
-                <p className="text-sm text-gray-600 text-center max-w-md leading-relaxed">
-                  No projects match your search query "{searchQuery}".
-                  <br />
-                  Try adjusting your search or create a new project.
-                </p>
-                
-                <Button onClick={() => setShowCreateProjectDialog(true)}>
-                  Create New Project
-                </Button>
+              <div className="h-[calc(100vh-300px)] w-full rounded-md border flex flex-col items-center justify-center">
+                <div className="flex items-center justify-center -mt-8">
+                  <Image
+                    src={
+                      theme === "dark"
+                        ? "/icons/not_found_light.svg"
+                        : "/icons/not_found_dark.svg"
+                    }
+                    alt="Projects"
+                    width={220}
+                    height={220}
+                  />
+                </div>
+                <div className="flex flex-col items-center justify-center space-y-4 -mt-3">
+                  <p className="text-lg">No Projects Found</p>
+                  <p className="text-sm text-gray-600 text-center max-w-md leading-relaxed">
+                    No projects match your search query "{searchQuery}".
+                    <br />
+                    Try adjusting your search or create a new project.
+                  </p>
+
+                  <Button onClick={() => setShowCreateProjectDialog(true)}>
+                    Create New Project
+                  </Button>
+                </div>
               </div>
             )}
             <ScrollBar />
@@ -312,22 +324,26 @@ const ProjectsComponent = () => {
       ) : (
         <div className="h-[calc(100vh-10px)] w-full rounded-md border flex flex-col items-center justify-center mt-3">
           <div className="flex items-center justify-center -mt-8">
-            <Image 
-              src="/icons/no-x.svg"
-              alt="Projects" 
-              width={250} 
+            <Image
+              src={
+                theme === "dark"
+                  ? "/icons/not_found_light.svg"
+                  : "/icons/not_found_dark.svg"
+              }
+              alt="Projects"
+              width={250}
               height={250}
             />
           </div>
           <div className="flex flex-col items-center justify-center space-y-4 -mt-3">
-          <p className="text-lg">No Projects Found</p>
-          <p className="text-sm text-gray-600 text-center max-w-md leading-relaxed">
-            You haven't created any projects yet.                   <br />
-            Start by creating a new project to begin your development journey.
-          </p>
-          <Button onClick={() => setShowCreateProjectDialog(true)}>
-            Create New Project
-          </Button>
+            <p className="text-lg">No Projects Found</p>
+            <p className="text-sm text-gray-600 text-center max-w-md leading-relaxed">
+              You haven't created any projects yet. <br />
+              Start by creating a new project to begin your development journey.
+            </p>
+            <Button onClick={() => setShowCreateProjectDialog(true)}>
+              Create New Project
+            </Button>
           </div>
         </div>
       )}

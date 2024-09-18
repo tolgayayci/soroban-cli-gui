@@ -1,16 +1,18 @@
 import { useEffect, useState } from "react";
 import { useProjects } from "hooks/useProjects";
+import { useTheme } from "next-themes";
+import Image from "next/image";
 
 import { createContractsColumns } from "components/contracts/contracts-columns";
 import { ContractsDataTable } from "components/contracts/contracts-data-table";
 import Loading from "components/common/loading";
-import { FileTextIcon } from "lucide-react"; 
 import { Button } from "components/ui/button"; 
 import Link from "next/link";
 
 export default function ContractsComponent() {
   const [allContracts, setAllContracts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const { theme } = useTheme();
 
   const projects = useProjects();
 
@@ -58,16 +60,28 @@ export default function ContractsComponent() {
       ) : allContracts.length > 0 ? (
         <ContractsDataTable columns={columns} data={allContracts} />
       ) : (
-        <div className="h-[calc(100vh-106px)] w-full rounded-md border flex flex-col items-center justify-center space-y-4">
-          <FileTextIcon className="h-12 w-12" />
-          <p className="text-lg">No Contracts Found</p>
-          <p className="text-sm text-gray-600 text-center max-w-sm leading-relaxed">
-            
-            Create a new project to get started or add an existing project to list your contracts.
-          </p>
-          <Link href="/projects">
-            <Button>Go to Projects</Button>
-          </Link>
+        <div className="h-[calc(100vh-10px)] w-full rounded-md border flex flex-col items-center justify-center mt-3">
+          <div className="flex items-center justify-center -mt-8">
+            <Image
+              src={
+                theme === "dark"
+                  ? "/icons/not_found_light.svg"
+                  : "/icons/not_found_dark.svg"
+              }
+              alt="Contracts"
+              width={250}
+              height={250}
+            />
+          </div>
+          <div className="flex flex-col items-center justify-center space-y-4 -mt-3">
+            <p className="text-lg">No Contracts Found</p>
+            <p className="text-sm text-gray-600 text-center max-w-md leading-relaxed">
+              Create a new project to get started or add an existing project to list your contracts.
+            </p>
+            <Link href="/projects">
+              <Button>Go to Projects</Button>
+            </Link>
+          </div>
         </div>
       )}
     </div>

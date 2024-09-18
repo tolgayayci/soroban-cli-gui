@@ -34,6 +34,8 @@ import {
   DialogDescription,
 } from "components/ui/dialog";
 import { Loader2 } from "lucide-react";
+import Image from "next/image";
+import { useTheme } from "next-themes";
 
 const IdentityCard = ({
   identity,
@@ -239,6 +241,7 @@ export default function IdentitiesComponent() {
   const [identities, setIdentities] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeIdentityName, setActiveIdentityName] = useState("");
+  const { theme } = useTheme();
 
   async function checkIdentities() {
     try {
@@ -302,47 +305,72 @@ export default function IdentitiesComponent() {
             onChange={handleSearchChange}
             value={searchQuery}
           />
-          <ScrollArea className="h-[calc(100vh-300px)] overflow-y-auto">
-          {filteredIdentities.length > 0 ? (
-            <div className="grid grid-cols-3 gap-8">
-              {filteredIdentities.map((identity) => (
-                <IdentityCard
-                  key={identity.name}
-                  identity={identity}
-                  activeIdentityName={activeIdentityName}
-                />
-              ))}
-            </div>
-             ) : (
-              <div className="h-[calc(100vh-300px)] w-full rounded-md border flex flex-col items-center justify-center space-y-4">
-                <Search className="h-12 w-12" />
-                <p className="text-lg">No Identities Found</p>
-                <p className="text-sm text-gray-600 text-center max-w-md leading-relaxed">
-                  No identities match your search query "{searchQuery}".
-                  <br />
-                  Try adjusting your search or create a new identity.
-                </p>
-                <Button onClick={() => setShowCreateIdentityDialog(true)}>
-                  Create New Identity
-                </Button>
+          <ScrollArea className="h-[calc(100vh-300px)]">
+            {filteredIdentities.length > 0 ? (
+              <div className="grid grid-cols-3 gap-8">
+                {filteredIdentities.map((identity) => (
+                  <IdentityCard
+                    key={identity.name}
+                    identity={identity}
+                    activeIdentityName={activeIdentityName}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="h-[calc(100vh-300px)] w-full rounded-md border flex flex-col items-center justify-center">
+                <div className="flex items-center justify-center -mt-8">
+                  <Image
+                    src={
+                      theme === "dark"
+                        ? "/icons/not_found_light.svg"
+                        : "/icons/not_found_dark.svg"
+                    }
+                    alt="Identities"
+                    width={220}
+                    height={220}
+                  />
+                </div>
+                <div className="flex flex-col items-center justify-center space-y-4 -mt-3">
+                  <p className="text-lg">No Identities Found</p>
+                  <p className="text-sm text-gray-600 text-center max-w-md leading-relaxed">
+                    No identities match your search query "{searchQuery}".
+                    <br />
+                    Try adjusting your search or create a new identity.
+                  </p>
+                  <Button onClick={() => setShowCreateIdentityDialog(true)}>
+                    Create New Identity
+                  </Button>
+                </div>
               </div>
             )}
             <ScrollBar />
           </ScrollArea>
         </div>
       ) : (
-        <div className="h-[calc(100vh-10px)] w-full rounded-md border p-4 flex flex-col items-center justify-center space-y-4 mt-3">
-        <UserIcon className="h-12 w-12" />
-        <p className="text-lg">No Identities Found</p>
-        <p className="text-sm text-gray-600 text-center max-w-md leading-relaxed">
-          You haven't created any identities yet.
-          <br />
-          Start by creating a new identity to begin using the SORA.
-        </p>
-        <Button onClick={() => setShowCreateIdentityDialog(true)}>
-          Create New Identity
-        </Button>
-      </div>
+        <div className="h-[calc(100vh-10px)] w-full rounded-md border flex flex-col items-center justify-center mt-3">
+          <div className="flex items-center justify-center -mt-8">
+            <Image
+              src={
+                theme === "dark"
+                  ? "/icons/not_found_light.svg"
+                  : "/icons/not_found_dark.svg"
+              }
+              alt="Identities"
+              width={250}
+              height={250}
+            />
+          </div>
+          <div className="flex flex-col items-center justify-center space-y-4 -mt-3">
+            <p className="text-lg">No Identities Found</p>
+            <p className="text-sm text-gray-600 text-center max-w-md leading-relaxed">
+              You haven't created any identities yet. <br />
+              Start by creating a new identity to begin using the SORA.
+            </p>
+            <Button onClick={() => setShowCreateIdentityDialog(true)}>
+              Create New Identity
+            </Button>
+          </div>
+        </div>
       )}
     </div>
   );

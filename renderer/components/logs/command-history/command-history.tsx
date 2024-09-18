@@ -4,6 +4,9 @@ import { createCommandHistoryColumns } from "components/logs/command-history/com
 import { Button } from "components/ui/button";
 import Link from "next/link";
 import { Search } from "lucide-react";
+import Image from "next/image";
+import { useTheme } from "next-themes"; // Add this import
+
 
 interface LogEntry {
   date: string;
@@ -115,11 +118,26 @@ export default function CommandHistory() {
     setSubcommandFilter
   );
 
+  const { theme } = useTheme();
+
   return (
     <div className="flex flex-col h-[calc(93vh-106px)]">
       {commands.length === 0 ? (
-        <div className="h-full w-full rounded-md border flex flex-col items-center justify-center space-y-4">
-          <Search className="h-12 w-12" />
+        <div className="h-full w-full rounded-md border flex flex-col items-center justify-center">
+            <div className="flex items-center justify-center -mt-8">
+            <Image
+              src={
+                theme === "dark"
+                  ? "/icons/not_found_light.svg"
+                  : "/icons/not_found_dark.svg"
+              }
+              alt="Projects"
+              width={250}
+              height={250}
+            />
+          </div>
+          <div className="flex flex-col items-center justify-center space-y-4 -mt-3">
+
           <p className="text-lg">No Command Logs Found</p>
           <p className="text-sm text-gray-600 text-center max-w-xl leading-relaxed">
             There are no command history logs available.
@@ -133,6 +151,7 @@ export default function CommandHistory() {
             <Link href="/lab">
               <Button>Go to Lab</Button>
             </Link>
+          </div>
           </div>
         </div>
       ) : (

@@ -1,18 +1,21 @@
 import { useEffect, useState } from "react";
 import { useContractEvents } from "hooks/useContractEvents";
+import { useTheme } from "next-themes";
+import Image from "next/image";
 import { createContractEventsColumns } from "components/events/events-columns";
 import { EventsDataTable } from "components/events/events-data-table";
 import Loading from "components/common/loading";
 import { Button } from "components/ui/button";
 import { Input } from "components/ui/input";
 import ContractEventModal from "components/events/event-modal";
-import { BellIcon, X } from "lucide-react";
+import { X } from "lucide-react";
 
 export default function EventsComponent() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [showCreateContractEventsDialog, setShowCreateContractEventsDialog] = useState(false);
   const contractEvents = useContractEvents();
+  const { theme } = useTheme();
 
   const columns = createContractEventsColumns();
 
@@ -76,27 +79,43 @@ export default function EventsComponent() {
             onAddNewEvent={handleAddNewEvent}
           />
         ) : (
-          <div className="h-full w-full rounded-md border flex flex-col items-center justify-center space-y-4">
-            <BellIcon className="h-12 w-12" />
-            <p className="text-lg">No Events Found</p>
-            <p className="text-sm text-gray-600 text-center max-w-sm leading-relaxed">
-              No events match your search criteria: "{searchQuery}"
-            </p>
-            <Button onClick={handleClearSearch}>
-              Clear Search
-            </Button>
+          <div className="h-[calc(100vh-190px)] w-full rounded-md border flex flex-col items-center justify-center">
+            <div className="flex items-center justify-center -mt-8">
+              <Image
+                src={theme === "dark" ? "/icons/not_found_light.svg" : "/icons/not_found_dark.svg"}
+                alt="Events"
+                width={220}
+                height={220}
+              />
+            </div>
+            <div className="flex flex-col items-center justify-center space-y-4 -mt-3">
+              <p className="text-lg">No Events Found</p>
+              <p className="text-sm text-gray-600 text-center max-w-md leading-relaxed">
+                No events match your search criteria: "{searchQuery}"
+              </p>
+              <Button onClick={handleClearSearch}>Clear Search</Button>
+            </div>
           </div>
         )
       ) : (
-        <div className="h-full w-full rounded-md border flex flex-col items-center justify-center space-y-4">
-          <BellIcon className="h-12 w-12" />
-          <p className="text-lg">No Events Found</p>
-          <p className="text-sm text-gray-600 text-center max-w-sm leading-relaxed">
-            There are no contract events to display.
-          </p>
-          <Button onClick={handleAddNewEvent}>
-            Add New Event
-          </Button>
+        <div className="h-[calc(100vh-10px)] w-full rounded-md border flex flex-col items-center justify-center mt-3">
+          <div className="flex items-center justify-center -mt-8">
+            <Image
+              src={theme === "dark" ? "/icons/not_found_light.svg" : "/icons/not_found_dark.svg"}
+              alt="Events"
+              width={250}
+              height={250}
+            />
+          </div>
+          <div className="flex flex-col items-center justify-center space-y-4 -mt-3">
+            <p className="text-lg">No Events Found</p>
+            <p className="text-sm text-gray-600 text-center max-w-md leading-relaxed">
+              There are no contract events to display.
+              <br />
+              Start by adding a new event to begin tracking contract activities.
+            </p>
+            <Button onClick={handleAddNewEvent}>Add New Event</Button>
+          </div>
         </div>
       )}
       <ContractEventModal
