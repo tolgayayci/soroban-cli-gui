@@ -193,8 +193,11 @@ export default function Layout({ children }: LayoutProps) {
                     ]}
                   />
                   <Separator />
+                  
                 </div>
+                
                 <div className="p-2">
+               
                   <ChatbotButton />
                 </div>
               </div>

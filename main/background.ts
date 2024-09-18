@@ -4,6 +4,7 @@ fixPath();
 import { app, ipcMain, dialog } from "electron";
 import serve from "electron-serve";
 const { readFile } = require("fs").promises;
+const readline = require('readline');
 
 // Analytics
 import { initialize } from "@aptabase/electron/main";
@@ -326,8 +327,7 @@ if (isProd) {
           command &&
           (command === "contract" ||
             command === "lab" ||
-            command === "xdr" ||
-            command === "events")
+            command === "xdr")
         ) {
           const formattedResult = result
             ? `Result: ${JSON.stringify(result)}`
@@ -358,8 +358,7 @@ if (isProd) {
           command &&
           (command === "contract" ||
             command === "lab" ||
-            command === "xdr" ||
-            command === "events")
+            command === "xdr" )
         ) {
           // Check the installed CLI type
           const versionOutput = await executeSorobanCommand("--version");
@@ -386,10 +385,24 @@ if (isProd) {
   // Add an IPC handler to fetch the logs
   ipcMain.handle("fetch-logs", async () => {
     try {
-      const data = await readFile(logFilePath, "utf-8");
-      return data;
+      const lines = [];
+      
+      const fileStream = fs.createReadStream(logFilePath);
+      const rl = readline.createInterface({
+        input: fileStream,
+        crlfDelay: Infinity
+      });
+
+      for await (const line of rl) {
+        lines.push(line);
+        if (lines.length > 75) {
+          lines.shift();
+        }
+      }
+
+      return lines.join('\n');
     } catch (error) {
-      log.error(`Error reading log file: ${error}`);
+      console.error("Error reading logs:", error);
       throw error;
     }
   });
@@ -397,9 +410,24 @@ if (isProd) {
   ipcMain.handle("fetch-command-logs", async () => {
     try {
       const commandLogFilePath = commandLog.transports.file.getFile().path;
-      const data = await readFile(commandLogFilePath, "utf-8");
-      return data;
+      const lines = [];
+      
+      const fileStream = fs.createReadStream(commandLogFilePath);
+      const rl = readline.createInterface({
+        input: fileStream,
+        crlfDelay: Infinity
+      });
+
+      for await (const line of rl) {
+        lines.push(line);
+        if (lines.length > 75) {
+          lines.shift();
+        }
+      }
+
+      return lines.join('\n');
     } catch (error) {
+      console.error("Error reading command logs:", error);
       throw error;
     }
   });
@@ -655,7 +683,6 @@ if (isProd) {
 
       store.set("identities", currentIdentities);
 
-      console.log("Identities retrieved and stored successfully");
     } catch (error) {
       console.error("Error retrieving identities:", error);
     }
@@ -694,3 +721,4 @@ app.on("before-quit", () => {
 ipcMain.on("message", async (event, arg) => {
   event.reply("message", `${arg} World!`);
 });
+

@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { CommandHistoryDataTable } from "components/logs/command-history/command-history-data-table";
 import { createCommandHistoryColumns } from "components/logs/command-history/command-history-columns";
+import { Button } from "components/ui/button";
+import Link from "next/link";
+import { Search } from "lucide-react";
 
 interface LogEntry {
   date: string;
@@ -18,15 +21,11 @@ export default function CommandHistory() {
 
   async function getCommandHistory() {
     try {
-      const commandContent: string = await window.sorobanApi.readCommandLogs();
-      const commandEntries = commandContent
-        .split("\n")
-        .filter((entry) => entry.trim() !== "");
+      const commandContent = await window.sorobanApi.readCommandLogs();
+      const commandEntries = commandContent.split("\n").filter((entry) => entry.trim() !== "");
 
       const parsedCommands = commandEntries
-        .filter(
-          (entry) => entry.includes("soroban") || entry.includes("stellar")
-        )
+        .filter((entry) => entry.includes("soroban") || entry.includes("stellar"))
         .map((entry) => {
           const [timestamp, ...commandParts] = entry.split(/]\s+/);
           let command = commandParts.join("]").trim();
@@ -116,13 +115,33 @@ export default function CommandHistory() {
     setSubcommandFilter
   );
 
-  console.log(commands);
-
   return (
-    <CommandHistoryDataTable
-      columns={columns}
-      data={commands}
-      subcommandFilter={subcommandFilter}
-    />
+    <div className="flex flex-col h-[calc(93vh-106px)]">
+      {commands.length === 0 ? (
+        <div className="h-full w-full rounded-md border flex flex-col items-center justify-center space-y-4">
+          <Search className="h-12 w-12" />
+          <p className="text-lg">No Command Logs Found</p>
+          <p className="text-sm text-gray-600 text-center max-w-xl leading-relaxed">
+            There are no command history logs available.
+            <br />
+            You need to use Contracts or Lab pages and run some commands to generate logs.
+          </p>
+          <div className="flex space-x-2">
+            <Link href="/contracts">
+              <Button variant="outline">Go to Contracts</Button>
+            </Link>
+            <Link href="/lab">
+              <Button>Go to Lab</Button>
+            </Link>
+          </div>
+        </div>
+      ) : (
+        <CommandHistoryDataTable
+          columns={columns}
+          data={commands}
+          subcommandFilter={subcommandFilter}
+        />
+      )}
+    </div>
   );
 }

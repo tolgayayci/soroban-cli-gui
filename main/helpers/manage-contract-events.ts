@@ -61,7 +61,6 @@ export function handleContractEvents(store, action, contractSettings) {
         const contract = contracts.find(
           (c) => c.start_ledger === contractSettings.start_ledger && c.rpc_url === contractSettings.rpc_url
         );
-        console.log("Found contract:", contract);
         return contract || null;
       }
       return contracts;

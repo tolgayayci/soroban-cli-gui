@@ -284,7 +284,7 @@ export default function SettingsComponent() {
       const networks = output.trim().split('\n');
       setNetworks(networks);
     } catch (error) {
-      console.log("Error listing networks:", error);
+      console.error("Error listing networks:", error);
       setNetworks([]);
     }
   }

@@ -29,7 +29,6 @@ export class CommandBuilderProvider implements vscode.WebviewViewProvider {
           terminal.show();
           break;
         case "log":
-          console.log(data.message);
           break;
         case "showInfo":
           vscode.window.showInformationMessage(data.value);

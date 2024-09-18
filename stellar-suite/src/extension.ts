@@ -35,7 +35,6 @@ export function activate(context: vscode.ExtensionContext) {
         "sorobanCLI.installed",
         true
       );
-      console.log(`Soroban CLI version: ${stdout.trim()}`);
 
       const logFilePath = getLogFilePath();
 

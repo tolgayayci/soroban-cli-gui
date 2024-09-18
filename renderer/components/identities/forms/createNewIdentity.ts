@@ -51,11 +51,9 @@ export async function onNewIdentityFormSubmit(
         });
       });
 
-    console.log(result);
-
     return result;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw error;
   }
 }

@@ -246,7 +246,7 @@ export default function IdentitiesComponent() {
 
       setIdentities(identities);
     } catch (error) {
-      console.log("Error invoking remote method:", error);
+      console.error("Error invoking remote method:", error);
     }
   }
 

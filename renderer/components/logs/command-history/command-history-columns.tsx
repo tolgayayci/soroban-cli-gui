@@ -38,10 +38,6 @@ const getSubcommandColor = (subcommand: string) => {
   switch (subcommand) {
     case "contract":
       return "text-blue-500";
-    case "network":
-      return "text-green-500";
-    case "lab":
-      return "text-purple-500";
     case "xdr":
       return "text-orange-500";
     default:
@@ -65,7 +61,6 @@ export const createCommandHistoryColumns = (
   setSubcommandFilter: (value: string) => void
 ): ColumnDef<Network>[] => {
   const [state, copyToClipboard] = useCopyToClipboard();
-
   const router = useRouter();
   const { toast } = useToast();
 
@@ -120,8 +115,6 @@ export const createCommandHistoryColumns = (
             <SelectContent>
               <SelectItem value="all">All</SelectItem>
               <SelectItem value="contract">Contract</SelectItem>
-              <SelectItem value="network">Network</SelectItem>
-              <SelectItem value="lab">Lab</SelectItem>
               <SelectItem value="xdr">XDR</SelectItem>
             </SelectContent>
           </Select>
@@ -150,6 +143,29 @@ export const createCommandHistoryColumns = (
       header: "Action",
       cell: ({ row }) => {
         const [open, setOpen] = useState(false);
+
+        const handlePlayClick = async () => {
+          const { path, command, subcommand } = row.original;
+          if (subcommand === "xdr") {
+            router.push({
+              pathname: `/lab/[command]`,
+              query: { command },
+            });
+          } else {
+            const pathExists = await window.sorobanApi.checkFileExists(path + "/Cargo.toml");
+            if (pathExists) {
+              router.push({
+                pathname: `/contracts/[path]`,
+                query: { path, command },
+              });
+            } else {
+              toast({
+                title: "Project Not Found",
+                description: "You can't run this command because the project doesn't exist on Sora.",
+              });
+            }
+          }
+        };
 
         return (
           <div className="flex justify-start space-x-3">
@@ -194,23 +210,7 @@ export const createCommandHistoryColumns = (
                 )}
               </DialogContent>
             </Dialog>
-            <Button
-              onClick={async () => {
-                const { path, command, subcommand } = row.original;
-                console.log(subcommand);
-                if (subcommand === "xdr") {
-                  router.push({
-                    pathname: `/lab/[command]`,
-                    query: { command },
-                  });
-                } else {
-                    router.push({
-                      pathname: `/contracts/[path]`,
-                    query: { path, command },
-                  });
-                }
-              }}
-            >
+            <Button onClick={handlePlayClick}>
               <Play className="h-4 w-4" />
             </Button>
             <Button

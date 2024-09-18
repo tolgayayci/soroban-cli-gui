@@ -86,9 +86,8 @@ export async function createCliAssistant() {
   try {
     await ensureApiKey();
     const cliAssistant = await openai.beta.assistants.create({
-      name: "Soroban Command Assistant",
-      instructions:
-        "You are an AI assistant specialized in generating Soroban CLI commands. Your task is to interpret user requests and generate appropriate Soroban CLI commands based on the official documentation (https://github.com/stellar/stellar-cli/blob/v20.3.4/docs/soroban-cli-full-docs.md). When a user provides a task description, analyze it carefully to determine the appropriate Soroban CLI command. Follow these guidelines when generating commands: 1. Only generate commands related to Soroban contracts (soroban contract xxxx). 2. Ensure the command syntax matches the official documentation. 3. If the task description is unclear or lacks necessary information, do not ask for clarification. Instead, make reasonable assumptions based on common use cases. 4. Do not provide explanations or additional text beyond the command itself. Output your generated command like a codeblock soroban contract invoke --id CONTRACT_ID --method METHOD_NAME --arg ARG1 --arg ARG2 Remember, you are only responsible for generating Soroban contract-related commands. Do not respond to requests outside of this scope or provide any additional information or explanations.",
+      name: "Stellar Command Assistant",
+      instructions: "You are an AI assistant specialized in generating Stellar CLI commands. Your task is to interpret user requests and generate appropriate Stellar CLI commands based on the official documentation (https://github.com/stellar/stellar-cli/blob/main/FULL_HELP_DOCS.md). When a user provides a task description, analyze it carefully to determine the appropriate Stellar CLI command. Follow these guidelines when generating commands: 1. Only generate commands related to Stellar contracts (stellar contract xxxx). 2. Ensure the command syntax matches the official documentation. 3. If the task description is unclear or lacks necessary information, do not ask for clarification. Instead, make reasonable assumptions based on common use cases. 4. Do not provide explanations or additional text beyond the command itself. Output your generated command like a codeblock soroban contract invoke --id CONTRACT_ID --method METHOD_NAME --arg ARG1 --arg ARG2 Remember, you are only responsible for generating Stellar contract-related commands. Do not respond to requests outside of this scope or provide any additional information or explanations.",
       tools: [{ type: "code_interpreter" }],
       model: "gpt-4-1106-preview",
     });
@@ -179,12 +178,7 @@ export async function saveConversation(
   try {
     const key = `conversation_${assistantType}`;
     store.set(key, { threadId, assistantId });
-    console.log(
-      `${
-        assistantType.charAt(0).toUpperCase() + assistantType.slice(1)
-      } conversation saved successfully:`,
-      { threadId, assistantId }
-    );
+    
   } catch (error) {
     console.error(`Error saving ${assistantType} conversation:`, error);
     throw error;
@@ -198,11 +192,6 @@ export async function clearConversation(
   try {
     const key = `conversation_${assistantType}`;
     store.delete(key);
-    console.log(
-      `${
-        assistantType.charAt(0).toUpperCase() + assistantType.slice(1)
-      } conversation cleared successfully`
-    );
   } catch (error) {
     console.error(`Error clearing ${assistantType} conversation:`, error);
     throw error;
@@ -217,14 +206,8 @@ export async function getConversation(
     const key = `conversation_${assistantType}`;
     const conversation = store.get(key);
     if (conversation) {
-      console.log(
-        `${
-          assistantType.charAt(0).toUpperCase() + assistantType.slice(1)
-        } conversation retrieved successfully`
-      );
       return conversation;
     } else {
-      console.log(`No saved ${assistantType} conversation found`);
       return null;
     }
   } catch (error) {

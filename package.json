@@ -23,7 +23,6 @@
     "docs:dev": "vitepress dev documentation",
     "docs:build": "vitepress build documentation",
     "docs:preview": "vitepress preview documentation"
-    
   },
   "dependencies": {
     "@aptabase/electron": "^0.3.1",

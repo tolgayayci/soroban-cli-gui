@@ -31,7 +31,6 @@ export async function onAddContractEventFormSubmit(
   data: z.infer<typeof addContractEventFormSchema>
 ) {
   try {
-    console.log("data", data);
     await window.sorobanApi.manageContractEvents("add", data);
     await window.sorobanApi.reloadApplication();
     return { success: true, message: "Contract event added successfully." };

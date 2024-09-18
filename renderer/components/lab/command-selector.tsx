@@ -59,8 +59,6 @@ const LabCommandSelector = ({
     if (initialCommand) {
       const [command, ...args] = initialCommand.split(" ");
 
-      console.log(command, args);
-
       const commandValue = args[1];
       setSelectedCommand(commandValue);
       handleCommandChange(commandValue, args);
@@ -238,11 +236,11 @@ const LabCommandSelector = ({
 
   return (
     <div className="flex flex-col">
-      <div className="bg-gray-200 dark:bg-white dark:text-black p-4 rounded-md mb-4">
+      <div className="bg-gray-200 dark:bg-white dark:text-black p-4 rounded-md mb-3">
         <code>{initialCommand || latestCommand}</code>
       </div>
       <ScrollArea className="max-h-[calc(80vh-200px)] overflow-y-auto">
-        <div className="flex flex-col space-y-4">
+        <div className="flex flex-col space-y-4 mx-1 pt-1">
           <Select
             value={selectedCommand}
             onValueChange={(e) => handleCommandChange(e)}
@@ -327,7 +325,7 @@ const LabCommandSelector = ({
                   </AccordionTrigger>
                   <AccordionContent>
                     <SelectSeparator />
-                    <div className="flex flex-wrap -mx-2 my-3">
+                    <div className="flex flex-wrap -mx-1 my-3">
                       {selectedCommand &&
                         commands
                           .find((c) => c.value === selectedCommand)
@@ -378,7 +376,7 @@ const LabCommandSelector = ({
                           (option) => option.type === "argument"
                         )
                         .map((option) => (
-                          <div key={option.name} className="space-y-2 my-4">
+                          <div key={option.name} className="space-y-2 my-4 mx-1">
                             <Tooltip key={option.name}>
                               <div className="flex items-center my-4">
                                 <Label htmlFor={option.name}>

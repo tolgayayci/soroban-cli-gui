@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from 'next/image';
+import { useTheme } from 'next-themes'; // Add this import
 
 import {
   Form,
@@ -36,7 +38,6 @@ import { ScrollArea, ScrollBar } from "components/ui/scroll-area";
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 
 import ProjectModal from "components/projects/project-modal";
 import EditorModal from "components/projects/editor-modal";
@@ -220,6 +221,8 @@ const ProjectsComponent = () => {
   const [projects, setProjects] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
 
+  const { theme } = useTheme(); // Add this line
+
   async function checkProjects() {
     try {
       const fetchedProjects = await window.sorobanApi.manageProjects("get", "");
@@ -307,8 +310,16 @@ const ProjectsComponent = () => {
           </ScrollArea>
         </div>
       ) : (
-        <div className="h-[calc(100vh-10px)] w-full rounded-md border p-4 flex flex-col items-center justify-center space-y-4 mt-3">
-          <FolderOpen className="h-12 w-12" />
+        <div className="h-[calc(100vh-10px)] w-full rounded-md border flex flex-col items-center justify-center mt-3">
+          <div className="flex items-center justify-center -mt-8">
+            <Image 
+              src="/icons/no-x.svg"
+              alt="Projects" 
+              width={250} 
+              height={250}
+            />
+          </div>
+          <div className="flex flex-col items-center justify-center space-y-4 -mt-3">
           <p className="text-lg">No Projects Found</p>
           <p className="text-sm text-gray-600 text-center max-w-md leading-relaxed">
             You haven't created any projects yet.                   <br />
@@ -317,6 +328,7 @@ const ProjectsComponent = () => {
           <Button onClick={() => setShowCreateProjectDialog(true)}>
             Create New Project
           </Button>
+          </div>
         </div>
       )}
     </div>
