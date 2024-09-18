@@ -43,7 +43,9 @@ Under the **"New Project"** tab:
 1. **Project Name**: Enter a name for your new project.
 2. **Project Path**: Choose where to save your project.
 3. **With Example**: Toggle this to include example contracts. A hello-world contract is included by default.
-4. Click **"Create"** to initialize your project.
+4. **Example Selection**: If "With Example" is toggled on, you can choose from a variety of example contracts.
+5. **Frontend Template**: Optionally specify a frontend template for your project.
+6. Click **"Create"** to initialize your project.
 
 ::: tip
 Including example contracts can be a great way to learn Soroban development best practices!
@@ -66,7 +68,7 @@ To import an existing project:
 4. Click **"Import"** to add the project to SORA.
 
 ::: warning
-Make sure the project path you provide is the root directory of your existing Soroban project.
+Make sure the project path you provide is the root directory of your existing Soroban project. SORA will verify if it's a valid Soroban project before importing.
 :::
 
 ## Opening Projects
@@ -82,11 +84,23 @@ You can easily open your projects in your preferred code editor:
 
 </div>
 
-3. **Select** your **preferred editor** (e.g., Visual Studio Code).
+3. **Select** your **preferred editor** from the list of supported editors.
 4. Click **"Open"** to launch the project in the chosen editor.
 
 ::: info
-SORA detects installed editors on your system automatically. Make sure your preferred editor is installed for it to appear in the list. Supported editors include **Visual Studio Code**, **WebStorm**, and **CLion**.
+SORA detects installed editors on your system automatically. The following editors are supported:
+
+- Visual Studio Code
+- Visual Studio Code Insiders
+- WebStorm
+- CLion
+- Cursor
+
+Make sure your preferred editor is installed for it to appear in the list.
+:::
+
+::: tip
+If you don't see your preferred editor in the list, it might not be installed in a standard location. You can add custom editor configurations by [instructions for adding custom editors - placeholder].
 :::
 
 ## Project Management
@@ -101,6 +115,13 @@ Each project in the list offers quick actions:
 While **SORA doesn't remove files from your system**, it will remove the project from the dashboard.
 :::
 
+## Search Functionality
+
+The search bar allows you to quickly find projects:
+
+- As you type, the project list updates in real-time to show matching results.
+- If no projects match your search, you'll see a "No Projects Found" message with the option to create a new project.
+
 ## Tips for Efficient Use
 
 To make the most of the Projects dashboard:
@@ -108,7 +129,7 @@ To make the most of the Projects dashboard:
 1. **Use the Search Bar**: When you have multiple projects, use the search functionality to quickly find what you need.
 2. **Regular Cleanup**: Remove projects you're no longer working on to keep your dashboard tidy.
 3. **Naming Conventions**: Use clear, descriptive names for your projects to make them easy to identify.
-
+4. **Explore Examples**: When creating a new project, consider using different example contracts to learn various Soroban features.
 
 ## Behind the Scenes
 

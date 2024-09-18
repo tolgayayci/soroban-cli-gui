@@ -22,12 +22,8 @@ export default defineConfig({
       {
         text: "Getting Started",
         items: [
-          {
-            text: "Introduction to SORA",
-            link: "/getting-started/introduction",
-          },
           { text: "Installation", link: "/getting-started/installation" },
-          { text: "Quick Start Guide", link: "/getting-started/quick-start" },
+          { text: "Quick Start", link: "/getting-started/quick-start" },
         ],
       },
       {
@@ -38,9 +34,9 @@ export default defineConfig({
           { text: "Contracts", link: "/features/contracts" },
           { text: "Events", link: "/features/events" },
           { text: "Lab", link: "/features/lab" },
-          { text: "Config", link: "/features/config" },
+          { text: "Network", link: "/features/network" },
           { text: "Logs", link: "/features/logs" },
-          { text: "About", link: "/features/logs" },
+          { text: "About", link: "/features/about" },
         ],
       },
       {
