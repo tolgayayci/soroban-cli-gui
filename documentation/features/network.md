@@ -12,7 +12,11 @@ New to SORA? Watch our comprehensive demo video to get started quickly with mana
 
 The Networks Dashboard is your central hub for managing all Stellar networks in SORA.
 
-<!-- ![Networks Dashboard](/public/features/networks/dashboard.png) -->
+<div class="image-border">
+
+![Networks Dashboard](/public/features/network/dashboard.png)
+
+</div>
 
 Key features of the Networks Dashboard include:
 
@@ -28,7 +32,11 @@ To create a new network:
 1. Click the **"Create New Network"** button in the top right corner.
 2. A modal will appear with fields to configure your new network.
 
-<!-- ![Create New Network](/public/features/networks/create-network.png) -->
+<div class="image-border">
+
+![Create New Network](/public/features/network/create.png)
+
+</div>
 
 Fill in the following details:
 
@@ -55,18 +63,15 @@ To remove a network from SORA:
 4. (Optional) Configure additional options like using global config or specifying a config directory.
 5. Click "Remove" to delete the network from SORA.
 
-<!-- ![Remove Network](/public/features/networks/remove-network.png) -->
+<div class="image-border">
+
+![Remove Network](/public/features/network/remove.png)
+
+</div>
 
 ::: danger IMPORTANT
 Be cautious when removing networks. This action cannot be undone and may affect projects using this network configuration.
 :::
-
-## Search Functionality
-
-The search bar allows you to quickly find networks:
-
-- As you type, the network list updates in real-time to show matching results.
-- If no networks match your search, you'll see a "No Networks Found" message with the option to create a new network.
 
 ## Tips for Efficient Use
 
@@ -79,13 +84,11 @@ To make the most of the Networks dashboard:
 
 ## Behind the Scenes
 
-While SORA provides a user-friendly interface for network management, it's powered by Soroban's CLI tools under the hood. The app handles the complex command-line operations for you, making network configuration more accessible.
+When you use the Networks feature in SORA, the application is constructing and executing Stellar CLI commands. For example:
 
-When you use the Networks feature in SORA, the application is constructing and executing Soroban CLI commands. For example:
-
-- `soroban network add`: Adds a new network configuration.
-- `soroban network remove`: Removes an existing network configuration.
-- `soroban network ls`: Lists all configured networks.
+- `stellar network add`: Adds a new network configuration.
+- `stellar network remove`: Removes an existing network configuration.
+- `stellar network ls`: Lists all configured networks.
 
 <style>
 .image-border img {

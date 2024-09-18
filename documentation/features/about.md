@@ -12,7 +12,11 @@ New to SORA? Watch our comprehensive demo video to get started quickly!
 
 The About page displays detailed version information for various components of your SORA installation:
 
-<!-- ![Version Information](/public/features/about/version-info.png) -->
+<div class="image-border">
+
+![Version Information](/public/features/about/about.png)
+
+</div>
 
 1. **SORA App Version**: The current version of the SORA application.
 2. **Stellar/Soroban Version**: The version of the Stellar or Soroban CLI installed on your system.
@@ -66,9 +70,9 @@ To make the most of the About page:
 
 The About page in SORA leverages various system calls and API endpoints to gather and display this information:
 
-- Version information is fetched from your local Soroban and Stellar installations.
-- The SORA app version is retrieved from the application's internal version tracking.
-- Links to GitHub are dynamically generated based on your current version and the type of action (feature request, bug report, or release notes).
+- Version information is fetched from your local **Soroban** and **Stellar** installations.
+- The SORA app version is retrieved from the **application's internal version** tracking.
+- **Links to GitHub** are **dynamically generated** based on your current version and the type of action (feature request, bug report, or release notes).
 
 <style>
 .image-border img {

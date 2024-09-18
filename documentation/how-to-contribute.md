@@ -21,4 +21,4 @@ If you find a bug or have a suggestion for improvement:
 
 ## License
 
-By contributing to SORA, you agree that your contributions will be licensed under the MIT License.
+By contributing to SORA, you agree that your contributions will be licensed **under the MIT License**.

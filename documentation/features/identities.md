@@ -1,9 +1,9 @@
 # Identities in SORA
 
-Identities are a crucial component of your Soroban development workflow in SORA. They represent the accounts you use to interact with the Stellar network, providing a user-friendly interface to manage your Stellar keys and addresses.
+Identities are a crucial component of your Stellar workflow in SORA. They represent the accounts you use to interact with the Stellar network, providing a user-friendly interface to manage your Stellar keys and addresses.
 
-::: tip
-New to SORA? Watch our comprehensive demo video to get started quickly!
+::: tip SHOWCASE CLIP
+New to SORA? Check out our **Identities** showcase clip to see how to create, manage, and use your Stellar identities in SORA!
 
 <!-- <iframe width="560" height="315" src="https://www.youtube.com/embed/YOUR_VIDEO_ID" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> -->
 :::
@@ -38,7 +38,7 @@ To generate a new identity:
 
 <div class="image-border">
 
-![Generate New Identity](/public/features/identities/generate-identity.png)
+![Generate New Identity](/public/features/identities/generate.png)
 
 </div>
 
@@ -68,7 +68,7 @@ To add an existing identity:
 
 <div class="image-border">
 
-![Add Existing Identity](/public/features/identities/add-identity.png)
+![Add Existing Identity](/public/features/identities/add.png)
 
 </div>
 
@@ -87,7 +87,7 @@ For testing purposes, you can fund an identity on test networks:
 
 <div class="image-border">
 
-![Fund Identity](/public/features/identities/fund-identity.png)
+![Fund Identity](/public/features/identities/fund.png)
 
 </div>
 
@@ -109,7 +109,7 @@ To remove an identity from SORA:
 
 <div class="image-border">
 
-![Remove Identity](/public/features/identities/remove-identity.png)
+![Remove Identity](/public/features/identities/remove.png)
 
 </div>
 
@@ -125,6 +125,9 @@ Be cautious when removing identities, especially if they hold real assets. This 
 ## Viewing Identity Details
 
 SORA allows you to view detailed information about each identity:
+
+![Remove Identity](/public/features/identities/details.png)
+
 
 1. Click the **"Info"** button next to an identity.
 2. A dialog will show the identity's:

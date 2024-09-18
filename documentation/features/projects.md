@@ -1,16 +1,16 @@
 # Projects in SORA
 
-Projects are the cornerstone of your development workflow in SORA, providing an intuitive interface to manage your Soroban contracts.
+Projects are the cornerstone of your development workflow in SORA, providing an intuitive interface to manage your Stellar contracts.
 
-::: tip
-New to SORA? Watch our comprehensive demo video to get started quickly!
+::: tip SHOWCASE CLIP
+New to SORA? Check out our **Projects** showcase video to see how to create, manage, and develop your Stellar projects in SORA!
 
 <!-- <iframe width="600" height="315" src="https://www.youtube.com/embed/YOUR_VIDEO_ID" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> -->
 :::
 
 ## Projects Dashboard
 
-This central hub is where all your Soroban development projects come together, offering a clear overview and easy access to all your work.
+This central hub is where all your Stellar projects come together, offering a clear overview and easy access to all your work.
 
 <div class="image-border">
 
@@ -34,7 +34,7 @@ To create a new project:
 
 <div class="image-border">
 
-![Create New Project](/public/features/projects/create-project.png)
+![Create New Project](/public/features/projects/create.png)
 
 </div>
 
@@ -59,7 +59,7 @@ To import an existing project:
 
 <div class="image-border">
 
-![Import Existing Project](/public/features/projects/import-project.png)
+![Import Existing Project](/public/features/projects/import.png)
 
 </div>
 
@@ -100,7 +100,7 @@ Make sure your preferred editor is installed for it to appear in the list.
 :::
 
 ::: tip
-If you don't see your preferred editor in the list, it might not be installed in a standard location. You can add custom editor configurations by [instructions for adding custom editors - placeholder].
+If you don't see your preferred editor in the list, it might not be installed in a standard location. You can open an issue on our [GitHub repository](https://github.com/tolgayayci/sora/issues) to request it to be added.
 :::
 
 ## Project Management
@@ -114,13 +114,6 @@ Each project in the list offers quick actions:
 ::: warning
 While **SORA doesn't remove files from your system**, it will remove the project from the dashboard.
 :::
-
-## Search Functionality
-
-The search bar allows you to quickly find projects:
-
-- As you type, the project list updates in real-time to show matching results.
-- If no projects match your search, you'll see a "No Projects Found" message with the option to create a new project.
 
 ## Tips for Efficient Use
 

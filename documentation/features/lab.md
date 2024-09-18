@@ -1,25 +1,12 @@
 # Lab in SORA
 
-The Lab feature in SORA provides a powerful interface for working with Stellar's XDR (External Data Representation) format. It allows you to encode, decode, and manipulate XDR data, which is crucial for advanced Soroban and Stellar development.
+The Lab feature in SORA provides a powerful interface for working with Stellar's XDR (External Data Representation) format. It allows you to encode, decode, and manipulate XDR data, which is crucial for advanced Stellar development.
 
-::: tip
-New to SORA? Watch our comprehensive demo video to get started quickly with the Lab feature!
+::: tip SHOWCASE CLIP
+New to SORA? Check out our **Lab** showcase clip to see how to work with XDR data in SORA!
 
 <!-- <iframe width="560" height="315" src="https://www.youtube.com/embed/YOUR_VIDEO_ID" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> -->
 :::
-
-## Lab Dashboard
-
-The Lab Dashboard is your command center for XDR operations in SORA.
-
-<!-- ![Lab Dashboard](/public/features/lab/dashboard.png) -->
-
-Key components of the Lab Dashboard include:
-
-1. **Command Display**: Shows the current Soroban CLI command being constructed based on your selections and inputs.
-2. **Command Options**: Interface to select and configure XDR command options.
-3. **View Output**: Button to view the full command output in a modal.
-4. **View Command History**: Button to access the logs of previous commands.
 
 ## XDR Commands
 
@@ -29,6 +16,13 @@ The Lab feature supports various XDR-related commands:
 2. **Encode**: Convert JSON to XDR format.
 3. **Guess**: Attempt to determine the XDR type of given data.
 4. **Valid**: Check if given XDR data is valid.
+5. **Types List**: List of all XDR types.
+   
+<div class="image-border">
+
+![Lab Dashboard](/public/features/lab/dashboard.png)
+
+</div>
 
 To use these commands:
 
@@ -39,24 +33,13 @@ To use these commands:
 ## Command Output
 
 After executing any Lab command, SORA provides detailed output:
+<div class="image-border">
 
-<!-- ![Command Output](/public/features/lab/command-output.png) -->
+![Command Output](/public/features/lab/output.png)
 
-The output is color-coded and structured to provide clear information about the execution results, including:
+</div>
 
-- Success Messages (Green)
-- Errors (Red)
-- XDR Data
-- JSON Representations
-
-You can view this output directly in the SORA interface or copy it for further analysis.
-
-## Command History
-
-To view your command history:
-
-1. Click the "View Command History" button.
-2. This will take you to the Logs page, where you can review all previously executed Lab commands.
+The output is color-coded and structured to provide clear information about the execution results.
 
 ## Best Practices
 
@@ -71,10 +54,11 @@ While SORA provides a user-friendly interface for XDR operations, it's powered b
 
 When you use the Lab feature in SORA, the application is constructing and executing Soroban CLI commands. For example:
 
-- `soroban lab xdr decode`: Decodes XDR data to JSON format.
-- `soroban lab xdr encode`: Encodes JSON data to XDR format.
-- `soroban lab xdr guess`: Attempts to determine the XDR type of given data.
-- `soroban lab xdr valid`: Checks if given XDR data is valid.
+- `stellar lab xdr decode`: Decodes XDR data to JSON format.
+- `stellar lab xdr encode`: Encodes JSON data to XDR format.
+- `stellar lab xdr guess`: Attempts to determine the XDR type of given data.
+- `stellar lab xdr valid`: Checks if given XDR data is valid.
+- `stellar lab xdr types list`: List of all XDR types.
 
 <style>
 .image-border img {
