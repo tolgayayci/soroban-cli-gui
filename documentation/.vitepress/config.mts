@@ -14,8 +14,8 @@ export default defineConfig({
     },
 
     nav: [
-      { text: "Download Sora", link: "/" },
-      { text: "Documentation", link: "/markdown-examples" },
+      { text: "Download Sora", link: "/getting-started/installation" },
+      { text: "Documentation", link: "/getting-started/quick-start" },
     ],
 
     sidebar: [
@@ -42,22 +42,15 @@ export default defineConfig({
       {
         text: "Guides",
         items: [
-          { text: "Basic Usage", link: "/guides/basic-usage" },
-          { text: "Advanced Techniques", link: "/guides/advanced-techniques" },
+          { text: "Creating and Deploying Smart Contracts", link: "/guides/creating-deploying-smart-contracts" },
+          { text: "Managing Multi-Signature Accounts", link: "/guides/managing-multisig-accounts" },
+          { text: "Issuing and Managing Custom Assets", link: "/guides/issuing-managing-custom-assets" },
         ],
       },
       {
-        text: "Contribute",
         items: [
-          { text: "How to Contribute", link: "/contribute/how-to-contribute" },
-          { text: "Reporting Issues", link: "/contribute/reporting-issues" },
-        ],
-      },
-      {
-        text: "About",
-        items: [
-          { text: "About SORA", link: "/about/about-sora" },
-          { text: "Changelog", link: "/about/changelog" },
+          { text: "How to Contribute", link: "/how-to-contribute" },
+          { text: "Changelog", link: "/changelog" },
         ],
       },
     ],
