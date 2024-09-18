@@ -1,8 +1,8 @@
 {
   "private": false,
   "name": "sora",
-  "description": "Sora | Soroban Desktop Application",
-  "version": "0.2.1",
+  "description": "Sora | Stellar Desktop Application",
+  "version": "0.2.2",
   "author": "Tolga Yaycı <tolgayayci@protonmail.com>",
   "main": "app/background.js",
   "repository": {

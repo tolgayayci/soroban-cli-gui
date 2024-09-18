@@ -35,6 +35,16 @@ export default function CommandHistory() {
           // Extract date and time from the timestamp
           const [date, time] = timestamp.slice(1, -1).split(" ");
 
+          // Validate date and time format
+          const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+          const timeRegex = /^\d{2}:\d{2}:\d{2}/;
+          const isValidDate = dateRegex.test(date);
+          const isValidTime = timeRegex.test(time);
+
+          if (!isValidDate || !isValidTime) {
+            return null; // Skip this entry if date or time is invalid
+          }
+
           // Check if the entry is an error log
           const isError = entry.includes("Error:");
           let result = "";
@@ -93,7 +103,8 @@ export default function CommandHistory() {
             result: result,
             isError: isError,
           };
-        });
+        })
+        .filter(Boolean); // Remove null entries
 
       // Sort the commands to have the latest first
       parsedCommands.sort((a, b) => {
@@ -120,7 +131,7 @@ export default function CommandHistory() {
   const { theme } = useTheme();
 
   return (
-    <div className="flex flex-col h-[calc(93vh-106px)]">
+    <div className="flex flex-col h-[calc(95vh-106px)]">
       {commands.length === 0 ? (
         <div className="h-full w-full rounded-md border flex flex-col items-center justify-center">
             <div className="flex items-center justify-center -mt-8">

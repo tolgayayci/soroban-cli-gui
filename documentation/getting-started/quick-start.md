@@ -114,7 +114,6 @@ Watch out for these common pitfalls:
 
 ## Additional Resources
 
-* [Soroban Documentation](https://soroban.stellar.org/docs)
 * [Stellar Developer Documentation](https://developers.stellar.org/docs/)
 * [SORA GitHub Repository](https://github.com/tolgayayci/sora)
 

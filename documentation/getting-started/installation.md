@@ -107,7 +107,6 @@ Always check the release notes for any important updates or changes that might a
 ## Additional Resources
 
 * [Stellar Documentation](https://developers.stellar.org/docs/)
-* [Soroban Documentation](https://soroban.stellar.org/docs)
 * [SORA GitHub Repository](https://github.com/tolgayayci/sora)
 
-For support, visit our [community forum](https://github.com/tolgayayci/sora/discussions) or [GitHub issues page](https://github.com/tolgayayci/sora/issues).
+For support, visit [GitHub issues page](https://github.com/tolgayayci/sora/issues).

@@ -12,7 +12,11 @@ New to SORA? Watch our comprehensive demo video to get started quickly with mana
 
 The Events Dashboard is your central hub for managing all contract events across your Soroban projects in SORA.
 
-<!-- ![Events Dashboard](/public/features/events/dashboard.png) -->
+<div class="image-border">
+
+![Events Dashboard](/public/features/events/dashboard.png)
+
+</div>
 
 Key features of the Events Dashboard include:
 
@@ -29,7 +33,11 @@ To add a new contract event:
 1. Click the **"Add New Event"** button in the top right corner.
 2. A modal will appear with fields to configure your new event.
 
-<!-- ![Add New Event](/public/features/events/add-new-event.png) -->
+<div class="image-border">
+
+![Add New Event](/public/features/events/add.png)
+
+</div>
 
 Fill in the following details:
 
@@ -67,7 +75,11 @@ To edit an existing event:
 3. Modify the desired fields in the edit modal.
 4. Click "Update Contract Event" to save your changes.
 
-<!-- ![Edit Event](/public/features/events/edit-event.png) -->
+<div class="image-border">
+
+![Edit Event](/public/features/events/edit.png)
+
+</div>
 
 ::: warning
 Changing key fields like RPC URL or Start Ledger will cause the application to reload.
@@ -81,7 +93,11 @@ To remove an event from SORA:
 2. Click the **"Remove"** button.
 3. Confirm the removal in the dialog that appears.
 
-<!-- ![Remove Event](/public/features/events/remove-event.png) -->
+<div class="image-border">
+
+![Remove Event](/public/features/events/remove.png)
+
+</div>
 
 ::: danger IMPORTANT
 Be cautious when removing events. This action cannot be undone.
@@ -98,12 +114,12 @@ Be cautious when removing events. This action cannot be undone.
 
 SORA uses the Soroban CLI's `events` command to manage and display contract events. Here are some of the key operations performed:
 
-- `soroban events`: Fetch events from the network
-- `soroban events --start-ledger`: Retrieve events starting from a specific ledger
-- `soroban events --contract-id`: Filter events by contract ID
-- `soroban events --count`: Limit the number of events returned
-- `soroban events --cursor`: Start fetching events from a specific cursor position
-- `soroban events --event-type`: Filter events by type (e.g., 'contract', 'system', or 'all')
+- `stellar events`: Fetch events from the network
+- `stellar events --start-ledger`: Retrieve events starting from a specific ledger
+- `stellar events --contract-id`: Filter events by contract ID
+- `stellar events --count`: Limit the number of events returned
+- `stellar events --cursor`: Start fetching events from a specific cursor position
+- `stellar events --event-type`: Filter events by type (e.g., 'contract', 'system', or 'all')
 
 <style>
 .image-border img {

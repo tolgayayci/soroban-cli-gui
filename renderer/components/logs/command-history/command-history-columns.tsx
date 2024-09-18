@@ -99,7 +99,7 @@ export const createCommandHistoryColumns = (
     {
       accessorKey: "time",
       header: "Time",
-      cell: ({ row }) => <div className="uppercase">{row.original.time}</div>,
+      cell: ({ row }) => <div className="uppercase flex justify-center items-center">{row.original.time}</div>,
     },
     {
       accessorKey: "subcommand",
