@@ -153,9 +153,9 @@ if (isProd) {
 
   const mainWindow = createWindow("main", {
     width: 1500,
-    height: 700,
+    height: 710,
     minWidth: 1250,
-    minHeight: 680,
+    minHeight: 710,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
     },
@@ -473,8 +473,6 @@ if (isProd) {
           newIdentity ? "New Identity: " + newIdentity : ""
         );
 
-        // // First, retrieve the current identities
-        // await retrieveAndStoreIdentities();
 
         const result = await handleIdentities(
           store,
