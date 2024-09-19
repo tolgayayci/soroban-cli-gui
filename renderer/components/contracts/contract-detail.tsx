@@ -29,58 +29,71 @@ export default function ContractDetail() {
   const [latestCommand, setLatestCommand] = useState();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isOpenCommandGenerator, setIsOpenCommandGenerator] = useState(false);
+  const [commandExecuted, setCommandExecuted] = useState(false);
 
   const router = useRouter();
   const { path } = router.query;
   const { command } = router.query;
 
   const project = useProject(path as string);
-  const { toast } = useToast();
+  const { toast, dismiss } = useToast();
 
   useEffect(() => {
-    if (commandOutput && !commandError) {
-      toast({
-        title: "Command Executed Successfully",
-        description: (
-          <div>
-            <pre className="bg-gray-100 text-black p-1 px-2 rounded-md mt-1">
-              {latestCommand}
-            </pre>
-            <Button
-              variant="default"
-              size="sm"
-              onClick={() => setIsModalOpen(true)}
-              className="mt-2"
-            >
-              View Output
-            </Button>
-          </div>
-        ),
-        variant: "default",
-        className: "border-green-500",
-      });
-    } else if (commandError) {
-      toast({
-        title: "Command Execution Failed",
-        description: (
-          <div>
-            <pre className="bg-gray-100 text-black p-1 px-2 rounded-md mt-1">
-              {latestCommand}
-            </pre>
-            <Button
-              variant="default"
-              onClick={() => setIsModalOpen(true)}
-              className="mt-2"
-            >
-              View Output
-            </Button>
-          </div>
-        ),
-        variant: "default",
-        className: "border-red-500",
-      });
+    if (commandExecuted && latestCommand) {
+      if (commandOutput && !commandError) {
+        const { id } = toast({
+          title: "Command Executed Successfully",
+          description: (
+            <div>
+              <pre className="bg-gray-100 text-black p-1 px-2 rounded-md mt-1 overflow-hidden text-ellipsis whitespace-nowrap max-w-[340px]">
+                {latestCommand}
+              </pre>
+              <Button
+                variant="default"
+                size="sm"
+                onClick={() => {
+                  setIsModalOpen(true);
+                  dismiss(id);
+                }}
+                className="mt-2"
+              >
+                View Output
+              </Button>
+            </div>
+          ),
+          variant: "default",
+          className: "border-green-500",
+          duration: 5000,
+        });
+      } else if (commandError) {
+        const { id } = toast({
+          title: "Command Execution Failed",
+          description: (
+            <div>
+              <pre className="bg-gray-100 text-black p-1 px-2 rounded-md mt-1 overflow-hidden text-ellipsis whitespace-nowrap max-w-[340px]">
+                {latestCommand}
+              </pre>
+              <Button
+                variant="default"
+                size="sm"
+                onClick={() => {
+                  setIsModalOpen(true);
+                  dismiss(id);
+                }}
+                className="mt-2"
+              >
+                View Output
+              </Button>
+            </div>
+          ),
+          variant: "default",
+          className: "border-red-500",
+          duration: 5000,
+        });
+      }
+      setCommandExecuted(false); // Reset the flag
     }
-  }, [commandOutput, commandError, toast]);
+  }, [commandExecuted, latestCommand, commandOutput, commandError]);
 
   const handleOpenCommandGenerator = () => {
     setIsOpenCommandGenerator(true);
@@ -152,6 +165,7 @@ export default function ContractDetail() {
                 setCommandError={setCommandError}
                 setCommandOutput={setCommandOutput}
                 setLatestCommand={setLatestCommand}
+                setCommandExecuted={setCommandExecuted}
               />
             </div>
           </div>

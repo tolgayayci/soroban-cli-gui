@@ -1,4 +1,10 @@
 import { useState } from "react";
+import { HelpCircle } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "components/ui/tooltip";
 
 import {
   Accordion,
@@ -91,22 +97,30 @@ export const FundIdentityModal = ({ identity, isOpen, onClose }) => {
               handleFundIdentityFormSubmit
             )}
           >
-            <DialogHeader className="space-y-3">
+            <DialogHeader className="space-y-3 mx-1 mb-2">
               <DialogTitle>Fund "{identity.name}"</DialogTitle>
               <DialogDescription>
                 Fund an identity on a test network
               </DialogDescription>
             </DialogHeader>
-            <ScrollArea className="max-h-[calc(70vh-106px)] overflow-y-auto">
+            <ScrollArea className="max-h-[calc(70vh-106px)] overflow-y-auto pr-2">
               <div>
-                <div className="space-y-3 py-4 pb-4">
-                  <div className="space-y-3">
+                <div className="space-y-5 py-4 pb-6">
+                  <div className="space-y-3 mx-1">
                     <FormField
                       control={fundIdentityForm.control}
                       name="identity_name"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-small">
+                          <FormLabel className="text-small flex items-center">
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <HelpCircle className="h-4 w-4 text-gray-500 mr-2" />
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Name of identity to lookup, default test identity used if not provided</p>
+                              </TooltipContent>
+                            </Tooltip>
                             Identity Name
                           </FormLabel>
                           {identity ? (
@@ -124,19 +138,27 @@ export const FundIdentityModal = ({ identity, isOpen, onClose }) => {
                       )}
                     />
                   </div>
-                  <div className="space-y-3">
+                  <div className="space-y-3 mx-1">
                     <FormField
                       control={fundIdentityForm.control}
                       name="network_name"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-small">
+                          <FormLabel className="text-small flex items-center">
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <HelpCircle className="h-4 w-4 text-gray-500 mr-2" />
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Name of network to use from config</p>
+                              </TooltipContent>
+                            </Tooltip>
                             Network Name
                           </FormLabel>
                           <FormControl>
                             <Input
                               {...field}
-                              placeholder="Hello Soroban"
+                              placeholder="testnet"
                               className="w-full"
                             />
                           </FormControl>
@@ -145,13 +167,21 @@ export const FundIdentityModal = ({ identity, isOpen, onClose }) => {
                       )}
                     />
                   </div>
-                  <div className="space-y-3">
+                  <div className="space-y-3 mx-1">
                     <FormField
                       control={fundIdentityForm.control}
                       name="network_passphrase"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-small">
+                          <FormLabel className="text-small flex items-center">
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <HelpCircle className="h-4 w-4 text-gray-500 mr-2" />
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Network passphrase to sign the transaction sent to the RPC server</p>
+                              </TooltipContent>
+                            </Tooltip>
                             Network Passphrase
                           </FormLabel>
                           <FormControl>
@@ -162,13 +192,23 @@ export const FundIdentityModal = ({ identity, isOpen, onClose }) => {
                       )}
                     />
                   </div>
-                  <div className="space-y-3">
+                  <div className="space-y-3 mx-1">
                     <FormField
                       control={fundIdentityForm.control}
                       name="rpc_url"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-small">RPC URL</FormLabel>
+                          <FormLabel className="text-small flex items-center">
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <HelpCircle className="h-4 w-4 text-gray-500 mr-2" />
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>RPC server endpoint</p>
+                              </TooltipContent>
+                            </Tooltip>
+                            RPC URL
+                          </FormLabel>
                           <FormControl>
                             <Input
                               {...field}
@@ -181,12 +221,12 @@ export const FundIdentityModal = ({ identity, isOpen, onClose }) => {
                       )}
                     />
                   </div>
-                  <Accordion type="single" collapsible>
+                  <Accordion type="multiple">
                     <AccordionItem value="options" className="pt-0">
-                      <AccordionTrigger>Options</AccordionTrigger>
+                      <AccordionTrigger className="mx-1 -mt-4">Options</AccordionTrigger>
                       <AccordionContent>
-                        <div className="space-y-4">
-                          <div className="space-y-3">
+                        <div className="space-y-5">
+                          <div className="space-y-3 mx-1">
                             <FormField
                               control={fundIdentityForm.control}
                               name="global"
@@ -208,20 +248,28 @@ export const FundIdentityModal = ({ identity, isOpen, onClose }) => {
                               )}
                             />
                           </div>
-                          <div className="space-y-3">
+                          <div className="space-y-3 mx-1">
                             <FormField
                               control={fundIdentityForm.control}
                               name="hd_path"
                               render={({ field }) => (
                                 <FormItem>
-                                  <FormLabel className="text-small">
+                                  <FormLabel className="text-small flex items-center">
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <HelpCircle className="h-4 w-4 text-gray-500 mr-2" />
+                                      </TooltipTrigger>
+                                      <TooltipContent>
+                                        <p>If identity is a seed phrase use this HD path, default is 0</p>
+                                      </TooltipContent>
+                                    </Tooltip>
                                     HD Path
                                   </FormLabel>
                                   <FormControl>
                                     <Input
                                       {...field}
                                       id="hd_path"
-                                      placeholder="/m/44'/223'/0'/0/0"
+                                      placeholder="m/44'/148'/0'"
                                     />
                                   </FormControl>
                                   <FormMessage />
@@ -229,13 +277,21 @@ export const FundIdentityModal = ({ identity, isOpen, onClose }) => {
                               )}
                             />
                           </div>
-                          <div className="space-y-3">
+                          <div className="space-y-3 mx-1">
                             <FormField
                               control={fundIdentityForm.control}
                               name="config_dir"
                               render={({ field }) => (
                                 <FormItem>
-                                  <FormLabel className="text-small">
+                                  <FormLabel className="text-small flex items-center">
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <HelpCircle className="h-4 w-4 text-gray-500 mr-2" />
+                                      </TooltipTrigger>
+                                      <TooltipContent>
+                                        <p>Location of config directory, default is "."</p>
+                                      </TooltipContent>
+                                    </Tooltip>
                                     Config Directory (Testing)
                                   </FormLabel>
                                   <FormControl>
@@ -270,7 +326,7 @@ export const FundIdentityModal = ({ identity, isOpen, onClose }) => {
                   </Accordion>
                 </div>
               </div>
-              <ScrollBar />
+              <ScrollBar className="w-2"/>
             </ScrollArea>
             <DialogFooter>
               <Button variant="outline" type="button" onClick={onClose}>

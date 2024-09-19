@@ -4,6 +4,7 @@ fixPath();
 import { app, ipcMain, dialog } from "electron";
 import serve from "electron-serve";
 const { readFile } = require("fs").promises;
+const readline = require('readline');
 
 // Analytics
 import { initialize } from "@aptabase/electron/main";
@@ -88,7 +89,6 @@ const schema = {
       },
       required: [
         "start_ledger",
-        "cursor",
         "rpc_url",
         "network_passphrase",
         "network",
@@ -153,7 +153,9 @@ if (isProd) {
 
   const mainWindow = createWindow("main", {
     width: 1500,
-    height: 700,
+    height: 710,
+    minWidth: 1250,
+    minHeight: 710,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
     },
@@ -325,8 +327,7 @@ if (isProd) {
           command &&
           (command === "contract" ||
             command === "lab" ||
-            command === "xdr" ||
-            command === "events")
+            command === "xdr")
         ) {
           const formattedResult = result
             ? `Result: ${JSON.stringify(result)}`
@@ -352,6 +353,30 @@ if (isProd) {
         return result;
       } catch (error) {
         log.error("Error while executing command:", error);
+
+        if (
+          command &&
+          (command === "contract" ||
+            command === "lab" ||
+            command === "xdr" )
+        ) {
+          // Check the installed CLI type
+          const versionOutput = await executeSorobanCommand("--version");
+          const cliType = versionOutput.trim().startsWith("stellar")
+            ? "stellar"
+            : "soroban";
+
+          commandLog.error(
+            cliType,
+            command,
+            subcommand ? subcommand : "",
+            args ? args.join(" ") : "",
+            flags ? flags.join(" ") : "",
+            path ? path : "",
+            `Error: ${error.message}`
+          );
+        }
+
         throw error;
       }
     }
@@ -360,10 +385,24 @@ if (isProd) {
   // Add an IPC handler to fetch the logs
   ipcMain.handle("fetch-logs", async () => {
     try {
-      const data = await readFile(logFilePath, "utf-8");
-      return data;
+      const lines = [];
+      
+      const fileStream = fs.createReadStream(logFilePath);
+      const rl = readline.createInterface({
+        input: fileStream,
+        crlfDelay: Infinity
+      });
+
+      for await (const line of rl) {
+        lines.push(line);
+        if (lines.length > 50) {
+          lines.shift();
+        }
+      }
+
+      return lines.join('\n');
     } catch (error) {
-      log.error(`Error reading log file: ${error}`);
+      console.error("Error reading logs:", error);
       throw error;
     }
   });
@@ -371,9 +410,24 @@ if (isProd) {
   ipcMain.handle("fetch-command-logs", async () => {
     try {
       const commandLogFilePath = commandLog.transports.file.getFile().path;
-      const data = await readFile(commandLogFilePath, "utf-8");
-      return data;
+      const lines = [];
+      
+      const fileStream = fs.createReadStream(commandLogFilePath);
+      const rl = readline.createInterface({
+        input: fileStream,
+        crlfDelay: Infinity
+      });
+
+      for await (const line of rl) {
+        lines.push(line);
+        if (lines.length > 75) {
+          lines.shift();
+        }
+      }
+
+      return lines.join('\n');
     } catch (error) {
+      console.error("Error reading command logs:", error);
       throw error;
     }
   });
@@ -418,12 +472,15 @@ if (isProd) {
           identity ? "Identity: " + identity : "",
           newIdentity ? "New Identity: " + newIdentity : ""
         );
+
+
         const result = await handleIdentities(
           store,
           action,
           identity,
           newIdentity
         );
+
         return result;
       } catch (error) {
         log.error("Error on managing identities:", error);
@@ -436,14 +493,10 @@ if (isProd) {
     "store:manageContractEvents",
     async (event, action, contractEvents) => {
       try {
-        const result = await handleContractEvents(
-          store,
-          action,
-          contractEvents
-        );
+        const result = await handleContractEvents(store, action, contractEvents);
         return result;
       } catch (error) {
-        console.error("Error on contracts:", error);
+        console.error("Error on contract events:", error);
         throw error;
       }
     }
@@ -459,8 +512,59 @@ if (isProd) {
       const cargoTomlContent = fs.readFileSync(cargoTomlPath, "utf8");
       const parsedToml = toml.parse(cargoTomlContent);
 
-      if (parsedToml.dependencies && "soroban-sdk" in parsedToml.dependencies) {
-        return true;
+      // Check if it's a workspace
+      if (parsedToml.workspace) {
+        // Check if soroban-sdk is in workspace dependencies
+        if (
+          parsedToml.workspace.dependencies &&
+          "soroban-sdk" in parsedToml.workspace.dependencies
+        ) {
+          return true;
+        }
+
+        // Check if members include "contracts/*"
+        if (
+          parsedToml.workspace.members &&
+          parsedToml.workspace.members.includes("contracts/*")
+        ) {
+          // It's likely a Soroban project, but let's check a contract to be sure
+          const contractsDir = path.join(directoryPath, "contracts");
+          if (fs.existsSync(contractsDir)) {
+            const contractDirs = fs
+              .readdirSync(contractsDir, { withFileTypes: true })
+              .filter((dirent) => dirent.isDirectory())
+              .map((dirent) => dirent.name);
+
+            for (const contractDir of contractDirs) {
+              const contractCargoToml = path.join(
+                contractsDir,
+                contractDir,
+                "Cargo.toml"
+              );
+              if (fs.existsSync(contractCargoToml)) {
+                const contractTomlContent = fs.readFileSync(
+                  contractCargoToml,
+                  "utf8"
+                );
+                const contractParsedToml = toml.parse(contractTomlContent);
+                if (
+                  contractParsedToml.dependencies &&
+                  "soroban-sdk" in contractParsedToml.dependencies
+                ) {
+                  return true;
+                }
+              }
+            }
+          }
+        }
+      } else {
+        // If it's not a workspace, check for soroban-sdk in the root Cargo.toml
+        if (
+          parsedToml.dependencies &&
+          "soroban-sdk" in parsedToml.dependencies
+        ) {
+          return true;
+        }
       }
 
       return false;
@@ -573,19 +677,10 @@ if (isProd) {
           (identity) => identity.trim() !== "" && identity.trim() !== "*"
         );
 
-      for (const name of identityNames) {
-        // Create an identity object
-        const identity = {
-          name: name,
-        };
+      const currentIdentities = identityNames.map((name) => ({ name }));
 
-        // Add each identity to the store
-        try {
-          await handleIdentities(store, "add", identity);
-        } catch (error) {
-          console.error(`Error adding identity '${name}':`, error);
-        }
-      }
+      store.set("identities", currentIdentities);
+
     } catch (error) {
       console.error("Error retrieving identities:", error);
     }
@@ -624,3 +719,4 @@ app.on("before-quit", () => {
 ipcMain.on("message", async (event, arg) => {
   event.reply("message", `${arg} World!`);
 });
+

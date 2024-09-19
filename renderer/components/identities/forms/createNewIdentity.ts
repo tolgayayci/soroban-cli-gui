@@ -4,11 +4,7 @@ export const newIdentityFormSchema = z.object({
   identity_name: z
     .string()
     .min(3, "Identity name must be at least 3 characters long.")
-    .max(255, "Identity name must be at most 255 characters long.")
-    .regex(
-      /^[A-Za-z0-9.\-_@]+$/,
-      "Only the characters ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.-_@0123456789 are valid in identity names."
-    ),
+    .max(255, "Identity name must be at most 255 characters long."),
   seed: z.string().optional(),
   as_secret: z.boolean().optional(),
   global: z.boolean().optional(),
@@ -46,15 +42,18 @@ export async function onNewIdentityFormSubmit(
       data.network ? `--network "${data.network}"` : null,
     ].filter(Boolean);
 
-    await window.sorobanApi.runSorobanCommand(command, subcommand, args, flags);
+    const result = await window.sorobanApi
+      .runSorobanCommand(command, subcommand, args, flags)
+      .then(async () => {
+        await window.sorobanApi.manageIdentities("add", {
+          name: data.identity_name,
+          active: false,
+        });
+      });
 
-    await window.sorobanApi.manageIdentities("add", {
-      name: data.identity_name,
-      active: false,
-    });
-
-    await window.sorobanApi.reloadApplication();
+    return result;
   } catch (error) {
-    console.error(`Error: ${error}`);
+    console.error(error);
+    throw error;
   }
 }

@@ -4,10 +4,7 @@ export const addExistingProjectFormSchema = z.object({
   project_name: z
     .string()
     .min(3, { message: "Project name must be at least 3 characters long" })
-    .max(40, { message: "Project name must be at most 40 characters long" })
-    .regex(/^[A-Za-z0-9]+$/, {
-      message: "Project name must only contain letters and digits",
-    }),
+    .max(40, { message: "Project name must be at most 40 characters long" }),
   path: z
     .string()
     .min(3, {

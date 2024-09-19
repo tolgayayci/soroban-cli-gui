@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useRouter } from 'next/router';
 
 import { Button } from "components/ui/button";
 import { Separator } from "components/ui/separator";
@@ -6,50 +7,44 @@ import { Avatar, AvatarImage } from "components/ui/avatar";
 
 import { RemoveContractEventModal } from "components/events/remove-event-modal";
 import { EditContractEventModal } from "components/events/edit-event-modal";
+import ContractEventDetailOutput from "components/events/contract-event-detail-output";
+import { Edit, Trash2, Search } from "lucide-react";
 
 export default function ContractEventDetail({
-  eventDetail,
+  startLedger,
+  rpcUrl,
 }: {
-  eventDetail: string;
+  startLedger: string;
+  rpcUrl: string;
 }) {
-  const [showRemoveContractEventDialog, setShowRemoveContractEventDialog] =
-    useState(false);
-  const [showEditContractEventDialog, setShowEditContractEventDialog] =
-    useState(false);
+  const router = useRouter();
+  const [showRemoveContractEventDialog, setShowRemoveContractEventDialog] = useState(false);
+  const [showEditContractEventDialog, setShowEditContractEventDialog] = useState(false);
   const [contractEvent, setContractEvent] = useState(null);
 
   useEffect(() => {
-    const fetchContractEvents = async () => {
+    const fetchContractEvent = async () => {
       try {
         const result = await window.sorobanApi.manageContractEvents(
           "get",
-          eventDetail
+          { start_ledger: startLedger, rpc_url: rpcUrl }
         );
 
-        const projectsData: any[] = result.map((event: any) => ({
-          startLedger: event.start_ledger,
-          cursor: event.cursor,
-          output: event.output,
-          count: event.count,
-          contractId: event.contract_id,
-          topicFilters: event.topic_filters,
-          eventType: event.event_type,
-          useGlobalConfig: event.is_global,
-          configDir: event.config_dir,
-          rpcUrl: event.rpc_url,
-          networkPassphrase: event.network_passphrase,
-          network: event.network,
-        }));
-
-        setContractEvent(projectsData[0]);
+        if (result) {
+          setContractEvent(result);
+        }
       } catch (error) {
-        console.error("Error fetching project:", error);
+        console.error("Error fetching contract event:", error);
         setContractEvent(null);
       }
     };
 
-    fetchContractEvents();
-  }, [eventDetail]);
+    fetchContractEvent();
+  }, [startLedger, rpcUrl]);
+
+  const handleRemoveSuccess = () => {
+    router.push('/events');
+  };
 
   if (contractEvent) {
     return (
@@ -59,15 +54,18 @@ export default function ContractEventDetail({
             <div className="flex items-center">
               <Avatar className="mr-4 h-10 w-10">
                 <AvatarImage
-                  src={`https://avatar.vercel.sh/${contractEvent.startLedger}.png`}
-                  alt={contractEvent.startLedger}
+                  src={`https://avatar.vercel.sh/${contractEvent.start_ledger}.png`}
+                  alt={contractEvent.start_ledger}
                 />
               </Avatar>
-              <h2 className="font-bold">{contractEvent.startLedger}</h2>
+              <div className="flex flex-col">
+                <h2 className="font-bold">{contractEvent.start_ledger}</h2>
+                <p className="text-sm text-gray-500">{contractEvent.rpc_url}</p>
+              </div>
             </div>
             <div className="space-x-2">
               <Button onClick={() => setShowEditContractEventDialog(true)}>
-                Edit Contract Event
+                <Edit className="w-4 h-4 mr-2" /> Edit Event
               </Button>
               <EditContractEventModal
                 contractEvent={contractEvent}
@@ -75,40 +73,44 @@ export default function ContractEventDetail({
                 onClose={() => setShowEditContractEventDialog(false)}
               />
               <Button
-                variant="destructive"
+                variant="outline"
+                className="border-red-500 text-red-500 hover:bg-red-50"
                 onClick={() => setShowRemoveContractEventDialog(true)}
               >
-                Remove
+                <Trash2 className="w-4 h-4 mr-2" /> Remove
               </Button>
               <RemoveContractEventModal
                 contractEvent={contractEvent}
                 isOpen={showRemoveContractEventDialog}
                 onClose={() => setShowRemoveContractEventDialog(false)}
+                onRemoveSuccess={handleRemoveSuccess}
               />
             </div>
           </div>
           <Separator className="w-full mb-4 -mx-4" />
-          <div className="flex flex-row w-full">
-            {/* <div className="w-3/5 pr-4">
-              <CliCommandSelector
-                path={projectPath}
-                setCommandError={setCommandError}
-                setCommandOutput={setCommandOutput}
-              />
-            </div>
-            <div className="w-2/5 pr-4">
-              <CommandStatusConfig
-                canister={project}
-                projectPath={projectPath}
-                commandOutput={commandOutput}
-                commandError={commandError}
-              />
-            </div> */}
-          </div>
+          <ContractEventDetailOutput
+            startLedger={contractEvent.start_ledger}
+            rpcUrl={contractEvent.rpc_url}
+            networkPassphrase={contractEvent.network_passphrase}
+            network={contractEvent.network}
+          />
         </div>
       </>
     );
   } else {
-    return <div>Contract event not found or name is undefined.</div>;
+    return (
+      <div className="h-[calc(100vh-106px)] w-full rounded-md border flex flex-col items-center justify-center space-y-4">
+        <Search className="h-12 w-12" />
+        <p className="text-lg">Contract Event Not Found</p>
+        <p className="text-sm text-gray-600 text-center max-w-md leading-relaxed">
+          The contract event you're looking for could not be found.
+          <br />
+          It may have been removed or the details might be incorrect.
+        </p>
+        <Button onClick={() => router.push('/events')}>
+          Back to Events
+        </Button>
+      </div>
+    );
   }
 }

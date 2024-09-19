@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
-import Link from "next/link";
+import { useTheme } from "next-themes";
+import Image from "next/image";
 
 import {
   Accordion,
@@ -42,16 +43,14 @@ import { Avatar, AvatarImage } from "components/ui/avatar";
 import { Alert, AlertDescription, AlertTitle } from "components/ui/alert";
 import { Button } from "components/ui/button";
 import { Input } from "components/ui/input";
-import { Loader2 } from "lucide-react";
+import { Loader2, NetworkIcon, Search } from "lucide-react";
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 
-import { CodeIcon } from "lucide-react";
 import { ScrollArea, ScrollBar } from "components/ui/scroll-area";
 import NetworkModal from "components/settings/network-modal";
-import NoNetworks from "./no-network";
 
 import {
   removeNetworkFormSchema,
@@ -65,10 +64,7 @@ const NetworkCard = ({
   network,
   onNetworkChange,
 }: {
-  network: {
-    name: string;
-    rpc_url: string;
-  };
+  network: string;
   onNetworkChange: () => void;
 }) => {
   const [showRemoveNetworkDialog, setShowRemoveNetworkDialog] = useState(false);
@@ -80,7 +76,7 @@ const NetworkCard = ({
   const removeNetworkForm = useForm<z.infer<typeof removeNetworkFormSchema>>({
     resolver: zodResolver(removeNetworkFormSchema),
     defaultValues: {
-      network_name: network.name,
+      network_name: network,
       global: false,
     },
   });
@@ -111,20 +107,20 @@ const NetworkCard = ({
   }
 
   return (
-    <Card className="col-span-1" key={network.name}>
+    <Card className="col-span-1" key={network}>
       <CardHeader>
         <div className="flex items-center">
           <Avatar className="mr-4 h-10 w-10">
             <AvatarImage
-              src={`https://avatar.vercel.sh/${network.name}.png`}
-              alt={network.name}
+              src={`https://avatar.vercel.sh/${network}.png`}
+              alt={network}
             />
           </Avatar>
           <div className="flex flex-col space-y-1 overflow-hidden">
-            <CardTitle className="text-medium">{network.name}</CardTitle>
-            <CardDescription className="truncate inline-flex items-center">
-              {network.rpc_url}
-            </CardDescription>
+            <CardTitle className="text-medium">{network}</CardTitle>
+            <CardDescription className="truncate">
+                Stellar Network
+              </CardDescription>
           </div>
         </div>
       </CardHeader>
@@ -147,7 +143,7 @@ const NetworkCard = ({
                 )}
               >
                 <DialogHeader className="space-y-3">
-                  <DialogTitle>Remove "{network.name}"</DialogTitle>
+                  <DialogTitle>Remove "{network}"</DialogTitle>
                   <DialogDescription>
                     Remove this network from Soroban
                   </DialogDescription>
@@ -167,7 +163,7 @@ const NetworkCard = ({
                               <Input
                                 {...field}
                                 id="project_name"
-                                placeholder={network.name}
+                                placeholder={network}
                                 disabled
                               />
                             </FormControl>
@@ -176,7 +172,7 @@ const NetworkCard = ({
                         )}
                       />
                     </div>
-                    <Accordion type="single" collapsible>
+                    <Accordion type="multiple">
                       <AccordionItem value="options" className="pt-0">
                         <AccordionTrigger>Options</AccordionTrigger>
                         <AccordionContent>
@@ -276,38 +272,22 @@ const NetworkCard = ({
 };
 
 export default function SettingsComponent() {
-  const [showCreateProjectDialog, setShowCreateProjectDialog] = useState(false);
+  const [showCreateNetworkDialog, setShowCreateNetworkDialog] = useState(false);
   const [networks, setNetworks] = useState<any>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const { theme } = useTheme();
 
   async function checkNetworks() {
     try {
       const output = await window.sorobanApi.runSorobanCommand(
         "network",
-        "ls",
-        ["--long"]
+        "ls"
       );
 
-      const networkBlockPattern = /Name:\s*(\S+)[\s\S]*?rpc_url:\s*"([^"]+)"/g;
-      let match;
-      const networks = [];
-
-      while ((match = networkBlockPattern.exec(output)) !== null) {
-        if (match.index === networkBlockPattern.lastIndex) {
-          networkBlockPattern.lastIndex++;
-        }
-
-        const networkInfo = {
-          name: match[1],
-          rpc_url: match[2],
-        };
-
-        networks.push(networkInfo);
-      }
-
+      const networks = output.trim().split('\n');
       setNetworks(networks);
     } catch (error) {
-      console.log("Error listing networks:", error);
+      console.error("Error listing networks:", error);
       setNetworks([]);
     }
   }
@@ -325,12 +305,16 @@ export default function SettingsComponent() {
     checkNetworks();
   }, []);
 
+  const filteredNetworks = networks.filter((network) =>
+    network.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="flex flex-col h-[calc(100vh-106px)]">
       <div className="flex items-center justify-between">
         <Alert className="flex items-center justify-between py-6">
           <div className="flex items-center">
-            <CodeIcon className="h-5 w-5 mr-4" />
+            <NetworkIcon className="h-5 w-5 mr-4" />
             <div>
               <AlertTitle>
                 You have {networks?.length ? networks?.length : "0"} networks
@@ -340,45 +324,91 @@ export default function SettingsComponent() {
               </AlertDescription>
             </div>
           </div>
-          <Button onClick={() => setShowCreateProjectDialog(true)}>
+          <Button onClick={() => setShowCreateNetworkDialog(true)}>
             Create New Network
           </Button>
         </Alert>
         <NetworkModal
-          showNewNetworkDialog={showCreateProjectDialog}
-          setShowNewNetworkDialog={setShowCreateProjectDialog}
+          showNewNetworkDialog={showCreateNetworkDialog}
+          setShowNewNetworkDialog={setShowCreateNetworkDialog}
           onNetworkChange={refreshNetworks}
         />
       </div>
       {networks?.length > 0 ? (
-        <div>
-          <div className="my-6">
-            <Input
-              type="search"
-              placeholder={`Search for a network between ${networks.length} networks`}
-              onChange={handleSearchChange}
-              value={searchQuery}
-            />
-          </div>
-          <ScrollArea className="h-[calc(100vh-300px)] overflow-y-auto">
-            <div className="grid grid-cols-3 gap-8">
-              {networks
-                .filter((network) =>
-                  network.name.toLowerCase().includes(searchQuery.toLowerCase())
-                )
-                .map((network) => (
+        <div className="mt-6 space-y-6">
+          <Input
+            type="search"
+            placeholder={`Search for a network between ${networks.length} networks`}
+            onChange={handleSearchChange}
+            value={searchQuery}
+          />
+          <ScrollArea className="h-[calc(100vh-300px)]">
+            {filteredNetworks.length > 0 ? (
+              <div className="grid grid-cols-3 gap-8">
+                {filteredNetworks.map((network) => (
                   <NetworkCard
-                    key={network.name}
+                    key={network}
                     network={network}
                     onNetworkChange={refreshNetworks}
                   />
                 ))}
-            </div>
+              </div>
+            ) : (
+              <div className="h-[calc(100vh-300px)] w-full rounded-md border flex flex-col items-center justify-center">
+                <div className="flex items-center justify-center -mt-8">
+                  <Image
+                    src={
+                      theme === "dark"
+                        ? "/icons/not_found_light.svg"
+                        : "/icons/not_found_dark.svg"
+                    }
+                    alt="Networks"
+                    width={220}
+                    height={220}
+                  />
+                </div>
+                <div className="flex flex-col items-center justify-center space-y-4 -mt-3">
+                  <p className="text-lg">No Networks Found</p>
+                  <p className="text-sm text-gray-600 text-center max-w-md leading-relaxed">
+                    No networks match your search query "{searchQuery}".
+                    <br />
+                    Try adjusting your search or create a new network.
+                  </p>
+                  <Button onClick={() => setShowCreateNetworkDialog(true)}>
+                    Create New Network
+                  </Button>
+                </div>
+              </div>
+            )}
             <ScrollBar />
           </ScrollArea>
         </div>
       ) : (
-        <NoNetworks />
+        <div className="h-[calc(100vh-10px)] w-full rounded-md border flex flex-col items-center justify-center mt-3">
+          <div className="flex items-center justify-center -mt-8">
+            <Image
+              src={
+                theme === "dark"
+                  ? "/icons/not_found_light.svg"
+                  : "/icons/not_found_dark.svg"
+              }
+              alt="Networks"
+              width={250}
+              height={250}
+            />
+          </div>
+          <div className="flex flex-col items-center justify-center space-y-4 -mt-3">
+            <p className="text-lg">No Networks Found</p>
+            <p className="text-sm text-gray-600 text-center max-w-md leading-relaxed">
+              You haven't created any networks yet.
+              <br />
+              Start by creating a new network to begin using the SORA.
+            </p>
+            <Button onClick={() => setShowCreateNetworkDialog(true)}>
+              Create New Network
+            </Button>
+          </div>
+        </div>
       )}
     </div>
   );

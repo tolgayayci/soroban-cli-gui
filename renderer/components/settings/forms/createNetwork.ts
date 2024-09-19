@@ -27,7 +27,7 @@ export async function onCreateNetworkFormSubmit(
       `--rpc-url "${data.rpc_url}"`,
       `--network-passphrase "${data.network_passphrase}"`,
       data.global ? "--global" : null,
-      data.config_dir ? `--config-dir "${data.config_dir}"` : null,
+      data.config_dir ? `--config-dir ${data.config_dir}` : null,
     ].filter(Boolean);
 
     await window.sorobanApi.runSorobanCommand(command, subcommand, args, flags);

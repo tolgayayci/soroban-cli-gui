@@ -48,6 +48,13 @@ import {
 import { useToast } from "components/ui/use-toast";
 import { networkCreateError, networkCreateSuccess } from "lib/notifications";
 
+import { HelpCircle } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "components/ui/tooltip";
+
 export default function NetworkModal({
   showNewNetworkDialog,
   setShowNewNetworkDialog,
@@ -103,22 +110,30 @@ export default function NetworkModal({
               handleNewNetworkFormSubmit
             )}
           >
-            <DialogHeader>
+            <DialogHeader className="mx-1">
               <DialogTitle>Create New Network</DialogTitle>
               <DialogDescription>
                 Add a new network for Soroban
               </DialogDescription>
             </DialogHeader>
-            <ScrollArea className="max-h-[calc(70vh-106px)] overflow-y-auto">
+            <ScrollArea className="max-h-[calc(70vh-106px)] overflow-y-auto pr-2 mt-3">
               <div>
-                <div className="space-y-4 py-4 pb-4">
-                  <div className="space-y-3">
+                <div className="space-y-6 py-4 pb-4">
+                  <div className="space-y-3 mx-1">
                     <FormField
                       control={createNewNetworkform.control}
                       name="network_name"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-small">
+                          <FormLabel className="text-small flex items-center">
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <HelpCircle className="h-4 w-4 text-gray-500 mr-2" />
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Name of network</p>
+                              </TooltipContent>
+                            </Tooltip>
                             Network Name
                           </FormLabel>
                           <FormControl>
@@ -133,13 +148,23 @@ export default function NetworkModal({
                       )}
                     />
                   </div>
-                  <div className="space-y-3">
+                  <div className="space-y-3 mx-1">
                     <FormField
                       control={createNewNetworkform.control}
                       name="rpc_url"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-small">RPC URL</FormLabel>
+                          <FormLabel className="text-small flex items-center">
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <HelpCircle className="h-4 w-4 text-gray-500 mr-2" />
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>RPC server endpoint</p>
+                              </TooltipContent>
+                            </Tooltip>
+                            RPC URL
+                          </FormLabel>
                           <FormControl>
                             <Input
                               {...field}
@@ -152,13 +177,21 @@ export default function NetworkModal({
                       )}
                     />
                   </div>
-                  <div className="space-y-3">
+                  <div className="space-y-3 mx-1">
                     <FormField
                       control={createNewNetworkform.control}
                       name="network_passphrase"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-small">
+                          <FormLabel className="text-small flex items-center">
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <HelpCircle className="h-4 w-4 text-gray-500 mr-2" />
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Network passphrase to sign the transaction sent to the RPC server</p>
+                              </TooltipContent>
+                            </Tooltip>
                             Network Passphrase
                           </FormLabel>
                           <FormControl>
@@ -170,12 +203,12 @@ export default function NetworkModal({
                     />
                   </div>
 
-                  <Accordion type="single" collapsible>
+                  <Accordion type="multiple">
                     <AccordionItem value="options" className="pt-0">
-                      <AccordionTrigger>Options</AccordionTrigger>
+                      <AccordionTrigger className="mx-1 -mt-4">Options</AccordionTrigger>
                       <AccordionContent>
-                        <div className="space-y-4">
-                          <div className="space-y-3">
+                        <div className="space-y-6">
+                          <div className="space-y-3 mx-1">
                             <FormField
                               control={createNewNetworkform.control}
                               name="global"
@@ -188,7 +221,17 @@ export default function NetworkModal({
                                     />
                                   </FormControl>
                                   <div className="space-y-1 leading-none">
-                                    <FormLabel>Global</FormLabel>
+                                    <FormLabel className="flex items-center">
+                                      <Tooltip>
+                                        <TooltipTrigger asChild>
+                                          <HelpCircle className="h-4 w-4 text-gray-500 mr-2" />
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                          <p>Use global config</p>
+                                        </TooltipContent>
+                                      </Tooltip>
+                                      Global
+                                    </FormLabel>
                                     <FormDescription>
                                       Use global config
                                     </FormDescription>
@@ -197,13 +240,21 @@ export default function NetworkModal({
                               )}
                             />
                           </div>
-                          <div className="space-y-3">
+                          <div className="space-y-3 mx-1">
                             <FormField
                               control={createNewNetworkform.control}
                               name="config_dir"
                               render={({ field }) => (
                                 <FormItem>
-                                  <FormLabel className="text-small">
+                                  <FormLabel className="text-small flex items-center">
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <HelpCircle className="h-4 w-4 text-gray-500 mr-2" />
+                                      </TooltipTrigger>
+                                      <TooltipContent>
+                                        <p>Location of config directory, default is "."</p>
+                                      </TooltipContent>
+                                    </Tooltip>
                                     Config Directory (Testing)
                                   </FormLabel>
                                   <FormControl>
@@ -238,9 +289,9 @@ export default function NetworkModal({
                   </Accordion>
                 </div>
               </div>
-              <ScrollBar />
+              <ScrollBar className="w-4"/>
             </ScrollArea>
-            <DialogFooter>
+            <DialogFooter className="mr-3">
               <Button
                 variant="outline"
                 type="button"

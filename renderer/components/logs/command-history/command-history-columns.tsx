@@ -1,12 +1,12 @@
 // command-history-columns.tsx
 import { useState } from "react";
 
-import { DataTableColumnHeader } from "components/logs/application-logs/application-logs-data-table-column-header";
 import { ColumnDef } from "@tanstack/react-table";
 import { useRouter } from "next/router";
 import { useToast } from "components/ui/use-toast";
 import { Play, Copy, Info } from "lucide-react";
 import { useCopyToClipboard } from "react-use";
+import { ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
 
 import { Button } from "components/ui/button";
 import { Badge } from "components/ui/badge";
@@ -38,10 +38,8 @@ const getSubcommandColor = (subcommand: string) => {
   switch (subcommand) {
     case "contract":
       return "text-blue-500";
-    case "network":
-      return "text-green-500";
-    case "lab":
-      return "text-purple-500";
+    case "xdr":
+      return "text-orange-500";
     default:
       return "";
   }
@@ -63,7 +61,6 @@ export const createCommandHistoryColumns = (
   setSubcommandFilter: (value: string) => void
 ): ColumnDef<Network>[] => {
   const [state, copyToClipboard] = useCopyToClipboard();
-
   const router = useRouter();
   const { toast } = useToast();
 
@@ -80,22 +77,34 @@ export const createCommandHistoryColumns = (
   return [
     {
       accessorKey: "date",
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Date" />
-      ),
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Date
+            {column.getIsSorted() === "asc" ? (
+              <ArrowUp className="ml-2 h-4 w-4" />
+            ) : column.getIsSorted() === "desc" ? (
+              <ArrowDown className="ml-2 h-4 w-4" />
+            ) : (
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            )}
+          </Button>
+        );
+      },
       cell: ({ row }) => <div className="uppercase">{row.original.date}</div>,
     },
     {
       accessorKey: "time",
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Time" />
-      ),
-      cell: ({ row }) => <div className="uppercase">{row.original.time}</div>,
+      header: "Time",
+      cell: ({ row }) => <div className="uppercase flex justify-center items-center">{row.original.time}</div>,
     },
     {
       accessorKey: "subcommand",
       header: () => (
-        <div className="flex items-center space-x-2">
+        <div className="w-[110px] flex justify-center items-center">
           <Select
             value={subcommandFilter}
             onValueChange={(value) => setSubcommandFilter(value)}
@@ -106,15 +115,16 @@ export const createCommandHistoryColumns = (
             <SelectContent>
               <SelectItem value="all">All</SelectItem>
               <SelectItem value="contract">Contract</SelectItem>
-              <SelectItem value="network">Network</SelectItem>
-              <SelectItem value="lab">Lab</SelectItem>
+              <SelectItem value="xdr">XDR</SelectItem>
             </SelectContent>
           </Select>
         </div>
       ),
       cell: ({ row }) => (
         <div
-          className={`${getSubcommandColor(row.original.subcommand)} uppercase`}
+          className={`w-[140px] ${getSubcommandColor(
+            row.original.subcommand
+          )} uppercase text-center`}
         >
           {row.original.subcommand}
         </div>
@@ -125,7 +135,7 @@ export const createCommandHistoryColumns = (
       accessorKey: "command",
       header: "Command",
       cell: ({ row }) => (
-        <div className="max-w-xs truncate">{row.original.command}</div>
+        <div className="max-w-[250px] truncate">{row.original.command}</div>
       ),
     },
     {
@@ -133,6 +143,29 @@ export const createCommandHistoryColumns = (
       header: "Action",
       cell: ({ row }) => {
         const [open, setOpen] = useState(false);
+
+        const handlePlayClick = async () => {
+          const { path, command, subcommand } = row.original;
+          if (subcommand === "xdr") {
+            router.push({
+              pathname: `/lab/[command]`,
+              query: { command },
+            });
+          } else {
+            const pathExists = await window.sorobanApi.checkFileExists(path + "/Cargo.toml");
+            if (pathExists) {
+              router.push({
+                pathname: `/contracts/[path]`,
+                query: { path, command },
+              });
+            } else {
+              toast({
+                title: "Project Not Found",
+                description: "You can't run this command because the project doesn't exist on Sora.",
+              });
+            }
+          }
+        };
 
         return (
           <div className="flex justify-start space-x-3">
@@ -145,48 +178,39 @@ export const createCommandHistoryColumns = (
               <DialogContent className="min-w-[calc(70vw-106px)]">
                 <DialogHeader>
                   <DialogTitle className="flex items-center">
-                    <span>Command Output</span>
-                    <Badge className="ml-4">
-                      {"Path: " + row.original.path}
-                    </Badge>
+                    <span>
+                      {row.original.isError
+                        ? "Command Error"
+                        : "Command Output"}
+                    </span>
+                    {row.original.subcommand !== "xdr" && (
+                      <Badge className="ml-4">
+                        {"Path: " + row.original.path}
+                      </Badge>
+                    )}
                   </DialogTitle>
                   <DialogDescription className="pt-2">
-                    <pre className="bg-white text-black shadow-lg border border-black p-2 pl-3 rounded-md">
-                      {row.original.command}
+                    <pre className="bg-white text-black shadow-lg border border-black p-2 pl-3 rounded-md whitespace-pre-wrap break-words">
+                      {row.original.command.length > 100
+                        ? row.original.command.slice(0, 100) + "..."
+                        : row.original.command}
                     </pre>
                   </DialogDescription>
                 </DialogHeader>
-                <CommandStatusConfig
-                  commandOutput={row.original.result}
-                  commandError={""}
-                />
+                {row.original.isError ? (
+                  <CommandStatusConfig
+                    commandOutput={""}
+                    commandError={row.original.result}
+                  />
+                ) : (
+                  <CommandStatusConfig
+                    commandOutput={row.original.result}
+                    commandError=""
+                  />
+                )}
               </DialogContent>
             </Dialog>
-            <Button
-              onClick={async () => {
-                const { path, command, subcommand } = row.original;
-                if (subcommand === "lab") {
-                  // Extract the specific command after "lab xdr"
-                  router.push({
-                    pathname: `/lab/[command]`,
-                    query: { command: command },
-                  });
-                } else {
-                  const exist = await isExists(path);
-                  if (exist) {
-                    router.push({
-                      pathname: `/contracts/[path]`,
-                      query: { path, command },
-                    });
-                  } else {
-                    toast({
-                      title: "Path Not Found",
-                      description: `Project does not exist at "${path}" `,
-                    });
-                  }
-                }
-              }}
-            >
+            <Button onClick={handlePlayClick}>
               <Play className="h-4 w-4" />
             </Button>
             <Button
@@ -195,7 +219,7 @@ export const createCommandHistoryColumns = (
                 toast({
                   title: "Copied to Clipboard",
                   description: (
-                    <pre className="bg-gray-100 text-black p-1 px-2 rounded-md mt-1">
+                    <pre className="bg-gray-100 text-black p-1 px-2 rounded-md mt-1 overflow-hidden text-ellipsis whitespace-nowrap max-w-[340px]">
                       {row.original.command}
                     </pre>
                   ),

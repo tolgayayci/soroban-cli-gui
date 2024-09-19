@@ -3,78 +3,56 @@ import { Button } from "components/ui/button";
 import { Textarea } from "components/ui/textarea";
 import { Sheet, SheetContent } from "components/ui/sheet";
 import { ScrollArea } from "components/ui/scroll-area";
-import ReactMarkdown from "react-markdown";
 import {
-  MaximizeIcon,
   SendIcon,
   XIcon,
-  MinimizeIcon,
   Loader,
-  TrashIcon,
   UserCircle,
   Bot,
+  Trash2,
+  Key,
+  Save,
 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogFooter,
-  DialogDescription,
 } from "components/ui/dialog";
 import { Input } from "components/ui/input";
+import ReactMarkdown from "react-markdown";
+import { useToast } from "components/ui/use-toast";
+import { AlertCircle } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "components/ui/alert";
 
 interface Message {
   role: "user" | "assistant";
-  content: {
-    type: string;
-    text: {
-      value: string;
-      annotations: any[];
-    };
-  }[];
+  content: string;
 }
 
-function renderMessageContent(content: Message["content"]): React.ReactNode {
-  return (
-    <ReactMarkdown
-      className="prose dark:prose-invert max-w-none"
-      components={{
-        p: ({ node, ...props }) => <p className="mb-0" {...props} />,
-        ul: ({ node, ...props }) => (
-          <ul className="list-disc pl-4 mb-2" {...props} />
-        ),
-        ol: ({ node, ...props }) => (
-          <ol className="list-decimal pl-4 mb-2" {...props} />
-        ),
-      }}
-    >
-      {content[0].text.value}
-    </ReactMarkdown>
-  );
-}
-
-export function ChatbotDrawer({
-  isOpen,
-  onClose,
-}: {
+interface ChatbotDrawerProps {
   isOpen: boolean;
   onClose: () => void;
-}) {
+}
+
+export function ChatbotDrawer({ isOpen, onClose }: ChatbotDrawerProps) {
   const [messages, setMessages] = React.useState<Message[]>([]);
   const [inputText, setInputText] = React.useState("");
-  const [isFullScreen, setIsFullScreen] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
-  const [error, setError] = React.useState<string | null>(null);
+  const [error, setError] = React.useState<{ message: string; details?: string } | null>(null);
 
-  const [assistantId, setAssistantId] = React.useState("");
-  const [threadId, setThreadId] = React.useState("");
+  const [assistantId, setAssistantId] = React.useState<string | null>(null);
+  const [threadId, setThreadId] = React.useState<string | null>(null);
 
-  const [apiKeyModalOpen, setApiKeyModalOpen] = React.useState(false);
+  const [saveApiKeyModalOpen, setSaveApiKeyModalOpen] = React.useState(false);
+  const [editApiKeyModalOpen, setEditApiKeyModalOpen] = React.useState(false);
   const [apiKey, setApiKey] = React.useState("");
   const [isSheetOpen, setIsSheetOpen] = React.useState(false);
 
   const messagesEndRef = React.useRef<HTMLDivElement>(null);
+  const { toast } = useToast();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -82,76 +60,82 @@ export function ChatbotDrawer({
 
   React.useEffect(scrollToBottom, [messages]);
 
-  const initializeChat = async () => {
+  function renderMessageContent(content: string): React.ReactNode {
+    return (
+      <ReactMarkdown
+        className="prose dark:prose-invert max-w-none break-words whitespace-pre-wrap"
+        components={{
+          p: ({ node, ...props }) => <p className="mb-2" {...props} />,
+          ul: ({ node, ...props }) => (
+            <ul className="list-disc pl-4 mb-2" {...props} />
+          ),
+          ol: ({ node, ...props }) => (
+            <ol className="list-decimal pl-4 mb-2" {...props} />
+          ),
+        }}
+      >
+        {content}
+      </ReactMarkdown>
+    );
+  }
+
+  const initializeAssistant = async () => {
     try {
       setIsLoading(true);
-      console.log("Initializing chat...");
-
-      const existingConversation = await window.sorobanApi.getConversation(
-        "general"
-      );
-      console.log("Existing conversation:", existingConversation);
-
-      if (
-        existingConversation &&
-        existingConversation.threadId &&
-        existingConversation.assistantId
-      ) {
-        setThreadId(existingConversation.threadId);
-        setAssistantId(existingConversation.assistantId);
-        try {
-          const existingMessages = await window.sorobanApi.getMessages(
-            existingConversation.threadId
+      console.log("Initializing AI assistant...");
+      const conversation = await window.sorobanApi.getConversation("general");
+      if (conversation && conversation.assistantId && conversation.threadId) {
+        console.log("Existing conversation found:", conversation);
+        setAssistantId(conversation.assistantId);
+        setThreadId(conversation.threadId);
+        const existingMessages = await window.sorobanApi.getMessages(
+          conversation.threadId
+        );
+        console.log("Fetched existing messages:", existingMessages);
+        if (existingMessages && existingMessages.length > 0) {
+          setMessages(
+            existingMessages
+              .map((msg) => ({
+                role: msg.role,
+                content: msg.content[0].text.value,
+              }))
+              .reverse()
           );
-          console.log("Existing messages:", existingMessages);
-          if (existingMessages && existingMessages.length > 0) {
-            setMessages(existingMessages);
-          } else {
-            setDefaultMessage();
-          }
-        } catch (error) {
-          console.error("Error fetching existing messages:", error);
-          await createNewConversation();
+        } else {
+          console.log("No existing messages, setting default message");
+          setDefaultMessage();
         }
       } else {
-        console.log(
-          "No valid existing conversation found. Creating a new one."
+        console.log("Creating new assistant and thread");
+        const assistant = await window.sorobanApi.createGeneralAssistant();
+        const thread = await window.sorobanApi.createThread();
+        console.log("New assistant created:", assistant);
+        console.log("New thread created:", thread);
+        setAssistantId(assistant.id);
+        setThreadId(thread.id);
+        await window.sorobanApi.saveConversation(
+          thread.id,
+          assistant.id,
+          "general"
         );
-        await createNewConversation();
+        setDefaultMessage();
       }
-    } catch (error) {
-      console.error("Error initializing chat:", error);
-      setError("Failed to initialize chat. Please try again.");
+    } catch (err) {
+      handleApiError(err);
     } finally {
       setIsLoading(false);
+      console.log("Assistant initialization completed");
     }
-  };
-
-  const createNewConversation = async () => {
-    console.log("Creating new conversation...");
-    const assistant = await window.sorobanApi.createGeneralAssistant();
-    console.log("Created assistant:", assistant);
-    setAssistantId(assistant.id);
-    const thread = await window.sorobanApi.createThread();
-    console.log("Created thread:", thread);
-    setThreadId(thread.id);
-
-    setDefaultMessage();
-
-    await window.sorobanApi.saveConversation(
-      thread.id,
-      assistant.id,
-      "general"
-    );
   };
 
   const checkApiKey = async () => {
     const savedApiKey = await window.sorobanApi.getApiKey();
     if (savedApiKey) {
+      setApiKey(savedApiKey);
       setIsSheetOpen(true);
-      initializeChat();
+      initializeAssistant();
     } else {
-      setApiKeyModalOpen(true);
+      setSaveApiKeyModalOpen(true);
     }
   };
 
@@ -160,7 +144,8 @@ export function ChatbotDrawer({
       checkApiKey();
     } else {
       setIsSheetOpen(false);
-      setApiKeyModalOpen(false);
+      setSaveApiKeyModalOpen(false);
+      setEditApiKeyModalOpen(false);
     }
   }, [isOpen]);
 
@@ -168,52 +153,27 @@ export function ChatbotDrawer({
     setMessages([
       {
         role: "assistant",
-        content: [
-          {
-            type: "text",
-            text: {
-              value:
-                "Hello! How can I help you with Soroban development or Stellar?",
-              annotations: [],
-            },
-          },
-        ],
+        content: "Hello! How can I help you with Soroban development or Stellar?",
       },
     ]);
   };
 
-  const sendMessage = async () => {
-    if (inputText.trim() === "" || isLoading) return;
+  const handleSendMessage = async () => {
+    if (!inputText.trim() || !assistantId || !threadId || isLoading) return;
 
     setIsLoading(true);
     setError(null);
 
     try {
-      console.log("Sending message:", inputText);
-      const newUserMessage: Message = {
-        role: "user",
-        content: [
-          {
-            type: "text",
-            text: {
-              value: inputText,
-              annotations: [],
-            },
-          },
-        ],
-      };
-      setMessages((prevMessages) => [newUserMessage, ...prevMessages]);
+      console.log("Sending user message:", inputText);
+      const userMessage: Message = { role: "user", content: inputText };
+      setMessages((prevMessages) => [...prevMessages, userMessage]);
       setInputText("");
 
-      const newMessage = await window.sorobanApi.sendMessage(
-        threadId,
-        inputText
-      );
-      console.log("New message sent:", newMessage);
-
-      console.log("Running assistant...");
+      console.log("Calling AI assistant...");
+      await window.sorobanApi.sendMessage(threadId, inputText);
       const run = await window.sorobanApi.runAssistant(threadId, assistantId);
-      console.log("Run created:", run);
+      console.log("AI run started:", run.id);
 
       let runStatus = await window.sorobanApi.getRunStatus(threadId, run.id);
       console.log("Initial run status:", runStatus);
@@ -225,34 +185,32 @@ export function ChatbotDrawer({
       }
 
       if (runStatus === "completed") {
-        console.log("Run completed. Fetching updated messages...");
-        const updatedMessages = await window.sorobanApi.getMessages(threadId);
-        console.log("Updated messages:", updatedMessages);
-        setMessages(updatedMessages);
+        console.log("AI run completed, fetching messages");
+        const messages = await window.sorobanApi.getMessages(threadId);
+        const lastAssistantMessage = messages.find(
+          (msg) => msg.role === "assistant"
+        );
+        if (lastAssistantMessage) {
+          const assistantMessage: Message = {
+            role: "assistant",
+            content: lastAssistantMessage.content[0].text.value,
+          };
+          console.log("Assistant message:", assistantMessage);
+          setMessages((prevMessages) => [...prevMessages, assistantMessage]);
+        } else {
+          handleApiError(new Error("No response from assistant"));
+          console.error("No assistant message found");
+        }
       } else {
-        throw new Error("Assistant run failed");
+        handleApiError(new Error("Failed to generate response"));
+        console.error("AI run failed");
       }
-
-      await window.sorobanApi.saveConversation(
-        threadId,
-        assistantId,
-        "general"
-      );
     } catch (err) {
-      setError("An error occurred while processing the message.");
-      console.error("Error in sendMessage:", err);
+      handleApiError(err);
     } finally {
       setIsLoading(false);
+      console.log("AI interaction completed");
     }
-  };
-
-  const toggleFullScreen = () => {
-    setIsFullScreen((prevState) => !prevState);
-  };
-
-  const clearChatHistory = async () => {
-    setDefaultMessage();
-    await window.sorobanApi.clearConversation("general");
   };
 
   const handleSaveApiKey = async () => {
@@ -260,34 +218,108 @@ export function ChatbotDrawer({
 
     try {
       await window.sorobanApi.saveApiKey(apiKey);
-      setApiKeyModalOpen(false);
+      setSaveApiKeyModalOpen(false);
+      setEditApiKeyModalOpen(false);
       setIsSheetOpen(true);
-      await initializeChat();
+      toast({
+        title: "API Key Saved",
+        description: "Your OpenAI API key has been saved successfully.",
+      });
+      // Clear existing messages and reset the assistant
+      setMessages([]);
+      setAssistantId(null);
+      setThreadId(null);
+      await initializeAssistant();
     } catch (err) {
-      setError("Failed to save API key");
-      console.error(err);
+      handleApiError(err);
     }
   };
 
-  const handleCancelApiKey = () => {
-    setApiKeyModalOpen(false);
-    onClose();
+  const handleDeleteApiKey = async () => {
+    try {
+      await window.sorobanApi.deleteApiKey();
+      setApiKey("");
+      setEditApiKeyModalOpen(false);
+      toast({
+        title: "API Key Deleted",
+        description: "Your OpenAI API key has been deleted. The application will now reload.",
+      });
+      // Reload the application
+      await window.sorobanApi.reloadApplication();
+    } catch (err) {
+      handleApiError(err);
+    }
+  };
+
+  const handleShowApiKey = async () => {
+    try {
+      const savedApiKey = await window.sorobanApi.getApiKey();
+      setApiKey(savedApiKey || "");
+      setEditApiKeyModalOpen(true);
+    } catch (err) {
+      handleApiError(err);
+    }
+  };
+
+  const clearChatHistory = async () => {
+    try {
+      await window.sorobanApi.clearConversation("general");
+      setMessages([]);
+      setDefaultMessage();
+    } catch (err) {
+      handleApiError(err);
+    }
+  };
+
+  const handleApiError = (err: any) => {
+    console.error("API Error:", err);
+    let errorMessage = "An error occurred";
+    let errorDetails = "";
+
+    if (err.message && err.message.includes("Error invoking remote method")) {
+      const match = err.message.match(/Error: (.+)/);
+      if (match) {
+        errorMessage = match[1];
+        errorDetails = err.message.split("Error:")[1].trim();
+      }
+    } else if (err.response) {
+      errorMessage = err.response.data.error.message || "OpenAI API error";
+      errorDetails = JSON.stringify(err.response.data.error, null, 2);
+    } else if (err.message) {
+      errorMessage = err.message;
+    }
+
+    setError({ message: errorMessage, details: errorDetails });
+  };
+
+  const handleSaveApiKeyDialogChange = (open: boolean) => {
+    setSaveApiKeyModalOpen(open);
+    if (!open) {
+      if (apiKey) {
+        setIsSheetOpen(true);
+      } else {
+        onClose();
+      }
+    }
   };
 
   return (
     <>
-      <Dialog open={apiKeyModalOpen} onOpenChange={setApiKeyModalOpen}>
+      <Dialog 
+        open={saveApiKeyModalOpen} 
+        onOpenChange={handleSaveApiKeyDialogChange}
+      >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>OpenAI API Key Required</DialogTitle>
+            <DialogTitle>Enter OpenAI API Key</DialogTitle>
           </DialogHeader>
           <div className="grid gap-4">
             <div className="space-y-4">
               <DialogDescription>
-                Please enter your OpenAI API key to use the chatbot
+                Enter your OpenAI API key
               </DialogDescription>
               <Input
-                type="password"
+                type="text"
                 placeholder="sk-xxxxxxxx"
                 value={apiKey}
                 onChange={(e) => setApiKey(e.target.value)}
@@ -295,49 +327,85 @@ export function ChatbotDrawer({
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={handleCancelApiKey}>
-              Cancel
+            <Button
+              onClick={handleSaveApiKey}
+              className="flex items-center"
+            >
+              <Save className="w-4 h-4 mr-2" />
+              Save
             </Button>
-            <Button onClick={handleSaveApiKey}>Save</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
-      <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-        <SheetContent
-          side="right"
-          className={`p-0 ${
-            isFullScreen ? "w-screen" : "w-[500px] max-w-[100vw]"
-          }`}
-          style={{
-            transition: "width 0.3s ease-in-out",
-          }}
-        >
+      <Dialog 
+        open={editApiKeyModalOpen} 
+        onOpenChange={setEditApiKeyModalOpen}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit OpenAI API Key</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4">
+            <div className="space-y-4">
+              <DialogDescription>
+                Edit your OpenAI API key
+              </DialogDescription>
+              <Input
+                type="text"
+                placeholder="sk-xxxxxxxx"
+                value={apiKey}
+                onChange={(e) => setApiKey(e.target.value)}
+              />
+            </div>
+          </div>
+          <DialogFooter className="flex justify-between">
+            <Button variant="outline" onClick={handleDeleteApiKey}>
+              <XIcon className="w-4 h-4 mr-2" />
+              Remove
+            </Button>
+            <Button
+              onClick={handleSaveApiKey}
+              className="flex items-center"
+            >
+              <Save className="w-4 h-4 mr-2" />
+              Save
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Sheet 
+        open={isSheetOpen} 
+        onOpenChange={(open) => {
+          setIsSheetOpen(open);
+          if (!open) {
+            onClose();
+          }
+        }}
+      >
+        <SheetContent side="right" className="p-0 w-[600px] max-w-sm">
           <div className="flex flex-col h-full bg-background shadow-lg overflow-hidden">
             <div className="flex items-center justify-between px-4 py-3 bg-card">
               <div className="flex items-center gap-3">
                 <div className="font-medium">SOR.AI</div>
               </div>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="hover:bg-muted/50"
+                  onClick={handleShowApiKey}
+                >
+                  <Key className="w-5 h-5" />
+                </Button>
                 <Button
                   variant="ghost"
                   size="icon"
                   className="hover:bg-muted/50"
                   onClick={clearChatHistory}
                 >
-                  <TrashIcon className="w-5 h-5" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="hover:bg-muted/50"
-                  onClick={toggleFullScreen}
-                >
-                  {isFullScreen ? (
-                    <MinimizeIcon className="w-5 h-5" />
-                  ) : (
-                    <MaximizeIcon className="w-5 h-5" />
-                  )}
+                  <Trash2 className="w-5 h-5" />
                 </Button>
                 <Button
                   variant="ghost"
@@ -352,69 +420,81 @@ export function ChatbotDrawer({
 
             <ScrollArea className="flex-grow h-[calc(100vh-10rem)]">
               <div className="space-y-4 py-4 px-4">
-                {messages
-                  .slice()
-                  .reverse()
-                  .map((message, index) => (
+                {messages.map((message, index) => (
+                  <div
+                    key={index}
+                    className={`flex items-start gap-4 ${
+                      message.role === "user" ? "justify-end" : ""
+                    }`}
+                  >
+                    {message.role === "assistant" && (
+                      <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center flex-shrink-0">
+                        <Bot className="w-5 h-5 text-primary-foreground" />
+                      </div>
+                    )}
                     <div
-                      key={index}
-                      className={`flex items-start gap-4 ${
-                        message.role === "user" ? "justify-end" : ""
-                      }`}
+                      className={`px-4 py-3 rounded-lg ${
+                        message.role === "assistant"
+                          ? "bg-muted"
+                          : "bg-primary text-primary-foreground"
+                      } max-w-[300px]`}
                     >
-                      {message.role === "assistant" && (
-                        <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
-                          <Bot className="w-5 h-5 text-primary-foreground" />
-                        </div>
-                      )}
-                      <div
-                        className={`px-4 py-3 rounded-lg max-w-[75%] ${
-                          message.role === "assistant"
-                            ? "bg-muted"
-                            : "bg-primary text-primary-foreground"
-                        }`}
-                      >
+                      <div className="max-w-full overflow-hidden">
                         {renderMessageContent(message.content)}
                       </div>
-                      {message.role === "user" && (
-                        <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center">
-                          <UserCircle className="w-5 h-5 text-secondary-foreground" />
-                        </div>
-                      )}
                     </div>
-                  ))}
+                    {message.role === "user" && (
+                      <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center flex-shrink-0">
+                        <UserCircle className="w-5 h-5 text-secondary-foreground" />
+                      </div>
+                    )}
+                  </div>
+                ))}
                 <div ref={messagesEndRef} />
               </div>
             </ScrollArea>
 
-            <div className="bg-card px-4 py-3 flex items-center gap-2">
-              <Textarea
-                placeholder="Type your message..."
-                className="flex-1 rounded-xl border-2 border-black focus:border-transparent focus:ring-0 resize-none"
-                value={inputText}
-                onChange={(e) => setInputText(e.target.value)}
-                disabled={isLoading}
-              />
-              <Button
-                size="icon"
-                className="rounded-full"
-                onClick={sendMessage}
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <span className="animate-spin">
-                    <Loader className="w-5 h-5" />
+            {error ? (
+              <div className="mx-4 mb-4">
+                <Alert variant="destructive">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertTitle>Error</AlertTitle>
+                  <AlertDescription>
+                    {error.details && (
+                      <ScrollArea className="h-20 mt-2">
+                        <pre className="text-xs whitespace-pre-wrap">{error.details}</pre>
+                      </ScrollArea>
+                    )}
+                  </AlertDescription>
+                </Alert>
+              </div>
+            ) : (
+              <div className="bg-card px-4 py-3 flex items-center gap-2">
+                <Textarea
+                  placeholder="Type your message..."
+                  className="flex-1 rounded-xl border-2 border-black focus:border-transparent focus:ring-0 resize-none"
+                  value={inputText}
+                  onChange={(e) => setInputText(e.target.value)}
+                  disabled={isLoading}
+                />
+                <Button
+                  size="icon"
+                  className="rounded-full"
+                  onClick={handleSendMessage}
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <span className="animate-spin">
+                      <Loader className="w-5 h-5" />
+                    </span>
+                  ) : (
+                    <SendIcon className="w-5 h-5" />
+                  )}
+                  <span className="sr-only">
+                    {isLoading ? "Sending" : "Send"}
                   </span>
-                ) : (
-                  <SendIcon className="w-5 h-5" />
-                )}
-                <span className="sr-only">
-                  {isLoading ? "Sending" : "Send"}
-                </span>
-              </Button>
-            </div>
-            {error && (
-              <div className="bg-red-100 text-red-900 px-4 py-2">{error}</div>
+                </Button>
+              </div>
             )}
           </div>
         </SheetContent>

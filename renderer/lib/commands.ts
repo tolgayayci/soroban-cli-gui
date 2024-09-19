@@ -2,6 +2,7 @@ export const commands = [
   {
     label: "build",
     value: "build",
+    description: "Build a contract from source. Builds all crates that are referenced by the cargo manifest (Cargo.toml) that have cdylib as their crate-type. Crates are built for the wasm32 target.",
     args: [],
     options: [
       {
@@ -62,6 +63,7 @@ export const commands = [
   {
     label: "extend",
     value: "extend",
+    description: "Extend the time to live ledger of a contract-data ledger entry. If no keys are specified the contract itself is extended.",
     args: [],
     options: [
       {
@@ -174,6 +176,7 @@ export const commands = [
   {
     label: "deploy",
     value: "deploy",
+    description: "Deploy a wasm contract",
     args: [],
     options: [
       {
@@ -261,6 +264,7 @@ export const commands = [
   {
     label: "fetch",
     value: "fetch",
+    description: "Fetch a contract's Wasm binary",
     args: [],
     options: [
       {
@@ -316,6 +320,7 @@ export const commands = [
   {
     label: "init",
     value: "init",
+    description: "Initialize a Soroban project with an example contract",
     args: [
       {
         name: "PROJECT_PATH",
@@ -343,7 +348,7 @@ export const commands = [
   {
     label: "inspect",
     value: "inspect",
-    args: [],
+    description: "Inspect a WASM file listing contract functions, meta, etc",
     options: [
       {
         name: "--wasm",
@@ -380,6 +385,7 @@ export const commands = [
   {
     label: "install",
     value: "install",
+    description: "Install a WASM file to the ledger without creating a contract instance",
     options: [
       {
         name: "--source-account",
@@ -455,6 +461,7 @@ export const commands = [
   {
     label: "invoke",
     value: "invoke",
+    description: "Invoke a contract function. Generates an 'implicit CLI' for the specified contract on-the-fly using the contract's schema.",
     args: [
       {
         name: "CONTRACT_FN_AND_ARGS",
@@ -537,6 +544,7 @@ export const commands = [
   {
     label: "optimize",
     value: "optimize",
+    description: "Optimize a WASM file",
     options: [
       {
         name: "--wasm",
@@ -562,6 +570,7 @@ export const commands = [
   {
     label: "read",
     value: "read",
+    description: "Print the current value of a contract-data ledger entry",
     options: [
       {
         name: "--output",
@@ -663,6 +672,7 @@ export const commands = [
   {
     label: "restore",
     value: "restore",
+    description: "Restore an evicted value for a contract-data ledger entry. If no keys are specified the contract itself is restored.",
     options: [
       {
         name: "--id",

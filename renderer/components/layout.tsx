@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { useTheme } from "next-themes";
 
 import { SideNav } from "components/sidebar-nav";
+import { Button } from "components/ui/button";
 import { ModeToggle } from "components/toggle-mode";
 import { ReloadToggle } from "components/toggle-reload";
 import IdentitySwitcher from "components/identities/identity-switcher";
@@ -20,14 +21,15 @@ import {
 import { ChatbotButton } from "components/chatbot/chatbot-button";
 
 import {
-  HomeIcon,
-  DatabaseIcon,
-  MonitorXIcon,
-  CircuitBoardIcon,
-  SettingsIcon,
-  BookIcon,
-  BookKeyIcon,
-  RadioIcon,
+  FolderIcon,
+  UserIcon,
+  FileTextIcon,
+  BellIcon,
+  BeakerIcon,
+  NetworkIcon,
+  ScrollTextIcon,
+  InfoIcon,
+  BookOpenIcon,
 } from "lucide-react";
 
 interface LayoutProps {
@@ -75,7 +77,15 @@ export default function Layout({ children }: LayoutProps) {
           )}
           <div className="flex flex-row space-x-2">
             <IdentitySwitcher />
-            <ReloadToggle />
+            <Button
+              variant="outline"
+              onClick={() => window.sorobanApi.openExternalLink("https://thesora.app/getting-started/quick-start")}
+              className="h-10"
+            >
+              <BookOpenIcon className="h-4 w-4 mr-2" />
+              Docs
+            </Button>
+            {/* <ReloadToggle /> */}
             <ModeToggle />
           </div>
         </header>
@@ -110,7 +120,7 @@ export default function Layout({ children }: LayoutProps) {
                         title: "Projects",
                         label: "",
                         href: "/projects",
-                        icon: DatabaseIcon,
+                        icon: FolderIcon,
                         variant: router.pathname.startsWith("/projects")
                           ? "default"
                           : "ghost",
@@ -119,7 +129,7 @@ export default function Layout({ children }: LayoutProps) {
                         title: "Identities",
                         label: "",
                         href: "/identities",
-                        icon: CircuitBoardIcon,
+                        icon: UserIcon,
                         variant: router.pathname.startsWith("/identities")
                           ? "default"
                           : "ghost",
@@ -129,7 +139,7 @@ export default function Layout({ children }: LayoutProps) {
                         title: "Contracts",
                         label: "",
                         href: "/contracts",
-                        icon: HomeIcon,
+                        icon: FileTextIcon,
                         variant: router.pathname.startsWith("/contracts")
                           ? "default"
                           : "ghost",
@@ -138,7 +148,7 @@ export default function Layout({ children }: LayoutProps) {
                         title: "Events",
                         label: "",
                         href: "/events",
-                        icon: RadioIcon,
+                        icon: BellIcon,
                         variant: router.pathname.startsWith("/events")
                           ? "default"
                           : "ghost",
@@ -147,17 +157,17 @@ export default function Layout({ children }: LayoutProps) {
                         title: "Lab",
                         label: "",
                         href: "/lab",
-                        icon: MonitorXIcon,
+                        icon: BeakerIcon,
                         variant: router.pathname.startsWith("/lab")
                           ? "default"
                           : "ghost",
                       },
 
                       {
-                        title: "Config",
+                        title: "Network",
                         label: "",
                         href: "/settings",
-                        icon: SettingsIcon,
+                        icon: NetworkIcon,
                         variant: router.pathname.startsWith("/settings")
                           ? "default"
                           : "ghost",
@@ -166,7 +176,7 @@ export default function Layout({ children }: LayoutProps) {
                         title: "Logs",
                         label: "",
                         href: "/logs",
-                        icon: BookKeyIcon,
+                        icon: ScrollTextIcon,
                         variant: router.pathname.startsWith("/logs")
                           ? "default"
                           : "ghost",
@@ -175,7 +185,7 @@ export default function Layout({ children }: LayoutProps) {
                         title: "About",
                         label: "",
                         href: "/about",
-                        icon: BookIcon,
+                        icon: InfoIcon,
                         variant: router.pathname.startsWith("/about")
                           ? "default"
                           : "ghost",
@@ -183,8 +193,11 @@ export default function Layout({ children }: LayoutProps) {
                     ]}
                   />
                   <Separator />
+                  
                 </div>
+                
                 <div className="p-2">
+               
                   <ChatbotButton />
                 </div>
               </div>

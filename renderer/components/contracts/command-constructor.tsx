@@ -10,8 +10,9 @@ import {
   UserCircle,
   Bot,
   Trash2,
-  Play,
   Copy,
+  Key,
+  Save,
 } from "lucide-react";
 import {
   Dialog,
@@ -25,6 +26,8 @@ import { Input } from "components/ui/input";
 import ReactMarkdown from "react-markdown";
 import { useToast } from "components/ui/use-toast";
 import { useRouter } from "next/router";
+import { AlertCircle } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "components/ui/alert";
 
 interface Message {
   role: "user" | "assistant";
@@ -40,12 +43,13 @@ export function CommandGenerator({ isOpen, onClose }: CommandGeneratorProps) {
   const [messages, setMessages] = React.useState<Message[]>([]);
   const [inputText, setInputText] = React.useState("");
   const [isLoading, setIsLoading] = React.useState(false);
-  const [error, setError] = React.useState<string | null>(null);
+  const [error, setError] = React.useState<{ message: string; details?: string } | null>(null);
 
   const [assistantId, setAssistantId] = React.useState<string | null>(null);
   const [threadId, setThreadId] = React.useState<string | null>(null);
 
-  const [apiKeyModalOpen, setApiKeyModalOpen] = React.useState(false);
+  const [saveApiKeyModalOpen, setSaveApiKeyModalOpen] = React.useState(false);
+  const [editApiKeyModalOpen, setEditApiKeyModalOpen] = React.useState(false);
   const [apiKey, setApiKey] = React.useState("");
   const [isSheetOpen, setIsSheetOpen] = React.useState(false);
 
@@ -75,13 +79,20 @@ export function CommandGenerator({ isOpen, onClose }: CommandGeneratorProps) {
           ol: ({ node, ...props }) => (
             <ol className="list-decimal pl-4 mb-2" {...props} />
           ),
-          // code: ({ node, className, children, ...props }) => {
-          //   return (
-          //     <span className="break-words" {...props}>
-          //       {children}
-          //     </span>
-          //   );
-          // },
+          code: ({ node, className, children, ...props }) => {
+            const match = /language-(\w+)/.exec(className || '');
+            return  match ? (
+              <pre className={`${className} p-2 rounded bg-muted overflow-x-auto`}>
+                <code className={className} {...props}>
+                  {children}
+                </code>
+              </pre>
+            ) : (
+              <code className={className} {...props}>
+                {children}
+              </code>
+            );
+          },
         }}
       >
         {content}
@@ -131,8 +142,7 @@ export function CommandGenerator({ isOpen, onClose }: CommandGeneratorProps) {
         setDefaultMessage();
       }
     } catch (err) {
-      setError("Failed to initialize AI assistant");
-      console.error("Error in initializeAssistant:", err);
+      handleApiError(err);
     } finally {
       setIsLoading(false);
       console.log("Assistant initialization completed");
@@ -142,10 +152,11 @@ export function CommandGenerator({ isOpen, onClose }: CommandGeneratorProps) {
   const checkApiKey = async () => {
     const savedApiKey = await window.sorobanApi.getApiKey();
     if (savedApiKey) {
+      setApiKey(savedApiKey);
       setIsSheetOpen(true);
       initializeAssistant();
     } else {
-      setApiKeyModalOpen(true);
+      setSaveApiKeyModalOpen(true);
     }
   };
 
@@ -154,6 +165,8 @@ export function CommandGenerator({ isOpen, onClose }: CommandGeneratorProps) {
       checkApiKey();
     } else {
       setIsSheetOpen(false);
+      setSaveApiKeyModalOpen(false);
+      setEditApiKeyModalOpen(false);
     }
   }, [isOpen]);
 
@@ -162,7 +175,7 @@ export function CommandGenerator({ isOpen, onClose }: CommandGeneratorProps) {
       {
         role: "assistant",
         content:
-          "Hello! I'm here to help you generate Soroban CLI commands. What would you like to do?",
+          "Hello! I'm here to help you generate Stellar CLI commands. What would you like to do?",
       },
     ]);
   };
@@ -207,16 +220,15 @@ export function CommandGenerator({ isOpen, onClose }: CommandGeneratorProps) {
           console.log("Assistant message:", assistantMessage);
           setMessages((prevMessages) => [...prevMessages, assistantMessage]);
         } else {
-          setError("No response from assistant");
+          handleApiError(new Error("No response from assistant"));
           console.error("No assistant message found");
         }
       } else {
-        setError("Failed to generate command");
+        handleApiError(new Error("Failed to generate command"));
         console.error("AI run failed");
       }
     } catch (err) {
-      setError("An error occurred while generating the command");
-      console.error("Error in handleSendMessage:", err);
+      handleApiError(err);
     } finally {
       setIsLoading(false);
       console.log("AI interaction completed");
@@ -228,19 +240,47 @@ export function CommandGenerator({ isOpen, onClose }: CommandGeneratorProps) {
 
     try {
       await window.sorobanApi.saveApiKey(apiKey);
-      setApiKeyModalOpen(false);
+      setSaveApiKeyModalOpen(false);
+      setEditApiKeyModalOpen(false);
       setIsSheetOpen(true);
+      toast({
+        title: "API Key Saved",
+        description: "Your OpenAI API key has been saved successfully.",
+      });
+      // Clear existing messages and reset the assistant
+      setMessages([]);
+      setAssistantId(null);
+      setThreadId(null);
       await initializeAssistant();
     } catch (err) {
-      setError("Failed to save API key");
-      console.error(err);
+      handleApiError(err);
     }
   };
 
-  const handleCancelApiKey = () => {
-    setApiKeyModalOpen(false);
-    setIsSheetOpen(false);
-    onClose();
+  const handleDeleteApiKey = async () => {
+    try {
+      await window.sorobanApi.deleteApiKey();
+      setApiKey("");
+      setEditApiKeyModalOpen(false);
+      toast({
+        title: "API Key Deleted",
+        description: "Your OpenAI API key has been deleted. The application will now reload.",
+      });
+      // Reload the application
+      await window.sorobanApi.reloadApplication();
+    } catch (err) {
+      handleApiError(err);
+    }
+  };
+
+  const handleShowApiKey = async () => {
+    try {
+      const savedApiKey = await window.sorobanApi.getApiKey();
+      setApiKey(savedApiKey || "");
+      setEditApiKeyModalOpen(true);
+    } catch (err) {
+      handleApiError(err);
+    }
   };
 
   const clearChatHistory = async () => {
@@ -249,57 +289,62 @@ export function CommandGenerator({ isOpen, onClose }: CommandGeneratorProps) {
       setMessages([]);
       setDefaultMessage();
     } catch (err) {
-      setError("Failed to clear chat history");
-      console.error(err);
+      handleApiError(err);
     }
   };
 
-  const executeCommand = async (command: string) => {
-    try {
-      const commandMatch = command.match(
-        /```(?:plaintext)?\s*(soroban.*?)```/s
-      );
-      const actualCommand = commandMatch ? commandMatch[1].trim() : command;
-
-      await navigator.clipboard.writeText(actualCommand);
-
-      if (actualCommand.startsWith("soroban")) {
-        router.push({
-          pathname: `/contracts/[path]`,
-          query: { path: currentPath, command: actualCommand },
-        });
+  const handleSaveApiKeyDialogChange = (open: boolean) => {
+    setSaveApiKeyModalOpen(open);
+    if (!open) {
+      if (apiKey) {
+        setIsSheetOpen(true);
       } else {
-        toast({
-          title: "Invalid Command",
-          description:
-            "The generated text does not appear to be a valid Soroban command.",
-          variant: "destructive",
-        });
+        onClose(); // Close the entire component if no API key is set
       }
-    } catch (err) {
-      console.error(err);
-      toast({
-        title: "Error",
-        description: "Failed to execute command",
-        variant: "destructive",
-      });
     }
+  };
+
+  const handleApiError = (err: any) => {
+    console.error("API Error:", err);
+    let errorMessage = "An error occurred";
+    let errorDetails = "";
+
+    if (err.message && err.message.includes("Error invoking remote method")) {
+      const match = err.message.match(/Error: (.+)/);
+      if (match) {
+        errorMessage = match[1];
+        // Extract the part after "Error:"
+        errorDetails = err.message.split("Error:")[1].trim();
+      }
+    } else if (err.response) {
+      // OpenAI API error
+      errorMessage = err.response.data.error.message || "OpenAI API error";
+      errorDetails = JSON.stringify(err.response.data.error, null, 2);
+    } else if (err.message) {
+      // General error with a message
+      errorMessage = err.message;
+    }
+
+    setError({ message: errorMessage, details: errorDetails });
   };
 
   return (
     <>
-      <Dialog open={apiKeyModalOpen} onOpenChange={setApiKeyModalOpen}>
+      <Dialog 
+        open={saveApiKeyModalOpen} 
+        onOpenChange={handleSaveApiKeyDialogChange}
+      >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>OpenAI API Key Required</DialogTitle>
+            <DialogTitle>Enter OpenAI API Key</DialogTitle>
           </DialogHeader>
           <div className="grid gap-4">
             <div className="space-y-4">
               <DialogDescription>
-                Please enter your OpenAI API key to use the Command Generator
+                Enter your OpenAI API key
               </DialogDescription>
               <Input
-                type="password"
+                type="text"
                 placeholder="sk-xxxxxxxx"
                 value={apiKey}
                 onChange={(e) => setApiKey(e.target.value)}
@@ -307,22 +352,78 @@ export function CommandGenerator({ isOpen, onClose }: CommandGeneratorProps) {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={handleCancelApiKey}>
-              Cancel
+            <Button
+              onClick={handleSaveApiKey}
+              className="flex items-center"
+            >
+              <Save className="w-4 h-4 mr-2" />
+              Save
             </Button>
-            <Button onClick={handleSaveApiKey}>Save</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
-      <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+      <Dialog 
+        open={editApiKeyModalOpen} 
+        onOpenChange={setEditApiKeyModalOpen}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit OpenAI API Key</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4">
+            <div className="space-y-4">
+              <DialogDescription>
+                Edit your OpenAI API key
+              </DialogDescription>
+              <Input
+                type="text"
+                placeholder="sk-xxxxxxxx"
+                value={apiKey}
+                onChange={(e) => setApiKey(e.target.value)}
+              />
+            </div>
+          </div>
+          <DialogFooter className="flex justify-between">
+            <Button variant="outline" onClick={handleDeleteApiKey}>
+              <XIcon className="w-4 h-4 mr-2" />
+              Remove
+            </Button>
+            <Button
+              onClick={handleSaveApiKey}
+              className="flex items-center"
+            >
+              <Save className="w-4 h-4 mr-2" />
+              Save
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Sheet 
+        open={isSheetOpen} 
+        onOpenChange={(open) => {
+          setIsSheetOpen(open);
+          if (!open) {
+            onClose();
+          }
+        }}
+      >
         <SheetContent side="right" className="p-0 w-[600px] max-w-sm">
           <div className="flex flex-col h-full bg-background shadow-lg overflow-hidden">
             <div className="flex items-center justify-between px-4 py-3 bg-card">
               <div className="flex items-center gap-3">
-                <div className="font-medium">Soroban Command Generator</div>
+                <div className="font-medium">Command Generator</div>
               </div>
               <div className="flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="hover:bg-muted/50"
+                  onClick={handleShowApiKey}
+                >
+                  <Key className="w-5 h-5" />
+                </Button>
                 <Button
                   variant="ghost"
                   size="icon"
@@ -367,24 +468,14 @@ export function CommandGenerator({ isOpen, onClose }: CommandGeneratorProps) {
                         {renderMessageContent(message.content)}
                       </div>
                       {message.role === "assistant" &&
-                        message.content.includes("soroban") && (
+                        message.content.includes("stellar") && (
                           <div className="flex gap-2 mt-2">
-                            <Button
-                              size="sm"
-                              onClick={() => {
-                                executeCommand(message.content);
-                                setIsSheetOpen(false);
-                              }}
-                            >
-                              <Play className="w-4 h-4 mr-2" />
-                              Execute
-                            </Button>
                             <Button
                               size="sm"
                               variant="outline"
                               onClick={() => {
                                 const commandMatch = message.content.match(
-                                  /```(?:plaintext)?\s*(soroban.*?)```/s
+                                  /```(?:plaintext)?\s*(stellar[\s\S]*?)```/
                                 );
                                 const actualCommand = commandMatch
                                   ? commandMatch[1].trim()
@@ -414,34 +505,47 @@ export function CommandGenerator({ isOpen, onClose }: CommandGeneratorProps) {
               </div>
             </ScrollArea>
 
-            <div className="bg-card px-4 py-3 flex items-center gap-2">
-              <Textarea
-                placeholder="Describe the Soroban CLI command you want..."
-                className="flex-1 rounded-xl border-2 border-black focus:border-transparent focus:ring-0 resize-none"
-                value={inputText}
-                onChange={(e) => setInputText(e.target.value)}
-                disabled={isLoading}
-              />
-              <Button
-                size="icon"
-                className="rounded-full"
-                onClick={handleSendMessage}
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <span className="animate-spin">
-                    <Loader className="w-5 h-5" />
+            {error ? (
+              <div className="mx-4 mb-4">
+                <Alert variant="destructive">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertTitle>Error</AlertTitle>
+                  <AlertDescription>
+                    {error.details && (
+                      <ScrollArea className="h-20 mt-2">
+                        <pre className="text-xs whitespace-pre-wrap">{error.details}</pre>
+                      </ScrollArea>
+                    )}
+                  </AlertDescription>
+                </Alert>
+              </div>
+            ) : (
+              <div className="bg-card px-4 py-3 flex items-center gap-2">
+                <Textarea
+                  placeholder="Describe the Stellar CLI command you want..."
+                  className="flex-1 rounded-xl border-2 border-black focus:border-transparent focus:ring-0 resize-none"
+                  value={inputText}
+                  onChange={(e) => setInputText(e.target.value)}
+                  disabled={isLoading}
+                />
+                <Button
+                  size="icon"
+                  className="rounded-full"
+                  onClick={handleSendMessage}
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <span className="animate-spin">
+                      <Loader className="w-5 h-5" />
+                    </span>
+                  ) : (
+                    <SendIcon className="w-5 h-5" />
+                  )}
+                  <span className="sr-only">
+                    {isLoading ? "Generating" : "Generate"}
                   </span>
-                ) : (
-                  <SendIcon className="w-5 h-5" />
-                )}
-                <span className="sr-only">
-                  {isLoading ? "Generating" : "Generate"}
-                </span>
-              </Button>
-            </div>
-            {error && (
-              <div className="bg-red-100 text-red-900 px-4 py-2">{error}</div>
+                </Button>
+              </div>
             )}
           </div>
         </SheetContent>

@@ -36,6 +36,17 @@ export const openProjectInEditor = (projectPath, editor) => {
       // For Linux
       spawn("clion", [projectPath], { detached: true });
     }
+  } else if (name === "Cursor") {
+    if (process.platform === "darwin") {
+      // For macOS
+      spawn("open", ["-a", "Cursor", projectPath]);
+    } else if (process.platform === "win32") {
+      // For Windows
+      spawn("cursor", [projectPath], { detached: true });
+    } else {
+      // For Linux
+      spawn("cursor", [projectPath], { detached: true });
+    }
   } else {
     console.error("Unsupported editor:", name);
   }

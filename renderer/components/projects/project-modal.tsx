@@ -28,6 +28,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  SelectGroup,
 } from "components/ui/select";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -40,6 +41,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "components/ui/tabs";
 import { Button } from "components/ui/button";
 import { Input } from "components/ui/input";
 import { Loader2 } from "lucide-react";
+import { HelpCircle } from "lucide-react";
 
 import {
   createNewProjectFormSchema,
@@ -59,6 +61,12 @@ import {
   projectImportError,
 } from "lib/notifications";
 
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "components/ui/tooltip";
+
 export default function ProjectModal({
   showNewProjectDialog,
   setShowNewProjectDialog,
@@ -75,7 +83,7 @@ export default function ProjectModal({
   >({
     resolver: zodResolver(createNewProjectFormSchema),
     defaultValues: {
-      include_examples: false,
+      include_examples: true,
     },
   });
 
@@ -156,20 +164,20 @@ export default function ProjectModal({
                   handleNewProjectFormSubmit
                 )}
               >
-                <DialogHeader>
+                <DialogHeader className="mx-1">
                   <DialogTitle>Create Project</DialogTitle>
                   <DialogDescription>
                     Initialize a Soroban project with an example contract
                   </DialogDescription>
                 </DialogHeader>
-                <ScrollArea className="max-h-[calc(70vh-106px)] overflow-y-auto">
-                  <div>
+                <ScrollArea className="max-h-[calc(80vh-140px)] overflow-y-auto pr-2">
                     <div className="space-y-4 py-4 pb-4">
-                      <div>
+                      <div className="mx-1">
                         <FormField
                           control={createNewProjectform.control}
                           name="project_name"
                           render={({ field }) => (
+                            
                             <FormItem>
                               <FormLabel className="text-small">
                                 Project Name
@@ -186,7 +194,7 @@ export default function ProjectModal({
                           )}
                         />
                       </div>
-                      <div>
+                      <div className="mx-1">
                         <FormField
                           control={createNewProjectform.control}
                           name="path"
@@ -221,8 +229,18 @@ export default function ProjectModal({
                           )}
                         />
                       </div>
-                      <div className="space-y-4">
-                        <FormLabel className="text-small"> Options</FormLabel>
+                      <div className="space-y-6 mx-1">
+                        <FormLabel className="text-small flex items-center">
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <HelpCircle className="h-4 w-4 text-gray-500 mr-2" />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Options for the project</p>
+                            </TooltipContent>
+                          </Tooltip>
+                          Options
+                        </FormLabel>
                         <div className="space-y-3">
                           <FormField
                             control={createNewProjectform.control}
@@ -255,60 +273,105 @@ export default function ProjectModal({
                               control={createNewProjectform.control}
                               name="with_example"
                               render={({ field }) => (
-                                <FormControl>
-                                  <Select
-                                    onValueChange={field.onChange}
-                                    defaultValue={field.value}
-                                  >
-                                    <SelectTrigger className="w-full">
-                                      <SelectValue placeholder="Select an example" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      {[
-                                        "account",
-                                        "alloc",
-                                        "atomic_multiswap",
-                                        "atomic_swap",
-                                        "auth",
-                                        "cross_contract",
-                                        "custom_types",
-                                        "deep_contract_auth",
-                                        "deployer",
-                                        "errors",
-                                        "eth_abi",
-                                        "events",
-                                        "fuzzing",
-                                        "increment",
-                                        "liquidity_pool",
-                                        "logging",
-                                        "mint_lock",
-                                        "simple_account",
-                                        "single_offer",
-                                        "timelock",
-                                        "token",
-                                        "upgradeable_contract",
-                                        "workspace",
-                                      ].map((exampleValue) => (
-                                        <SelectItem
-                                          key={exampleValue}
-                                          value={exampleValue}
-                                        >
-                                          {exampleValue}
-                                        </SelectItem>
-                                      ))}
-                                    </SelectContent>
-                                  </Select>
-                                </FormControl>
+                                <FormItem>
+                                  <FormLabel className="flex items-center">
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <HelpCircle className="h-4 w-4 text-gray-500 mr-2" />
+                                      </TooltipTrigger>
+                                      <TooltipContent>
+                                        <p>Select a specific example contract to include</p>
+                                      </TooltipContent>
+                                    </Tooltip>
+                                    Example
+                                  </FormLabel>
+                                  <FormControl>
+                                    <Select
+                                      onValueChange={field.onChange}
+                                      defaultValue={field.value}
+                                    >
+                                      <SelectTrigger className="w-full">
+                                        <SelectValue placeholder="Select an example" />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        <SelectGroup className="h-[180px]">
+                                          {" "}
+                                          {[
+                                            "account",
+                                            "alloc",
+                                            "atomic_multiswap",
+                                            "atomic_swap",
+                                            "auth",
+                                            "cross_contract",
+                                            "custom_types",
+                                            "deep_contract_auth",
+                                            "deployer",
+                                            "errors",
+                                            "eth_abi",
+                                            "events",
+                                            "fuzzing",
+                                            "increment",
+                                            "liquidity_pool",
+                                            "logging",
+                                            "mint_lock",
+                                            "simple_account",
+                                            "single_offer",
+                                            "timelock",
+                                            "token",
+                                            "ttl",
+                                            "upgradeable_contract",
+                                            "workspace",
+                                          ].map((exampleValue) => (
+                                            <SelectItem
+                                              key={exampleValue}
+                                              value={exampleValue}
+                                            >
+                                              {exampleValue}
+                                            </SelectItem>
+                                          ))}
+                                        </SelectGroup>
+                                      </SelectContent>
+                                    </Select>
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
                               )}
                             />
                           </div>
                         )}
+                        <FormField
+                          control={createNewProjectform.control}
+                          name="frontend_template"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="flex items-center">
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <HelpCircle className="h-4 w-4 text-gray-500 mr-2" />
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p>URL for a frontend template repository</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                                Frontend Template
+                              </FormLabel>
+                              <FormControl>
+                                <Input
+                                  {...field}
+                                  placeholder="Hello Soroban"
+                                  className="w-full"
+                                />
+                              </FormControl>
+
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
                       </div>
                     </div>
-                  </div>
-                  <ScrollBar />
+                  <ScrollBar className="w-2" />
                 </ScrollArea>
-                <DialogFooter>
+                <DialogFooter className="mr-3 mt-2">
                   <Button
                     variant="outline"
                     type="button"
@@ -338,7 +401,7 @@ export default function ProjectModal({
                   handleExistingProjectFormSubmit
                 )}
               >
-                <DialogHeader>
+                <DialogHeader className="mx-1">
                   <DialogTitle>Import Existing Project</DialogTitle>
                   <DialogDescription>
                     Import existing Soroban project from your computer
@@ -346,7 +409,7 @@ export default function ProjectModal({
                 </DialogHeader>
                 <div>
                   <div className="space-y-4 py-4 pb-4">
-                    <div>
+                    <div className="mx-1">
                       <FormField
                         control={addExistingProjectForm.control}
                         name="project_name"
@@ -367,7 +430,7 @@ export default function ProjectModal({
                         )}
                       />
                     </div>
-                    <div>
+                    <div className="mx-1">
                       <FormField
                         control={addExistingProjectForm.control}
                         name="path"

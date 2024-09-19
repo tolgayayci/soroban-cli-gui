@@ -26,7 +26,6 @@ import {
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "components/ui/tooltip";
 
@@ -40,6 +39,7 @@ const CliCommandSelector = ({
   setCommandOutput,
   setCommandError,
   setLatestCommand,
+  setCommandExecuted,
 }: {
   path: string;
   initialCommand: string;
@@ -47,6 +47,7 @@ const CliCommandSelector = ({
   setCommandOutput: (any) => void;
   setCommandError: (any) => void;
   setLatestCommand: (any) => void;
+  setCommandExecuted: (executed: boolean) => void;
 }) => {
   const defaultCommand = commands.length > 0 ? commands[0].value : "";
 
@@ -176,12 +177,11 @@ const CliCommandSelector = ({
   const handleRunCommand = async () => {
     setIsRunningCommand(true);
     try {
-      await runCli(selectedCommand, Object.values(commandArgs)).then(() => {
-        // toast success message
-      });
+      await runCli(selectedCommand, Object.values(commandArgs));
+      setCommandExecuted(true); // Set the flag when command is executed
     } catch (error) {
-      // toast error message
       console.error("Error executing command:", error);
+      setCommandExecuted(true); // Set the flag even if there's an error
     } finally {
       setIsRunningCommand(false);
     }
@@ -234,32 +234,44 @@ const CliCommandSelector = ({
 
   return (
     <div className="flex flex-col">
-      <div className="bg-gray-200 dark:bg-white dark:text-black p-4 rounded-md mb-4">
+      <div className="bg-gray-200 dark:bg-white dark:text-black p-4 rounded-md mb-3">
         <code>{initialCommand || latestCommand}</code>
       </div>
-      <ScrollArea className="max-h-[calc(80vh-200px)] overflow-y-auto">
-        <div className="flex flex-col space-y-4">
-          <Select
-            value={selectedCommand}
-            onValueChange={(e) => handleCommandChange(e)}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Select a contract command" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup className="h-[150px]">
-                {commands.map((command) => (
-                  <SelectItem key={command.value} value={command.value}>
-                    {command.label}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
+      <ScrollArea className="max-h-[calc(100vh-320px)] overflow-y-auto">
+        <div className="flex flex-col space-y-4 mx-1 pt-1">
+          <div className="relative">
+            <Select
+              value={selectedCommand}
+              onValueChange={(e) => handleCommandChange(e)}
+            >
+              <SelectTrigger className="w-full pr-10">
+                <SelectValue placeholder="Select a contract command" />
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2">
+                      <QuestionMarkCircledIcon className="h-4 w-4 text-gray-500" />
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent side="right" className="max-w-[300px]">
+                    <p>{selectedCommand ? commands.find(c => c.value === selectedCommand)?.description : "Choose a command to see its description"}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup className="h-[150px]">
+                  {commands.map((command) => (
+                    <SelectItem key={command.value} value={command.value}>
+                      {command.label}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
           <Accordion
-            type="single"
+            type="multiple"
             className="w-full space-y-4"
-            defaultValue="options"
+            defaultValue={["options"]}
           >
             {selectedCommand &&
               commands.find((c) => c.value === selectedCommand)?.args?.length >
@@ -323,7 +335,7 @@ const CliCommandSelector = ({
                   </AccordionTrigger>
                   <AccordionContent>
                     <SelectSeparator />
-                    <div className="flex flex-wrap -mx-2 my-3">
+                    <div className="flex flex-wrap -mx-1 my-3">
                       {selectedCommand &&
                         commands
                           .find((c) => c.value === selectedCommand)
@@ -374,7 +386,7 @@ const CliCommandSelector = ({
                           (option) => option.type === "argument"
                         )
                         .map((option) => (
-                          <div key={option.name} className="space-y-2 my-4">
+                          <div key={option.name} className="space-y-2 my-4 mx-1">
                             <Tooltip key={option.name}>
                               <div className="flex items-center my-4">
                                 <Label htmlFor={option.name}>

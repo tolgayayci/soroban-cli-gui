@@ -26,7 +26,6 @@ import {
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "components/ui/tooltip";
 
@@ -59,7 +58,7 @@ const LabCommandSelector = ({
     if (initialCommand) {
       const [command, ...args] = initialCommand.split(" ");
 
-      const commandValue = args[2];
+      const commandValue = args[1];
       setSelectedCommand(commandValue);
       handleCommandChange(commandValue, args);
     }
@@ -236,28 +235,40 @@ const LabCommandSelector = ({
 
   return (
     <div className="flex flex-col">
-      <div className="bg-gray-200 dark:bg-white dark:text-black p-4 rounded-md mb-4">
+      <div className="bg-gray-200 dark:bg-white dark:text-black p-4 rounded-md mb-3">
         <code>{initialCommand || latestCommand}</code>
       </div>
       <ScrollArea className="max-h-[calc(80vh-200px)] overflow-y-auto">
-        <div className="flex flex-col space-y-4">
-          <Select
-            value={selectedCommand}
-            onValueChange={(e) => handleCommandChange(e)}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Select a contract command" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup className="h-[150px]">
-                {commands.map((command) => (
-                  <SelectItem key={command.value} value={command.value}>
-                    {command.label}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
+        <div className="flex flex-col space-y-4 mx-1 pt-1">
+          <div className="relative">
+            <Select
+              value={selectedCommand}
+              onValueChange={(e) => handleCommandChange(e)}
+            >
+              <SelectTrigger className="w-full pr-10">
+                <SelectValue placeholder="Select a lab command" />
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2">
+                      <QuestionMarkCircledIcon className="h-4 w-4 text-gray-500" />
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent side="right" className="max-w-[300px]">
+                    <p>{selectedCommand ? commands.find(c => c.value === selectedCommand)?.description : "Choose a command to see its description"}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup className="h-[150px]">
+                  {commands.map((command) => (
+                    <SelectItem key={command.value} value={command.value}>
+                      {command.label}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
           <Accordion
             type="single"
             className="w-full space-y-4"
@@ -325,7 +336,7 @@ const LabCommandSelector = ({
                   </AccordionTrigger>
                   <AccordionContent>
                     <SelectSeparator />
-                    <div className="flex flex-wrap -mx-2 my-3">
+                    <div className="flex flex-wrap -mx-1 my-3">
                       {selectedCommand &&
                         commands
                           .find((c) => c.value === selectedCommand)
@@ -376,7 +387,7 @@ const LabCommandSelector = ({
                           (option) => option.type === "argument"
                         )
                         .map((option) => (
-                          <div key={option.name} className="space-y-2 my-4">
+                          <div key={option.name} className="space-y-2 my-4 mx-1">
                             <Tooltip key={option.name}>
                               <div className="flex items-center my-4">
                                 <Label htmlFor={option.name}>

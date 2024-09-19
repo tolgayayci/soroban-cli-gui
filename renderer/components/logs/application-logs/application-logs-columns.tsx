@@ -1,7 +1,8 @@
 "use client";
 
-import { DataTableColumnHeader } from "components/logs/application-logs/application-logs-data-table-column-header";
 import { ColumnDef } from "@tanstack/react-table";
+import { Button } from "components/ui/button";
+import { ArrowUp, ArrowDown } from "lucide-react";
 
 export type Network = {
   [key: string]: any;
@@ -31,19 +32,32 @@ export const createApplicationLogsColumns = (): ColumnDef<Network>[] => {
     {
       accessorKey: "date",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Date" />
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Date
+          {column.getIsSorted() === "asc" ? (
+            <ArrowUp className="ml-2 h-4 w-4" />
+          ) : (
+            <ArrowDown className="ml-2 h-4 w-4" />
+          )}
+        </Button>
       ),
       cell: ({ row }) => (
         <div className="uppercase">
           {row.original.timestamp.split(" ")[0].slice(1)}
         </div>
       ),
+      sortingFn: (rowA, rowB) => {
+        const dateTimeA = rowA.original.timestamp;
+        const dateTimeB = rowB.original.timestamp;
+        return dateTimeA.localeCompare(dateTimeB);
+      },
     },
     {
       accessorKey: "time",
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Time" />
-      ),
+      header: "Time",
       cell: ({ row }) => (
         <div className="uppercase">
           {row.original.timestamp.split(" ")[1].slice(0, -5)}

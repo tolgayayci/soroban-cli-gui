@@ -1,35 +1,38 @@
 export function handleContractEvents(store, action, contractSettings) {
-  let contracts = store.get("contractEvents", []); // Ensure the default is an array
+  let contracts = store.get("contractEvents", []);
 
   switch (action) {
     case "add":
-      // Validate contractSettings and ensure it's an object before adding
       if (
         typeof contractSettings === "object" &&
-        !Array.isArray(contractSettings) && // Make sure it's not an array
+        !Array.isArray(contractSettings) &&
         contractSettings.start_ledger &&
         contractSettings.rpc_url &&
         contractSettings.network_passphrase &&
         contractSettings.network
       ) {
-        contracts.push(contractSettings); // Add to the array
+        contracts.push(contractSettings);
       } else {
         throw new Error("Invalid contract settings");
       }
       break;
 
     case "update":
-      // Validate that contractSettings is an object with the required `contract_id`
       if (
         typeof contractSettings === "object" &&
         !Array.isArray(contractSettings) &&
-        contractSettings.contract_id
+        contractSettings.original_rpc_url &&
+        contractSettings.original_start_ledger
       ) {
         const index = contracts.findIndex(
-          (c) => c.contract_id === contractSettings.contract_id
+          (c) => c.rpc_url === contractSettings.original_rpc_url && c.start_ledger === contractSettings.original_start_ledger
         );
         if (index !== -1) {
-          contracts[index] = { ...contracts[index], ...contractSettings }; // Update the object
+          // Remove the temporary fields used for identification
+          delete contractSettings.original_start_ledger;
+          delete contractSettings.original_rpc_url;
+          
+          contracts[index] = { ...contracts[index], ...contractSettings };
         } else {
           throw new Error("Contract to update not found");
         }
@@ -39,37 +42,36 @@ export function handleContractEvents(store, action, contractSettings) {
       break;
 
     case "remove":
-      // Validate contractSettings and check for `contract_id`
       if (
         typeof contractSettings === "object" &&
         !Array.isArray(contractSettings) &&
-        contractSettings.contract_id
+        contractSettings.start_ledger &&
+        contractSettings.rpc_url
       ) {
         contracts = contracts.filter(
-          (c) => c.contract_id !== contractSettings.contract_id
-        ); // Remove from the array
+          (c) => !(c.start_ledger === contractSettings.start_ledger && c.rpc_url === contractSettings.rpc_url)
+        );
       } else {
         throw new Error("Invalid contract settings for remove");
       }
       break;
 
     case "get":
-      if (contractSettings.contract_id) {
+      if (contractSettings.start_ledger && contractSettings.rpc_url) {
         const contract = contracts.find(
-          (c) => c.contract_id === contractSettings.contract_id
+          (c) => c.start_ledger === contractSettings.start_ledger && c.rpc_url === contractSettings.rpc_url
         );
-        return contract || null; // Return the found object or null
+        return contract || null;
       }
-      return contracts; // Return the whole array
+      return contracts;
 
     case "list":
-      // Return all contract events
       return contracts;
 
     default:
       throw new Error("Invalid action");
   }
 
-  store.set("contractEvents", contracts); // Save the array back to the store
+  store.set("contractEvents", contracts);
   return contracts;
 }
