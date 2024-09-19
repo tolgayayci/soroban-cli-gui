@@ -2,7 +2,7 @@
 
 All notable changes to SORA will be documented in this file. You can find the changelog for each release in the [releases](https://github.com/tolgayayci/sora/releases) section.
 
-## [0.2.2] - 2024-19-01
+## [0.2.2] - 2024-01-19
 
 You can have a better experience with SORA by updating to this version, most of the issues are fixed and it's more stable.
 
@@ -51,5 +51,84 @@ At this version, SORA requires **stellar v21.2.0** or higher. Look at the [insta
 - Fixed visual inconsistencies in AI chat interfaces and dropdowns.
 - Corrected scrolling behavior in the "With Examples" dropdown.
 
+
+
 [0.2.2]: https://github.com/tolgayayci/sora/releases/tag/v0.2.2
+
+## [0.2.1] - 2023-07-25
+
+### Changed
+- SORA is now compatible with both `stellar-cli` and `soroban-cli`
+- App logo and icon updated
+
+### Fixed
+- Resolved compatibility issues with different CLI versions
+- Improved overall stability and performance
+
+[0.2.1]: https://github.com/tolgayayci/sora/releases/tag/v0.2.1
+
+## [0.2.0] - 2023-07-14
+
+### Added
+- **Events Page:** Monitor and filter Soroban contract events
+  - Real-time event tracking
+  - Customizable filters for event types and contracts
+- **Lab Page:** Explore Soroban's experimental features
+  - Sandbox environment for testing new Soroban features
+  - Integration with latest Soroban updates
+- **AI Command Constructor:** Natural language input for Soroban CLI commands
+  - Intuitive interface for generating complex CLI commands
+  - Contextual suggestions based on project structure
+- **Soroban AI Assistant:** Instant support for Soroban commands and usage
+  - In-app documentation and examples
+  - Context-aware help for specific Soroban concepts
+- **VS Code Helper Extension:** Side window for executing contract commands directly in VS Code
+  - Seamless integration with VS Code workflow
+  - Quick access to SORA features without leaving the editor
+
+### Changed
+- Improved UI/UX across all pages for better user experience
+- Enhanced performance for large-scale Soroban projects
+- Updated documentation to reflect new features and workflows
+
+### Fixed
+- Various bug fixes and stability improvements
+- Resolved issues with contract deployment and interaction
+
+[0.2.0]: https://github.com/tolgayayci/sora/releases/tag/v0.2.0
+
+## [0.1.1] - 2023-03-17
+
+### Fixed
+- Resolved bug #3: Issue with project creation in certain environments
+- Fixed bug #4: Inconsistent behavior in identity management
+- Improved error handling and reporting throughout the application
+
+### Changed
+- Minor UI tweaks for better usability
+- Updated dependencies to latest stable versions
+
+[0.1.1]: https://github.com/tolgayayci/sora/releases/tag/v0.1.1
+
+## [0.1.0] - 2023-02-14
+
+### Added
+- **Projects Page:** Create, import, and manage Soroban projects
+  - Intuitive project creation wizard
+  - Support for multiple project templates
+  - Easy import of existing Soroban projects
+- **Contracts Page:** List and interact with main contracts
+  - Visual interface for contract deployment
+  - Interactive contract method invocation
+  - Real-time contract state viewer
+- **Identities Page:** Generate, add, and manage identities
+  - Secure key generation and storage
+  - Support for multiple identity types
+  - Easy switching between identities for different operations
+- **Config Page:** Add and manage networks
+  - Support for custom network configurations
+  - Easy switching between testnet, mainnet, and custom networks
+  - Network health monitoring and status display
+
+[0.1.0]: https://github.com/tolgayayci/sora/releases/tag/v0.1.0
 

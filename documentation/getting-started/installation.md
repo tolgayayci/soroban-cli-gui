@@ -53,8 +53,8 @@ Before installing SORA, ensure your system meets these requirements:
 ### 🍎 macOS (Apple Silicon | Intel)
 
 1. Download the latest release for macOS:
-   * [Apple Silicon](https://github.com/tolgayayci/sora/releases/download/v0.2.0/sora-0.2.0-arm64.dmg)
-   * [Intel](https://github.com/tolgayayci/sora/releases/download/v0.2.0/sora-0.2.0-universal.dmg)
+   * [Apple Silicon](https://github.com/tolgayayci/sora/releases/download/v0.2.2/sora-0.2.2-arm64.dmg)
+   * [Intel](https://github.com/tolgayayci/sora/releases/download/v0.2.2/sora-0.2.2-universal.dmg)
 2. Open the downloaded .dmg file.
 3. Drag the SORA icon to the Applications folder.
 4. Open SORA from your Applications folder.
@@ -62,8 +62,8 @@ Before installing SORA, ensure your system meets these requirements:
 ### 🐧 Linux
 
 1. Download the latest release for Linux:
-   * [AppImage](https://github.com/tolgayayci/sora/releases/download/v0.2.0/sora-0.2.0.AppImage)
-   * [Snap](https://github.com/tolgayayci/sora/releases/download/v0.2.0/sora_0.2.0_amd64.snap)
+   * [AppImage](https://github.com/tolgayayci/sora/releases/download/v0.2.2/sora-0.2.2.AppImage)
+   * [Snap](https://github.com/tolgayayci/sora/releases/download/v0.2.2/sora_0.2.2_amd64.snap)
 2. For AppImage:
    * Make the AppImage executable: `chmod +x sora-0.2.0.AppImage`
    * Run the AppImage: `./sora-0.2.0.AppImage`
@@ -92,7 +92,7 @@ If you encounter any issues during installation:
 1. Ensure you have the latest version of the Stellar CLI installed.
 2. Check that your system meets the minimum requirements.
 3. For Linux users, make sure you have the necessary dependencies installed for running AppImage or Snap packages.
-4. If problems persist, consult our [troubleshooting guide] or reach out to our [community forum] for assistance.
+4. If problems persist, open an issue on [GitHub](https://github.com/tolgayayci/sora/issues).
 
 ## Updating SORA
 

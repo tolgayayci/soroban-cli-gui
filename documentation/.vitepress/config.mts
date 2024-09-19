@@ -61,7 +61,6 @@ export default defineConfig({
         icon: "discord",
         link: "https://discord.com/channels/897514728459468821/1222543548188983448/1222543548188983448",
       },
-      { icon: "youtube", link: "https://youtube.com/##" },
     ],
   },
 
