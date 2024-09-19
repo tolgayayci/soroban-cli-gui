@@ -108,5 +108,6 @@ Always check the release notes for any important updates or changes that might a
 
 * [Stellar Documentation](https://developers.stellar.org/docs/)
 * [SORA GitHub Repository](https://github.com/tolgayayci/sora)
+* [SORA VS Code Extension](https://marketplace.visualstudio.com/items?itemName=tolgayayci.stellar-suite)
 
 For support, visit [GitHub issues page](https://github.com/tolgayayci/sora/issues).
