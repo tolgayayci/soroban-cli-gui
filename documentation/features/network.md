@@ -2,7 +2,7 @@
 
 Networks are a fundamental component of your Soroban development workflow in SORA. They represent the different Stellar networks you can interact with, providing a user-friendly interface to manage your network configurations.
 
-::: tip
+::: tip SHOWCASE CLIP
 New to SORA? Watch our comprehensive demo video to get started quickly with managing networks!
 
 <!-- <iframe width="560" height="315" src="https://www.youtube.com/embed/YOUR_VIDEO_ID" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> -->

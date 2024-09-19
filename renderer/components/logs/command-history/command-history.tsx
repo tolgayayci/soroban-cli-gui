@@ -5,7 +5,7 @@ import { Button } from "components/ui/button";
 import Link from "next/link";
 import Image from "next/image";
 import { useTheme } from "next-themes";
-
+import Loading from "components/common/loading";
 
 interface LogEntry {
   date: string;
@@ -15,11 +15,14 @@ interface LogEntry {
   command: string;
   path: string;
   result: string;
+  isError: boolean;
 }
 
 export default function CommandHistory() {
   const [commands, setCommands] = useState<LogEntry[]>([]);
   const [subcommandFilter, setSubcommandFilter] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const { theme } = useTheme();
 
   async function getCommandHistory() {
     try {
@@ -116,6 +119,8 @@ export default function CommandHistory() {
       setCommands(parsedCommands);
     } catch (error) {
       console.error(`Error fetching command history: ${error}`);
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -128,48 +133,43 @@ export default function CommandHistory() {
     setSubcommandFilter
   );
 
-  const { theme } = useTheme();
-
   return (
-    <div className="flex flex-col h-[calc(95vh-106px)]">
-      {commands.length === 0 ? (
-        <div className="h-full w-full rounded-md border flex flex-col items-center justify-center">
-            <div className="flex items-center justify-center -mt-8">
-            <Image
-              src={
-                theme === "dark"
-                  ? "/icons/not_found_light.svg"
-                  : "/icons/not_found_dark.svg"
-              }
-              alt="Projects"
-              width={250}
-              height={250}
-            />
-          </div>
-          <div className="flex flex-col items-center justify-center space-y-4 -mt-3">
-
-          <p className="text-lg">No Command Logs Found</p>
-          <p className="text-sm text-gray-600 text-center max-w-xl leading-relaxed">
-            There are no command history logs available.
-            <br />
-            You need to use Contracts or Lab pages and run some commands to generate logs.
-          </p>
-          <div className="flex space-x-2">
-            <Link href="/contracts">
-              <Button variant="outline">Go to Contracts</Button>
-            </Link>
-            <Link href="/lab">
-              <Button>Go to Lab</Button>
-            </Link>
-          </div>
-          </div>
-        </div>
-      ) : (
+    <div className="flex flex-col h-[calc(100vh-106px)]">
+      {isLoading ? (
+        <Loading />
+      ) : commands.length > 0 ? (
         <CommandHistoryDataTable
           columns={columns}
           data={commands}
           subcommandFilter={subcommandFilter}
         />
+      ) : (
+        <div className="h-full w-full rounded-md border flex flex-col items-center justify-center">
+          <div className="flex items-center justify-center -mt-8">
+            <Image
+              src={theme === "dark" ? "/icons/not_found_light.svg" : "/icons/not_found_dark.svg"}
+              alt="Command History"
+              width={250}
+              height={250}
+            />
+          </div>
+          <div className="flex flex-col items-center justify-center space-y-4 -mt-3">
+            <p className="text-lg">No Command Logs Found</p>
+            <p className="text-sm text-gray-600 text-center max-w-xl leading-relaxed">
+              There are no command history logs available.
+              <br />
+              You need to use Contracts or Lab pages and run some commands to generate logs.
+            </p>
+            <div className="flex space-x-2">
+              <Link href="/contracts">
+                <Button variant="outline">Go to Contracts</Button>
+              </Link>
+              <Link href="/lab">
+                <Button>Go to Lab</Button>
+              </Link>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

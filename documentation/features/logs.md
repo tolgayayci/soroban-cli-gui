@@ -2,7 +2,7 @@
 
 The Logs feature in SORA provides a comprehensive view of your development activities, allowing you to track command history and application logs. This powerful tool enhances your ability to debug, audit, and understand the operations performed within SORA.
 
-::: tip
+::: tip SHOWCASE CLIP
 New to SORA? Watch our comprehensive demo video to get started quickly with the Logs feature!
 
 <!-- <iframe width="560" height="315" src="https://www.youtube.com/embed/YOUR_VIDEO_ID" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> -->
@@ -12,7 +12,11 @@ New to SORA? Watch our comprehensive demo video to get started quickly with the 
 
 The Logs Dashboard is your central hub for viewing and managing logs in SORA.
 
-<!-- ![Logs Dashboard](/public/features/logs/dashboard.png) -->
+<div className="image-border">
+
+![Logs Dashboard](/public/features/logs/command.png)
+
+</div>
 
 Key components of the Logs Dashboard include:
 
@@ -23,8 +27,12 @@ Key components of the Logs Dashboard include:
 
 The Command History tab provides a chronological list of commands executed within SORA, offering powerful features for reviewing and reusing past commands.
 
-<!-- ![Command History](/public/features/logs/command-history.png) -->
 
+<div className="image-border">
+
+![Command History](/public/features/logs/app.png)
+
+</div>
 Key features of the Command History:
 
 1. **Timestamp**: Shows when each command was executed, helping you track your development timeline.

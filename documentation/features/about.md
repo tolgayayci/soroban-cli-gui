@@ -2,7 +2,7 @@
 
 The About page in SORA provides essential information about your installation, including version details and quick links to important resources. This page is crucial for understanding your current setup and accessing support channels.
 
-::: tip
+::: tip SHOWCASE CLIP
 New to SORA? Watch our comprehensive demo video to get started quickly!
 
 <!-- <iframe width="560" height="315" src="https://www.youtube.com/embed/YOUR_VIDEO_ID" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> -->

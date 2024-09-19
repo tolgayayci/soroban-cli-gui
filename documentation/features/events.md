@@ -2,7 +2,7 @@
 
 Events are a crucial part of the Soroban development workflow in SORA. They allow you to monitor and interact with contract events on the Stellar network, providing valuable insights into your smart contract operations.
 
-::: tip
+::: tip SHOWCASE CLIP
 New to SORA? Watch our comprehensive demo video to get started quickly with managing events!
 
 <!-- <iframe width="560" height="315" src="https://www.youtube.com/embed/YOUR_VIDEO_ID" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> -->
