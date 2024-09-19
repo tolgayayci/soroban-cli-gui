@@ -9,10 +9,9 @@ files:
     filter:
       - package.json
       - app
-# afterSign: "scripts/notarize.js"
+afterSign: "scripts/notarize.js"
 mac:
-  # notarize: { teamId: "FPJS89TYWV" }
-  notarize: false
+  notarize: { teamId: "FPJS89TYWV" }
   hardenedRuntime: true
   gatekeeperAssess: false
   entitlements: "scripts/entitlements.mac.plist"
