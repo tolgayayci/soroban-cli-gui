@@ -1,0 +1,25 @@
+{
+  "name": "svm-cli",
+  "version": "0.1.16",
+  "description": "Stellar Version Manager - manage multiple stellar-cli versions",
+  "type": "module",
+  "bin": {
+    "svm": "./bin/svm.js"
+  },
+  "scripts": {
+    "start": "node bin/svm.js",
+    "dev": "npm link && svm",
+    "unlink": "npm unlink"
+  },
+  "dependencies": {
+    "axios": "^1.6.2",
+    "chalk": "^5.3.0",
+    "commander": "^11.1.0",
+    "conf": "^12.0.0",
+    "execa": "^8.0.1",
+    "inquirer": "^9.3.7",
+    "inquirer-autocomplete-prompt": "^3.0.1",
+    "ora": "^7.0.1",
+    "semver": "^7.5.4"
+  }
+}
